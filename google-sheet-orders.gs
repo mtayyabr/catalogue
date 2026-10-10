@@ -54,7 +54,7 @@ function doPost(e) {
 function doGet(e) {
   const p = (e && e.parameter) || {};
   if (p.action === "aff")   return json_(affInfo_(p.code));
-  if (p.action === "stats") return json_(stats_(p.code, p.key));
+  if (p.action === "stats") return json_(stats_(p.code, p.key, p.phone));
   if (p.action === "open")  return json_(String(p.pin) === STAFF_PIN ? openOrders_() : {ok:false, err:"pin"});
   return ContentService.createTextOutput("DS Orders is connected");
 }
@@ -108,7 +108,7 @@ function affInfo_(code) {
 }
 function join_(o) {
   const name = String(o.name || "").trim().slice(0, 40), phone = String(o.phone || "").replace(/\D/g, "");
-  const payout = o.payout === "Bank transfer" ? "Bank transfer" : "Cash", bank = String(o.bank || "").trim().slice(0, 120);
+  const payout = o.payout ? String(o.payout).slice(0, 30) : "Ask when paying", bank = String(o.bank || "").trim().slice(0, 120);
   if (!name || !/^[79]\d{7}$/.test(phone) || o.agree !== true) return {ok:false, err:"form"};
   const sh = tab_("Affiliates", AH), list = rows_(sh);
   const old = list.find(r => String(r[2]).replace(/\D/g, "").slice(-8) === phone);
@@ -119,7 +119,7 @@ function join_(o) {
   const key = Utilities.getUuid().replace(/-/g, "").slice(0, 12);
   sh.appendRow([code.toUpperCase(), name, "+968" + phone, payout, bank, "Active", new Date(), key]);
   MailApp.sendEmail(ALERT_EMAIL, `New affiliate: ${name} (${code.toUpperCase()})`,
-    `${name} joined the affiliate program.\nWhatsApp: +968 ${phone}\nPayout: ${payout}${bank ? " – " + bank : ""}\nCode: ${code.toUpperCase()}\n\nTo block: Affiliates tab > Status = Blocked`);
+    `${name} joined the affiliate program.\nWhatsApp: +968 ${phone}\nCode: ${code.toUpperCase()}\n\nTo block: Affiliates tab > Status = Blocked`);
   return {ok:true, code:code, key:key, name:name};
 }
 /* commission for one affiliate in one month (ym = 202610) */
@@ -131,17 +131,21 @@ function monthFor_(code, ym, orders, returns) {
   const com = r3_(items * RATE);
   return {ym:ym, label:ymLabel_(ym), orders:n, items:r3_(items), commission:com, returns:r3_(ded), pay:r3_(com - ded)};
 }
-function stats_(code, key) {
+function stats_(code, key, phone) {
   code = String(code || "").toUpperCase();
-  const a = affiliates_().find(r => String(r[0]).toUpperCase() === code && String(r[7]) === String(key || ""));
+  const ph = String(phone || "").replace(/\D/g, "").slice(-8);
+  const a = affiliates_().find(r => String(r[0]).toUpperCase() === code &&
+    ((key && String(r[7]) === String(key)) || (ph.length === 8 && String(r[2]).replace(/\D/g, "").slice(-8) === ph)));
   if (!a) return {ok:false};
-  const orders = rows_(tab_("Orders", OH)), returns = rows_(tab_("Returns", RH));
-  const now = new Date(), thisYm = ym_(now), lastYm = ym_(new Date(now.getFullYear(), now.getMonth() - 1, 15));
-  const recent = orders.filter(r => String(r[C.aff]).toUpperCase() === code).slice(-30).reverse()
-    .map(r => ({id:r[C.id], date:new Date(r[C.date]).toISOString(), items:Number(r[C.sub]), status:r[C.status], ret:Number(r[C.ret]) || 0,
-                commission: r[C.status] === "Delivered" ? r3_(Number(r[C.sub]) * RATE) : 0}));
-  return {ok:true, name:a[1], code:code, status:a[5], rate:RATE * 100,
-          months:[monthFor_(code, thisYm, orders, returns), monthFor_(code, lastYm, orders, returns)], recent:recent};
+  const orders = rows_(tab_("Orders", OH)).filter(r => String(r[C.aff]).toUpperCase() === code);
+  const returns = rows_(tab_("Returns", RH)).filter(r => String(r[2]).toUpperCase() === code);
+  const payouts = rows_(tab_("Payouts", PH)).filter(r => String(r[1]).toUpperCase() === code && String(r[11]).trim() !== "");
+  let approved = 0, pending = 0;
+  orders.forEach(r => { const v = Number(r[C.sub]) || 0; if (r[C.status] === "Delivered") approved += v * RATE; else if (r[C.status] === "New") pending += v * RATE; });
+  const ded = returns.reduce((t, r) => t + (Number(r[4]) || 0), 0);
+  const paid = payouts.reduce((t, r) => t + (Number(r[10]) || 0), 0);
+  const recent = orders.slice(-30).reverse().map(r => ({id:r[C.id], date:new Date(r[C.date]).toISOString(), items:Number(r[C.sub]), status:r[C.status]}));
+  return {ok:true, name:a[1], code:code, status:a[5], due:r3_(approved - ded - paid), pending:r3_(pending), paid:r3_(paid), approved:r3_(approved), returns:r3_(ded), recent:recent};
 }
 
 /* ---------- automation (installed by setupTriggers) ---------- */

@@ -181,7 +181,8 @@ span.amt{display:inline!important;margin:0!important;white-space:nowrap;unicode-
 [dir="rtl"] .fdbtn .fd{padding:7px 10px 7px 30px}
 .fdbtn .chev{position:absolute;inset-inline-end:8px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center}
 .fdbtn:active .fd{filter:brightness(.96)}
-.ap{display:grid;gap:12px;padding-top:12px}
+.ap{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;padding-top:12px}
+.ap>*{min-width:0}
 .ap h1{margin:0;font-size:22px;font-weight:900;line-height:1.2}
 .ap .hero{background:linear-gradient(135deg,#FFD101,#FFB800);border-radius:16px;padding:16px;display:flex;gap:12px;align-items:center}
 .ap .hero img{width:56px;height:56px;border-radius:14px;flex:none}
@@ -217,8 +218,8 @@ a.btn{text-decoration:none}
 .ap .ol .r+.r{border-top:1px solid var(--line)}
 .ap .ol .r small{display:block;color:var(--ink3);font-size:12px}
 .ap .pill{font-size:11.5px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--ink2)}
-.ap .pill.Delivered{background:var(--green-bg);color:var(--green)}
-.ap .pill.Refused,.ap .pill.Cancelled{background:#FDECEA;color:#C62828}
+.ap .pill.Delivered,.ap .pill.Approved{background:var(--green-bg);color:var(--green)}
+.ap .pill.Refused,.ap .pill.Cancelled,.ap .pill.Rejected{background:#FDECEA;color:#C62828}
 .helpaff{display:flex;gap:10px;align-items:center;text-align:start;padding:12px;border-radius:12px;background:linear-gradient(135deg,#FFD101,#FFB800);width:100%}
 .helpaff b{display:block;font-size:15px;font-weight:900}.helpaff span{font-size:12.5px;font-weight:600}
 .helpaff i{margin-inline-start:auto;font-style:normal;font-size:22px;font-weight:900}
@@ -574,7 +575,19 @@ const T = {
  instAdd:["Add","إضافة"], sharedBy:["Shared by {N} 👋","مشاركة من {N} 👋"],
  helpAff:["Earn 10% – join our affiliate program","اربح 10% – انضم إلى برنامج الشركاء"], helpAffS:["Share your link and earn on every order","شارك رابطك واربح من كل طلب"],
  helpAffMe:["My affiliate link & earnings","رابطي وأرباحي"],
- affTitle:["Earn 10% sharing Dollar Store","اربح 10% بمشاركة دولار ستور"], affHero:["Earn 10%","اربح 10%"], affHeroS:["on every order through your link","من كل طلب عبر رابطك"],
+ eLine1:["Get your own link – free","احصل على رابطك – مجانًا"], eLine2:["Share it on WhatsApp","شاركه عبر واتساب"], eLine3:["Earn 10% of every order through it","اربح 10% من كل طلب عبره"],
+ eStart:["Start earning","ابدأ الربح"], eHave:["Already joined? Open my dashboard","مشترك بالفعل؟ افتح لوحتي"], eNew:["New here? Join","جديد؟ انضم"],
+ eCode:["Your code (e.g. NAVI41)","رمزك (مثال NAVI41)"], eOpen:["Open my dashboard","افتح لوحتي"], eBadLogin:["Number or code not found.","الرقم أو الرمز غير صحيح."],
+ eHi:["Hi {N} 👋","أهلًا {N} 👋"], eDue:["To be paid","المستحق لك"], ePending:["Pending","قيد الانتظار"], ePaid:["Paid so far","المدفوع"],
+ eDueS:["Paid in the first week of each month","يُدفع في الأسبوع الأول من كل شهر"], eYourLink:["Your link","رابطك"], eYourCode:["Your code","رمزك"],
+ eOrders:["Your orders","طلباتك"], eNone:["No orders yet – share your link!","لا طلبات بعد – شارك رابطك!"],
+ stPending:["Pending","قيد الانتظار"], stApproved:["Approved","مقبول"], stRejected:["Rejected","مرفوض"],
+ eRulesT:["Rules","الشروط"],
+ eR1:["Earn 10% of the items total (not delivery) on every order placed through your link.","اربح 10% من قيمة المنتجات (بدون التوصيل) لكل طلب يتم عبر رابطك."],
+ eR2:["Approved when the order is delivered and paid. Refused or cancelled orders are rejected.","يُقبل عند تسليم الطلب ودفعه. الطلبات المرفوضة أو الملغاة لا تُحتسب."],
+ eR3:["If items are returned, 10% of their value is taken off your next payment.","عند إرجاع منتجات، يُخصم 10% من قيمتها من دفعتك التالية."],
+ eR4:["Paid monthly. Dollar Store may change the program or close accounts.","تُدفع شهريًا. يحق لدولار ستور تعديل البرنامج أو إغلاق الحسابات."],
+ affTitle:["Earn 10%","اربح 10%"], affHero:["Earn 10%","اربح 10%"], affHeroS:["on every order through your link","من كل طلب عبر رابطك"],
  affHow1:["Get your own link – free","احصل على رابطك الخاص – مجانًا"],
  affHow2:["Share it on WhatsApp, Instagram or as a QR code","شاركه عبر واتساب أو إنستغرام أو كرمز QR"],
  affHow3:["Earn 10% of every order placed through your link, paid monthly","اربح 10% من كل طلب يتم عبر رابطك، تُدفع شهريًا"],
@@ -901,96 +914,89 @@ function help(){
 }
 
 /* ===== affiliate program: join / kit / my sales ===== */
-let joinPay="Cash", msgL=LANG;
-function join(){
+let msgL=LANG, eLogin=false, eData=null;
+const ST={New:"Pending",Delivered:"Approved",Refused:"Rejected",Cancelled:"Rejected"};
+function earn(){
   const me=store.get("ds_aff",null);
-  if(me) return kit(me);
+  if(me) return dash(me);
   const c=store.get("ds_cust",{});
+  const rules=`<div><div style="font-weight:800;margin-bottom:6px">${t("eRulesT")}</div><ol class="rules" style="list-style:decimal">${[1,2,3,4].map(i=>`<li>${t("eR"+i)}</li>`).join("")}</ol></div>`;
   app.innerHTML=`<div class="wrap page"><div class="ap">
     <div class="hero"><img src="img/icon-192.png" alt=""><div><b>${t("affHero")}</b><span>${t("affHeroS")}</span></div></div>
-    <ol><li><i>1</i><span>${t("affHow1")}</span></li><li><i>2</i><span>${t("affHow2")}</span></li><li><i>3</i><span>${t("affHow3")}</span></li></ol>
-    <form id="jf" novalidate>
+    ${eLogin?`<form id="lf" novalidate>
+      <label for="lPhone">${t("affWa")}<div class="field" dir="ltr"><span>+968</span><input id="lPhone" inputmode="numeric" maxlength="8" placeholder="9XXXXXXX" value="${esc(c.phone||"")}"></div></label>
+      <label for="lCode">${t("eCode")}<input id="lCode" autocapitalize="characters" autocomplete="off" dir="ltr"></label>
+      <div class="err" id="jErr" hidden></div>
+      <button class="btn full" id="jBtn">${t("eOpen")}</button></form>
+      <button class="see" data-elogin="0" style="font-weight:800;color:var(--hot)">${t("eNew")}</button>`
+    :`<ol><li><i>1</i><span>${t("eLine1")}</span></li><li><i>2</i><span>${t("eLine2")}</span></li><li><i>3</i><span>${t("eLine3")}</span></li></ol>
+      <form id="jf" novalidate>
       <label for="jName">${t("affName")}<input id="jName" autocomplete="name" value="${esc(c.name||"")}"></label>
       <label for="jPhone">${t("affWa")}<div class="field" dir="ltr"><span>+968</span><input id="jPhone" inputmode="numeric" maxlength="8" placeholder="9XXXXXXX" value="${esc(c.phone||"")}" autocomplete="tel-national"></div></label>
-      <div><div style="font-weight:700;margin-bottom:6px">${t("affPay")}</div>
-        <div class="seg"><button type="button" data-pay="Cash" aria-pressed="${joinPay==="Cash"}">${t("payCash")}</button><button type="button" data-pay="Bank transfer" aria-pressed="${joinPay!=="Cash"}">${t("payBank")}</button></div></div>
-      <label for="jBank" id="jBankL" ${joinPay==="Cash"?"hidden":""}>${t("affBank")}<input id="jBank"></label>
-      <div><div style="font-weight:800;margin-bottom:6px">${t("rulesT")}</div>
-        <ul class="rules">${[1,2,3,4,5,6].map(i=>`<li>${t("rule"+i)}</li>`).join("")}</ul></div>
+      ${rules}
       <label class="chk"><input type="checkbox" id="jAgree"><span>${t("affAgree")}</span></label>
       <div class="err" id="jErr" hidden></div>
-      <button class="btn full" id="jBtn">${t("affJoin")}</button>
-    </form>
+      <button class="btn full" id="jBtn">${t("eStart")}</button></form>
+      <button class="see" data-elogin="1" style="font-weight:800;color:var(--hot)">${t("eHave")}</button>`}
   </div></div>`;
-  $("#jf").addEventListener("submit",e=>{e.preventDefault();doJoin();});
+  if(eLogin) $("#lf").addEventListener("submit",e=>{e.preventDefault();doLogin();});
+  else $("#jf").addEventListener("submit",e=>{e.preventDefault();doJoin();});
 }
+const eFail=m=>{const er=$("#jErr");er.hidden=false;er.textContent=m;};
+const eBusy=(on,label)=>{const b=$("#jBtn");b.disabled=on;b.textContent=on?t("affWait"):label;};
 async function doJoin(){
-  const name=$("#jName").value.trim(), phone=$("#jPhone").value.replace(/\D/g,""), er=$("#jErr");
-  const fail=m=>{er.hidden=false;er.textContent=m;};
-  if(!name) return fail(t("affErrName"));
-  if(!/^[79]\d{7}$/.test(phone)) return fail(t("phoneErr"));
-  if(!$("#jAgree").checked) return fail(t("affErrAgree"));
-  er.hidden=true; const b=$("#jBtn"); b.disabled=true; b.textContent=t("affWait");
-  try{
-    const r=await apiPost({action:"join",name,phone,payout:joinPay,bank:$("#jBank").value,agree:true});
-    if(!r.ok){ b.disabled=false; b.textContent=t("affJoin"); return fail(r.err==="blocked"?t("affErrBlocked"):t("affErrNet")); }
-    store.set("ds_aff",{code:r.code,key:r.key,name:r.name}); render();
-  }catch(_){ b.disabled=false; b.textContent=t("affJoin"); fail(t("affErrNet")); }
+  const name=$("#jName").value.trim(), phone=$("#jPhone").value.replace(/\D/g,"");
+  if(!name) return eFail(t("affErrName"));
+  if(!/^[79]\d{7}$/.test(phone)) return eFail(t("phoneErr"));
+  if(!$("#jAgree").checked) return eFail(t("affErrAgree"));
+  $("#jErr").hidden=true; eBusy(true);
+  try{ const r=await apiPost({action:"join",name,phone,agree:true});
+    if(!r.ok){ eBusy(false,t("eStart")); return eFail(r.err==="blocked"?t("affErrBlocked"):t("affErrNet")); }
+    store.set("ds_aff",{code:r.code,key:r.key,name:r.name,phone}); eData=null; render();
+  }catch(_){ eBusy(false,t("eStart")); eFail(t("affErrNet")); }
+}
+async function doLogin(){
+  const phone=$("#lPhone").value.replace(/\D/g,""), code=$("#lCode").value.trim().toLowerCase().replace(/[^a-z0-9]/g,"");
+  if(!/^[79]\d{7}$/.test(phone)) return eFail(t("phoneErr"));
+  if(!code) return eFail(t("eBadLogin"));
+  $("#jErr").hidden=true; eBusy(true);
+  try{ const r=await apiGet({action:"stats",code,phone});
+    if(!r.ok){ eBusy(false,t("eOpen")); return eFail(t("eBadLogin")); }
+    store.set("ds_aff",{code,name:r.name,phone}); eData=r; eLogin=false; render();
+  }catch(_){ eBusy(false,t("eOpen")); eFail(t("affErrNet")); }
 }
 const affLink=me=>SITE+"?ref="+me.code;
 const affMsg=(me,l)=>{ const L=affLink(me);
   return l==="ar"?`🛍️ دولار ستور عُمان – كل شيء بـ 0.729 ر.ع.!\nاطلب من هاتفك 👇\n${L}\n\n🚚 توصيل مجاني للطلبات من 10 ر.ع.\n💵 الدفع عند الاستلام\n✅ استرداد مدى الحياة للمنتجات غير المستعملة`
    :l==="fil"?`🛍️ Dollar Store Oman – Lahat ay 0.729 OMR lang!\nI-tap para mamili 👇\n${L}\n\n🚚 Libreng delivery sa order na 10 OMR pataas\n💵 Cash on delivery (COD)\n✅ Lifetime money-back sa mga hindi pa nagamit na item`
    :`🛍️ Dollar Store Oman – Everything 0.729 OMR!\nOrder from your phone 👇\n${L}\n\n🚚 Free delivery on orders of 10 OMR or more\n💵 Cash on delivery\n✅ Lifetime money-back on unused items`; };
-function kit(me){
-  const priv=SITE+"?aff="+me.code+"&k="+me.key;
+function dash(me){
+  const d=eData, n=v=>amt(Number(v||0).toFixed(3));
   app.innerHTML=`<div class="wrap page"><div class="ap">
-    <h1>${t("kitHi").replace("{N}",esc(me.name))}</h1>
-    <p class="muted2" style="margin:-6px 0 0;font-size:14px">${t("kitSub")}</p>
-    <div><div style="font-weight:800;margin-bottom:6px">${t("kitLink")}</div>
-      <div class="linkbox"><code id="kLink">${esc(affLink(me))}</code><button class="btn dark" data-copy="${esc(affLink(me))}">${t("copy")}</button></div></div>
-    <div><div style="font-weight:700;margin-bottom:6px">${t("msgLang")}</div>
-      <div class="mtabs">${[["en","English"],["ar","العربية"],["fil","Filipino"]].map(([k,l])=>`<button data-msgl="${k}" aria-pressed="${msgL===k}">${l}</button>`).join("")}</div></div>
+    <h1>${t("eHi").replace("{N}",esc(me.name||me.code.toUpperCase()))}</h1>
+    <div class="stats">
+      <div class="stat big"><span>${t("eDue")}</span><b>${d?n(d.due):"…"}</b><span>${t("eDueS")}</span></div>
+      <div class="stat"><span>${t("ePending")}</span><b>${d?n(d.pending):"…"}</b></div>
+      <div class="stat"><span>${t("ePaid")}</span><b>${d?n(d.paid):"…"}</b></div>
+    </div>
+    <div class="linkbox"><code>${esc(affLink(me))}</code><button class="btn dark" data-copy="${esc(affLink(me))}">${t("copy")}</button></div>
+    <div class="mtabs">${[["en","English"],["ar","العربية"],["fil","Filipino"]].map(([k,l])=>`<button data-msgl="${k}" aria-pressed="${msgL===k}">${l}</button>`).join("")}</div>
     <a class="btn wa full" target="_blank" rel="noopener" href="https://api.whatsapp.com/send?text=${encodeURIComponent(affMsg(me,msgL))}">${I.wa}${t("shareWa")}</a>
     <button class="btn dark full" data-poster>${t("poster")}</button>
-    <button class="btn full" data-nav="mysales">${t("mySales")}</button>
-    <div class="muted2">${t("keepLink")}<div class="linkbox" style="margin-top:6px"><code>${esc(priv)}</code><button class="btn dark" data-copy="${esc(priv)}">${t("copy")}</button></div></div>
-    <button class="later" data-signout style="color:var(--ink3);font-weight:700;height:40px">${t("signOut")}</button>
+    <div style="font-weight:800">${t("eOrders")}</div>
+    <div id="eList">${!d?`<p class="muted2">${t("loading")}</p>`:d.recent.length?`<div class="ol">${d.recent.map(o=>{const st=ST[o.status]||"Pending";return `<div class="r"><div><b dir="ltr">${esc(o.id)}</b><small>${new Date(o.date).toLocaleDateString(LANG==="ar"?"ar-OM":"en-GB")} · ${n(o.items)}</small></div>
+      <div style="text-align:end"><b>${st==="Rejected"?"–":"+"+n(o.items*0.1)}</b><small><span class="pill ${st}">${t("st"+st)}</span></small></div></div>`}).join("")}</div>`:`<p class="muted2">${t("eNone")}</p>`}</div>
+    ${d&&d.status==="Blocked"?`<div class="err">${t("affPaused")}</div>`:""}
+    <details><summary style="font-weight:800;cursor:pointer">${t("eRulesT")}</summary><ol class="rules" style="list-style:decimal;margin-top:8px">${[1,2,3,4].map(i=>`<li>${t("eR"+i)}</li>`).join("")}</ol></details>
+    <p class="muted2" style="margin:0">${t("eYourCode")}: <b dir="ltr">${esc(me.code.toUpperCase())}</b></p>
+    <button data-signout style="color:var(--ink3);font-weight:700;height:40px">${t("signOut")}</button>
   </div></div>`;
+  if(!d) apiGet(me.key?{action:"stats",code:me.code,key:me.key}:{action:"stats",code:me.code,phone:me.phone}).then(r=>{
+    if(!r.ok){ store.set("ds_aff",null); eData=null; if(cur().v==="join") render(); return; }
+    eData=r; if(r.name&&r.name!==me.name){me.name=r.name;store.set("ds_aff",me);} if(cur().v==="join") render();
+  }).catch(()=>{ const l=$("#eList"); if(l) l.innerHTML=`<p class="muted2">${t("affErrNet")}</p>`; });
 }
-let salesM=0, salesData=null;
-async function mysales(){
-  const me=store.get("ds_aff",null);
-  if(!me){ stack=[{v:"home"},{v:"join"}]; return render(); }
-  app.innerHTML=`<div class="wrap page"><div class="ap"><h1>${t("salesT")}</h1><p class="muted2" id="sBody">${t("loading")}</p></div></div>`;
-  try{
-    const r=await apiGet({action:"stats",code:me.code,key:me.key});
-    if(cur().v!=="mysales") return;
-    if(!r.ok){ $("#sBody").textContent=t("badLink"); return; }
-    if(r.name&&r.name!==me.name){ me.name=r.name; store.set("ds_aff",me); }
-    salesData=r; salesView();
-  }catch(_){ if($("#sBody")) $("#sBody").innerHTML=`${t("affErrNet")} <button class="see" data-nav="mysales" style="color:var(--hot);font-weight:800">${t("retry")}</button>`; }
-}
-function salesView(){
-  const r=salesData, m=r.months[salesM], st=k=>t("st"+k)||k;
-  $("#app").innerHTML=`<div class="wrap page"><div class="ap">
-    <h1>${t("salesT")}</h1>
-    ${r.status==="Blocked"?`<div class="err">${t("affPaused")}</div>`:""}
-    <div class="mtabs">${r.months.map((x,i)=>`<button data-salesm="${i}" aria-pressed="${i===salesM}">${esc(x.label)}</button>`).join("")}</div>
-    <div class="stats">
-      <div class="stat big"><span>${t("sPay")}</span><b>${amt(m.pay.toFixed(3))}</b><span>${t("payNote")}</span></div>
-      <div class="stat"><span>${t("sOrders")}</span><b>${m.orders}</b></div>
-      <div class="stat"><span>${t("sSales")}</span><b>${amt(m.items.toFixed(3))}</b></div>
-      <div class="stat"><span>${t("sCom")}</span><b>${amt(m.commission.toFixed(3))}</b></div>
-      <div class="stat"><span>${t("sRet")}</span><b><bdi dir="ltr">−${amt(m.returns.toFixed(3))}</bdi></b></div>
-    </div>
-    <div style="font-weight:800">${t("recentT")}</div>
-    ${r.recent.length?`<div class="ol">${r.recent.map(o=>`<div class="r"><div><b dir="ltr">${esc(o.id)}</b><small>${new Date(o.date).toLocaleDateString(LANG==="ar"?"ar-OM":"en-GB")}</small></div>
-      <div style="text-align:end">${amt(o.items.toFixed(3))}<small><span class="pill ${esc(o.status)}">${esc(st(o.status))}</span></small></div></div>`).join("")}</div>`
-      :`<p class="muted2">${t("noOrders")}</p>`}
-    <button class="btn dark full" data-nav="join">${t("kitLink")}</button>
-  </div></div>`;
-}
+const join=earn, mysales=earn;
 async function poster(){
   const me=store.get("ds_aff",null); if(!me) return;
   if(!window.qrcode) await new Promise((ok,no)=>{const s=document.createElement("script");s.src="js/qrcode.min.js";s.onload=ok;s.onerror=no;document.head.appendChild(s);});
@@ -1034,7 +1040,7 @@ function render(){
   $("#bn").hidden=!main; $("#hdr").hidden=!main;
   $("#float").hidden = v!=="product"; $("#float").classList.remove("solid");
   $("#topbar").hidden = !(v==="cart"||v==="checkout"||v==="done"||v==="join"||v==="mysales");
-  $("#tbTitle").textContent = v==="cart"?t("cartTitle",count()):v==="checkout"?t("checkout"):v==="join"?t("affTitle"):v==="mysales"?t("salesT"):t("orderPlaced");
+  $("#tbTitle").textContent = v==="cart"?t("cartTitle",count()):v==="checkout"?t("checkout"):(v==="join"||v==="mysales")?t("affTitle"):t("orderPlaced");
   setHH(); dock(); window.scrollTo(0,0);
 }
 function go(v,replace,extra={}){
@@ -1108,13 +1114,12 @@ if("serviceWorker" in navigator && location.protocol==="https:" && /github\.io$/
 document.addEventListener("click",e=>{
   const x=e.target;
   if(x.closest("[data-install]")){ install(); return; }
-  const py=x.closest("[data-pay]"); if(py){ joinPay=py.dataset.pay; document.querySelectorAll("[data-pay]").forEach(b=>b.setAttribute("aria-pressed",b===py)); $("#jBankL").hidden=joinPay==="Cash"; return; }
   const cp=x.closest("[data-copy]"); if(cp){ const done=()=>{const o=cp.textContent;cp.textContent=t("copied");setTimeout(()=>cp.textContent=o,1500);};
     (navigator.clipboard?navigator.clipboard.writeText(cp.dataset.copy):Promise.reject()).then(done).catch(()=>{const ta=document.createElement("textarea");ta.value=cp.dataset.copy;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done();}catch(_){}ta.remove();}); return; }
   const ml=x.closest("[data-msgl]"); if(ml){ msgL=ml.dataset.msgl; render(); return; }
   if(x.closest("[data-poster]")){ poster().catch(()=>{}); return; }
-  if(x.closest("[data-signout]")){ store.set("ds_aff",null); try{localStorage.removeItem("ds_aff")}catch(_){} render(); return; }
-  const sm=x.closest("[data-salesm]"); if(sm){ salesM=+sm.dataset.salesm; salesView(); return; }
+  const el=x.closest("[data-elogin]"); if(el){ eLogin=el.dataset.elogin==="1"; render(); return; }
+  if(x.closest("[data-signout]")){ eData=null;  store.set("ds_aff",null); try{localStorage.removeItem("ds_aff")}catch(_){} render(); return; }
   if(x.closest("[data-wellater]")||x.id==="wel"){ closeWel(); return; }
   if(x.closest("[data-instx]")){ store.set("ds_instx",1); render(); return; }
   const inc=x.closest("[data-inc]"), dec=x.closest("[data-dec]"), op=x.closest("[data-open]"), nv=x.closest("[data-nav]"), tb=x.closest("[data-tab]"), ct=x.closest("[data-cat]"), lg=x.closest("[data-lang]");
@@ -1141,8 +1146,8 @@ const setHH=()=>document.documentElement.style.setProperty("--hh",$("#hdr").offs
 addEventListener("resize",setHH);
 
 (()=>{ const u=new URLSearchParams(location.search), c=u.get("aff"), k=u.get("k");
-  if(u.has("join")&&!(c&&k)){ stack=[{v:"home"},{v:"join"}]; }
-  if(c&&k){ const old=store.get("ds_aff",null); store.set("ds_aff",{code:c.toLowerCase(),key:k,name:old&&old.code===c.toLowerCase()?old.name:""}); stack=[{v:"home"},{v:"mysales"}]; } })();
+  if((u.has("join")||u.has("earn"))&&!(c&&k)){ stack=[{v:"home"},{v:"join"}]; }
+  if(c&&k){ const old=store.get("ds_aff",null); store.set("ds_aff",{code:c.toLowerCase(),key:k,name:old&&old.code===c.toLowerCase()?old.name:""}); stack=[{v:"home"},{v:"join"}]; } })();
 applyLang(); badges(); render(); welcome();
 if(REF&&SHEET_URL) apiGet({action:"aff",code:REF}).then(r=>{ if(r&&r.ok){ refLabel=r.name; if(cur().v==="home") rerenderInst(); } else { REF=""; ss_.set("ds_ref",""); } }).catch(()=>{});
 </script>
