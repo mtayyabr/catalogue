@@ -223,6 +223,7 @@ a.btn{text-decoration:none}
 .helpaff{display:flex;gap:10px;align-items:center;text-align:start;padding:12px;border-radius:12px;background:linear-gradient(135deg,#FFD101,#FFB800);width:100%}
 .helpaff b{display:block;font-size:15px;font-weight:900}.helpaff span{font-size:12.5px;font-weight:600}
 .helpaff i{margin-inline-start:auto;font-style:normal;font-size:22px;font-weight:900}
+.msgprev{white-space:pre-line;font-size:13.5px;line-height:1.45;background:#E7FFDB;border-radius:12px;padding:10px 12px;color:#111}
 .aff{display:block;margin:10px 0 0;padding:8px 12px;border-radius:999px;background:var(--green-bg);color:var(--green);font-size:14px;font-weight:700;width:max-content;max-width:100%}
 .aff b{font-weight:900}
 .inst{display:flex;align-items:center;gap:10px;margin:10px 0 0;padding:10px;border:1px solid var(--line);border-radius:12px;background:#FFFBE6}
@@ -606,7 +607,7 @@ const T = {
  affErrBlocked:["This number can't join the program. Please contact us on WhatsApp.","لا يمكن لهذا الرقم الانضمام. يرجى التواصل معنا عبر واتساب."],
  kitHi:["Welcome, {N}! 🎉","أهلًا {N}! 🎉"], kitSub:["Share your link. You earn 10% of every order placed through it.","شارك رابطك. تربح 10% من كل طلب يتم عبره."],
  kitLink:["Your link","رابطك"], copy:["Copy","نسخ"], copied:["Copied ✓","تم النسخ ✓"], shareWa:["Share on WhatsApp","شارك عبر واتساب"],
- msgLang:["Message language","لغة الرسالة"], poster:["Download my QR poster","حمّل ملصق QR الخاص بي"], mySales:["My sales & earnings","مبيعاتي وأرباحي"],
+ msgLang:["Language (page + WhatsApp message)","اللغة (الصفحة + رسالة واتساب)"], poster:["Download my QR poster","حمّل ملصق QR الخاص بي"], mySales:["My sales & earnings","مبيعاتي وأرباحي"],
  keepLink:["Private link to see your earnings on any phone (don't share it):","رابط خاص لرؤية أرباحك من أي هاتف (لا تشاركه):"],
  signOut:["Not you? Sign out","لست أنت؟ تسجيل الخروج"],
  salesT:["My earnings","أرباحي"], sOrders:["Delivered orders","طلبات مسلَّمة"], sSales:["Sales through your link","المبيعات عبر رابطك"],
@@ -980,7 +981,9 @@ function dash(me){
       <div class="stat"><span>${t("ePaid")}</span><b>${d?n(d.paid):"…"}</b></div>
     </div>
     <div class="linkbox"><code>${esc(affLink(me))}</code><button class="btn dark" data-copy="${esc(affLink(me))}">${t("copy")}</button></div>
+    <div style="font-weight:800">${t("msgLang")}</div>
     <div class="mtabs">${[["en","English"],["ar","العربية"],["fil","Filipino"]].map(([k,l])=>`<button data-msgl="${k}" aria-pressed="${msgL===k}">${l}</button>`).join("")}</div>
+    <div class="msgprev" dir="${msgL==="ar"?"rtl":"ltr"}">${esc(affMsg(me,msgL))}</div>
     <a class="btn wa full" target="_blank" rel="noopener" href="https://api.whatsapp.com/send?text=${encodeURIComponent(affMsg(me,msgL))}">${I.wa}${t("shareWa")}</a>
     <button class="btn dark full" data-poster>${t("poster")}</button>
     <div style="font-weight:800">${t("eOrders")}</div>
@@ -1027,7 +1030,7 @@ function applyLang(){
   ["#backBtn","#fBack","#tbBack"].forEach(s=>$(s).setAttribute("aria-label",t("back")));
   ["#cartBtn","#fCart"].forEach(s=>$(s).setAttribute("aria-label",t("cart")));
 }
-function setLang(l){ saveCust(); LANG=l; store.set("ds_lang",l); applyLang(); const y=scrollY; render(); window.scrollTo(0,y); }
+function setLang(l){ saveCust(); LANG=l; if(typeof msgL!=="undefined"&&msgL!=="fil") msgL=l; store.set("ds_lang",l); applyLang(); const y=scrollY; render(); window.scrollTo(0,y); }
 
 /* ===== router ===== */
 const cur=()=>stack[stack.length-1];
@@ -1116,7 +1119,7 @@ document.addEventListener("click",e=>{
   if(x.closest("[data-install]")){ install(); return; }
   const cp=x.closest("[data-copy]"); if(cp){ const done=()=>{const o=cp.textContent;cp.textContent=t("copied");setTimeout(()=>cp.textContent=o,1500);};
     (navigator.clipboard?navigator.clipboard.writeText(cp.dataset.copy):Promise.reject()).then(done).catch(()=>{const ta=document.createElement("textarea");ta.value=cp.dataset.copy;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done();}catch(_){}ta.remove();}); return; }
-  const ml=x.closest("[data-msgl]"); if(ml){ msgL=ml.dataset.msgl; render(); return; }
+  const ml=x.closest("[data-msgl]"); if(ml){ msgL=ml.dataset.msgl; if(msgL!=="fil"&&msgL!==LANG) setLang(msgL); else render(); return; }
   if(x.closest("[data-poster]")){ poster().catch(()=>{}); return; }
   const el=x.closest("[data-elogin]"); if(el){ eLogin=el.dataset.elogin==="1"; render(); return; }
   if(x.closest("[data-signout]")){ eData=null;  store.set("ds_aff",null); try{localStorage.removeItem("ds_aff")}catch(_){} render(); return; }
