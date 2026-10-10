@@ -40,7 +40,8 @@ input:focus{border-color:var(--ink)}
 .o .meta{font-size:13.5px;color:var(--ink2);line-height:1.4;white-space:pre-line}
 .o .items{font-size:13px;background:var(--soft);border-radius:8px;padding:8px 10px;white-space:pre-line;line-height:1.4}
 .o .acts{display:grid;grid-template-columns:2fr 1fr;gap:8px}
-.o .acts button{height:46px;border-radius:12px;font-weight:900;font-size:15px}
+.o .acts button{height:46px;border-radius:12px;font-weight:900;font-size:15px;white-space:nowrap}
+.o .row{font-size:14px;line-height:1.45;display:flex;gap:6px}.o .row.warn{color:#B26A00;font-weight:700}
 .o .del{background:var(--green);color:#fff}
 .o .ref{background:#FDECEA;color:var(--red)}
 .o a{color:var(--green);font-weight:800;text-decoration:none}
@@ -95,9 +96,10 @@ function draw(){
   } else {
     app.innerHTML=tabs+(orders.length?orders.map((o,i)=>`<div class="o" id="o${i}">
       <div class="top"><span class="id">${esc(o.id)}</span><span class="tot">${Number(o.total).toFixed(3)} OMR</span></div>
-      <div class="meta">${esc(o.name||"–")} · <a href="tel:${esc(o.phone)}">${esc(o.phone)}</a> · <a href="https://api.whatsapp.com/send?phone=${esc(o.phone.replace(/\D/g,""))}" target="_blank" rel="noopener">WhatsApp</a>
-${esc(o.area||"")}
-${new Date(o.date).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</div>
+      <div class="row">👤 <span>${esc(o.name||"No name")}</span></div>
+      <div class="row">📞 <span><a href="tel:+${esc(o.phone.replace(/\D/g,""))}">+${esc(o.phone.replace(/\D/g,""))}</a> · <a href="https://api.whatsapp.com/send?phone=${esc(o.phone.replace(/\D/g,""))}" target="_blank" rel="noopener">WhatsApp</a></span></div>
+      <div class="row${o.area?"":" warn"}">📍 <span>${o.area?esc(o.area):"No address given – call or WhatsApp the customer"}</span></div>
+      <div class="row">🕒 <span>${new Date(o.date).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})} · ${esc(String(o.items).split("\n").length)} line(s) · cash ${Number(o.total).toFixed(3)} OMR</span></div>
       <div class="items">${esc(o.items)}</div>
       <div class="acts"><button class="del" data-i="${i}" data-s="Delivered">✔ Delivered</button><button class="ref" data-i="${i}" data-s="Refused">✖ Refused</button></div>
       <div class="msg"></div></div>`).join("")
