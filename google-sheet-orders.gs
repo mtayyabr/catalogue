@@ -16,11 +16,12 @@ function doPost(e) {
     sh.appendRow(["Date","Order #","WhatsApp","Name","Area / notes","Items","Qty","Items OMR","Delivery OMR","Total OMR","Language","Status"]);
     sh.setFrozenRows(1);
   }
+  if (sh.getRange(1, 13).getValue() !== "Affiliate") sh.getRange(1, 13).setValue("Affiliate");
   const items = o.items.map(i => `${i.qty} × ${i.name}`).join("\n");
   const qty = o.items.reduce((a, i) => a + i.qty, 0);
   sh.appendRow([new Date(o.date), o.id, "+" + o.phone, o.name, o.area, items, qty,
-                Number(o.subtotal), Number(o.delivery), Number(o.total), o.lang === "ar" ? "Arabic" : "English", "New"]);
-  MailApp.sendEmail(ALERT_EMAIL, `New order ${o.id} – ${o.total} OMR`,
+                Number(o.subtotal), Number(o.delivery), Number(o.total), o.lang === "ar" ? "Arabic" : "English", "New", (o.ref || "").toUpperCase()]);
+  MailApp.sendEmail(ALERT_EMAIL, `New order ${o.id} – ${o.total} OMR` + (o.ref ? ` (affiliate ${o.ref.toUpperCase()})` : ""),
     o.text + `\n\nReply on WhatsApp: https://api.whatsapp.com/send?phone=${o.phone}`);
   return ContentService.createTextOutput("ok");
 }
