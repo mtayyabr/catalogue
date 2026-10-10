@@ -66,7 +66,7 @@ function saveOrder_(o) {
   const qty = o.items.reduce((a, i) => a + i.qty, 0);
   const aff = o.ref && affInfo_(o.ref).ok ? String(o.ref).toUpperCase() : "";
   sh.appendRow([new Date(o.date), o.id, "+" + o.phone, o.name, o.area, items, qty,
-                Number(o.subtotal), Number(o.delivery), Number(o.total), o.lang === "ar" ? "Arabic" : "English", "New", aff, "", ""]);
+                Number(o.subtotal), Number(o.delivery), Number(o.total), o.lang === "ar" ? "Arabic" : o.lang === "fil" ? "Filipino" : "English", "New", aff, "", ""]);
   MailApp.sendEmail(ALERT_EMAIL, `New order ${o.id} – ${o.total} OMR` + (aff ? ` (affiliate ${aff})` : ""),
     o.text + `\n\nReply on WhatsApp: https://api.whatsapp.com/send?phone=${o.phone}`);
   return {ok:true};
