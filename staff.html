@@ -44,6 +44,9 @@ input:focus{border-color:var(--ink)}
 .o .row{font-size:14px;line-height:1.45;display:flex;gap:6px}.o .row.warn{color:#B26A00;font-weight:700}
 .o .del{background:var(--green);color:#fff}
 .o .ref{background:#FDECEA;color:var(--red)}
+.ii{display:flex;gap:10px;align-items:center;font-size:14px;line-height:1.3}
+.ii img{width:56px;height:56px;border-radius:8px;border:1px solid var(--line);object-fit:cover;flex:none;background:#fff}
+.ii b{font-size:15px;margin-inline-end:4px}
 .o a{color:var(--green);font-weight:800;text-decoration:none}
 .o.done{opacity:.55}
 .empty{text-align:center;color:var(--ink3);padding:30px 0}
@@ -75,6 +78,11 @@ async function load(){
     ss.set("ds_pin",PIN); orders=r.orders; $("#refresh").hidden=false; draw();
   }catch(_){ app.innerHTML=`<p class="empty">Couldn't connect. Check internet.</p><button class="btn" onclick="load()">Try again</button>`; }
 }
+function itemsHTML(o){
+  const ids=String(o.ids||"").split(",").filter(Boolean), lines=String(o.items||"").split("\n");
+  if(!ids.length) return `<div class="items">${esc(o.items)}</div>`;
+  return `<div style="display:grid;gap:8px">${ids.map((x,i)=>{const id=parseInt(x);return `<div class="ii"><img src="img/${id}-t.jpg" alt="" loading="lazy"><span>${esc(lines[i]||x)}</span></div>`;}).join("")}</div>`;
+}
 function draw(){
   const tabs=`<div class="tabs"><button data-v="orders" aria-pressed="${view==="orders"}">Deliveries (${orders.length})</button><button data-v="returns" aria-pressed="${view==="returns"}">Returns</button></div>`;
   if(view==="returns"){
@@ -100,7 +108,7 @@ function draw(){
       <div class="row">📞 <span><a href="tel:+${esc(o.phone.replace(/\D/g,""))}">+${esc(o.phone.replace(/\D/g,""))}</a> · <a href="https://api.whatsapp.com/send?phone=${esc(o.phone.replace(/\D/g,""))}" target="_blank" rel="noopener">WhatsApp</a></span></div>
       <div class="row${o.area?"":" warn"}">📍 <span>${o.area?esc(o.area):"No address given – call or WhatsApp the customer"}</span></div>
       <div class="row">🕒 <span>${new Date(o.date).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})} · ${esc(String(o.items).split("\n").length)} line(s) · cash ${Number(o.total).toFixed(3)} OMR</span></div>
-      <div class="items">${esc(o.items)}</div>
+      ${itemsHTML(o)}
       <div class="acts"><button class="del" data-i="${i}" data-s="Delivered">✔ Delivered</button><button class="ref" data-i="${i}" data-s="Refused">✖ Refused</button></div>
       <div class="msg"></div></div>`).join("")
       :`<p class="empty">No open orders 🎉</p>`)+`<p class="muted" style="text-align:center">Orders not marked become Delivered automatically after 3 days.</p>`;

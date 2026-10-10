@@ -8,11 +8,13 @@ const STAFF_PIN   = "3302";                     // PIN for the driver / returns 
 const RATE        = 0.10;                       // affiliate commission: 10% of items total (no delivery)
 const AUTO_DAYS   = 3;                          // orders not marked within 3 days become Delivered
 
-const OH = ["Date","Order #","WhatsApp","Name","Area / notes","Items","Qty","Items OMR","Delivery OMR","Total OMR","Language","Status","Affiliate","Returns OMR","Delivered on"];
+const OH = ["Date","Order #","WhatsApp","Name","Area / notes","Items","Qty","Items OMR","Delivery OMR","Total OMR","Language","Status","Affiliate","Returns OMR","Delivered on","Photo","Order photos","Item IDs"];
+const SITE = "https://mtayyabr.github.io/catalogue/";
+const thumb_ = id => SITE + "img/" + id + "-t.jpg";
 const AH = ["Code","Name","WhatsApp","Payout method","Bank details","Status","Joined","Key"];
 const RH = ["Date","Order #","Affiliate","Returned OMR","Commission deducted OMR"];
 const PH = ["Month","Code","Name","WhatsApp","Payout method","Bank details","Orders delivered","Items OMR","Commission OMR","Returns deducted OMR","To pay OMR","Paid?"];
-const C = {date:0,id:1,phone:2,name:3,area:4,items:5,qty:6,sub:7,del:8,total:9,lang:10,status:11,aff:12,ret:13,delOn:14};
+const C = {date:0,id:1,phone:2,name:3,area:4,items:5,qty:6,sub:7,del:8,total:9,lang:10,status:11,aff:12,ret:13,delOn:14,photo:15,link:16,ids:17};
 
 /* ---------- helpers ---------- */
 function ss_() { return SpreadsheetApp.getActiveSpreadsheet(); }
@@ -65,10 +67,25 @@ function saveOrder_(o) {
   const items = o.items.map(i => `${i.qty} × ${i.name}`).join("\n");
   const qty = o.items.reduce((a, i) => a + i.qty, 0);
   const aff = o.ref && affInfo_(o.ref).ok ? String(o.ref).toUpperCase() : "";
+  const ids = o.items.map(i => i.id + (i.size ? "|" + i.size : "") + ":" + i.qty).join(",");
+  const first = o.items[0] ? o.items[0].id : "";
+  const link = o.link || "";
   sh.appendRow([new Date(o.date), o.id, "+" + o.phone, o.name, o.area, items, qty,
-                Number(o.subtotal), Number(o.delivery), Number(o.total), o.lang === "ar" ? "Arabic" : o.lang === "fil" ? "Filipino" : "English", "New", aff, "", ""]);
-  MailApp.sendEmail(ALERT_EMAIL, `New order ${o.id} – ${o.total} OMR` + (aff ? ` (affiliate ${aff})` : ""),
-    o.text + `\n\nReply on WhatsApp: https://api.whatsapp.com/send?phone=${o.phone}`);
+                Number(o.subtotal), Number(o.delivery), Number(o.total), o.lang === "ar" ? "Arabic" : o.lang === "fil" ? "Filipino" : "English", "New", aff, "", "",
+                first ? `=IMAGE("${thumb_(first)}")` : "", link ? `=HYPERLINK("${link}","📷 View ${o.items.length} item${o.items.length > 1 ? "s" : ""}")` : "", ids]);
+  sh.setRowHeight(sh.getLastRow(), 60);
+  const esc = x => String(x == null ? "" : x).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const rowsHtml = o.items.map(i => `<tr><td style="padding:6px 8px 6px 0"><img src="${thumb_(i.id)}" width="64" height="64" style="border-radius:8px;border:1px solid #eee;display:block" alt=""></td>
+    <td style="padding:6px 8px;font:14px Arial">${i.qty} × ${esc(i.name)}</td><td style="padding:6px 0;font:bold 14px Arial;text-align:right;white-space:nowrap">${esc(i.amount)} OMR</td></tr>`).join("");
+  const html = `<div style="font:14px Arial;color:#222;max-width:520px">
+    <h2 style="margin:0 0 4px">New order ${esc(o.id)}${aff ? ` <span style="font-size:13px;color:#0A8A3A">(affiliate ${aff})</span>` : ""}</h2>
+    <div style="color:#555;margin-bottom:10px">${esc(o.name || "No name")} · +${esc(o.phone)}${o.area ? " · " + esc(o.area) : ""}</div>
+    <table style="border-collapse:collapse;width:100%">${rowsHtml}</table>
+    <p style="font:14px Arial;margin:12px 0">Items ${esc(o.subtotal)} OMR · Delivery ${Number(o.delivery) ? esc(o.delivery) + " OMR" : "FREE"} · <b>Total ${esc(o.total)} OMR</b> (cash on delivery)</p>
+    <p><a href="https://api.whatsapp.com/send?phone=${esc(o.phone)}" style="background:#1FA855;color:#fff;padding:10px 16px;border-radius:20px;text-decoration:none;font-weight:bold">Reply on WhatsApp</a>
+    ${link ? ` &nbsp; <a href="${esc(link)}" style="color:#F2460D;font-weight:bold">📷 Order with photos</a>` : ""}</p></div>`;
+  MailApp.sendEmail({to: ALERT_EMAIL, subject: `New order ${o.id} – ${o.total} OMR` + (aff ? ` (affiliate ${aff})` : ""),
+    body: o.text + `\n\nReply on WhatsApp: https://api.whatsapp.com/send?phone=${o.phone}`, htmlBody: html});
   return {ok:true};
 }
 function setStatus_(id, status) {
@@ -96,7 +113,7 @@ function openOrders_() {
   const sh = tab_("Orders", OH), since = Date.now() - 30 * 864e5;
   const list = rows_(sh).filter(r => r[C.id] && r[C.status] === "New" && new Date(r[C.date]).getTime() > since)
     .map(r => ({id:r[C.id], date:new Date(r[C.date]).toISOString(), name:r[C.name], area:r[C.area], phone:String(r[C.phone]),
-                items:r[C.items], total:Number(r[C.total])}));
+                items:r[C.items], total:Number(r[C.total]), ids:String(r[C.ids] || "")}));
   return {ok:true, orders:list.reverse()};
 }
 

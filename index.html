@@ -578,7 +578,7 @@ const T = {
  catsTitle:["Categories","الأقسام"], catEach:[n=>`${n} item${n>1?"s":""} · {R}0.729 each`, n=>`${n} ${n===1?"منتج":n===2?"منتجان":n<=10?"منتجات":"منتج"} · {R}0.729 للقطعة`],
  instT:["Get the Dollar Store app","احصل على تطبيق دولار ستور"], instS:["One tap – free, no download","بضغطة واحدة – مجانًا وبدون تحميل"],
  instIos:["Tap {SH} below, then <b>Add to Home Screen</b>","اضغط {SH} بالأسفل، ثم <b>إضافة إلى الشاشة الرئيسية</b>"],
- instAdd:["Add","إضافة"], sharedBy:["Shared by {N} 👋","مشاركة من {N} 👋"],
+ instAdd:["Add","إضافة","Idagdag"], ordT:["Order {id}","الطلب {id}","Order {id}"], ordShop:["Shop more","تسوّق المزيد","Mamili pa"], ordNote:["Photos of the items in this order","صور منتجات هذا الطلب","Mga larawan ng items sa order na ito"], sharedBy:["Shared by {N} 👋","مشاركة من {N} 👋"],
  helpAff:["Earn 10% – join our affiliate program","اربح 10% – انضم إلى برنامج الشركاء"], helpAffS:["Share your link and earn on every order","شارك رابطك واربح من كل طلب"],
  helpAffMe:["My affiliate link & earnings","رابطي وأرباحي"],
  eLine1:["Get your own link – free","احصل على رابطك – مجانًا"], eLine2:["Share it on WhatsApp","شاركه عبر واتساب"], eLine3:["Earn 10% of every order through it","اربح 10% من كل طلب عبره"],
@@ -888,8 +888,9 @@ function placeOrder(){
   const sub=subtotal(), f=fee(sub), id="DS-"+Date.now().toString(36).toUpperCase().slice(-6);
   /* the store receives the order in English, with the customer's language noted */
   const items=Object.keys(cart).map(k=>({id:pid(k),size:psz(k),name:byId[pid(k)].name.en+(psz(k)?` (Size ${psz(k)})`:""),qty:cart[k],amount:omr(cart[k]*PRICE)}));
-  const text=[`*New order ${id}*`,...items.map(l=>`${l.qty} × ${l.name} = ${l.amount}`),"",`Items: ${omr(sub)} OMR`,`Delivery: ${f?omr(f)+" OMR":"FREE"}`,`*Total: ${omr(sub+f)} OMR* (cash on delivery)`,"",`WhatsApp: +968 ${phone}`,name&&`Name: ${name}`,area&&`Area: ${area}`,`Language: ${LANG==="ar"?"Arabic":LANG==="fil"?"Filipino":"English"}`,REF&&`Affiliate: ${REF.toUpperCase()}`].filter(x=>x!==""&&x!==false).join("\n");
-  lastOrder={id,date:new Date().toISOString(),phone:"968"+phone,name,area,items,subtotal:omr(sub),delivery:omr(f),total:omr(sub+f),lang:LANG,text,sub,ref:REF};
+  const enc=Object.keys(cart).map(k=>k+":"+cart[k]).join(","), link=SITE+"?o="+id+"&i="+encodeURIComponent(enc);
+  const text=[`*New order ${id}*`,...items.map(l=>`${l.qty} × ${l.name} = ${l.amount}`),"",`Items: ${omr(sub)} OMR`,`Delivery: ${f?omr(f)+" OMR":"FREE"}`,`*Total: ${omr(sub+f)} OMR* (cash on delivery)`,"",`WhatsApp: +968 ${phone}`,name&&`Name: ${name}`,area&&`Area: ${area}`,`Language: ${LANG==="ar"?"Arabic":LANG==="fil"?"Filipino":"English"}`,"",`📷 Order with photos: ${link}`,REF&&`Affiliate: ${REF.toUpperCase()}`].filter(x=>x!==""&&x!==false).join("\n");
+  lastOrder={id,date:new Date().toISOString(),phone:"968"+phone,name,area,items,subtotal:omr(sub),delivery:omr(f),total:omr(sub+f),lang:LANG,text,sub,ref:REF,link};
   if(SHEET_URL){try{fetch(SHEET_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify(lastOrder)}).catch(()=>{});}catch(_){}}
   cart={}; store.set("ds_cart",cart); badges();
   stack=[{v:"home"},{v:"done"}]; render();
@@ -1041,6 +1042,24 @@ async function poster(){
   const a=document.createElement("a");a.download="DollarStore-"+me.code+".png";a.href=cv.toDataURL("image/png");document.body.appendChild(a);a.click();a.remove();
 }
 
+/* ===== order with photos (link in the WhatsApp order message) ===== */
+function orderView(){
+  const o=cur(), lines=(o.items||"").split(",").map(x=>{const [k,q]=x.split(":"); return {k,id:pid(k),size:psz(k),q:Math.max(1,parseInt(q)||1)};}).filter(l=>byId[l.id]);
+  const n=lines.reduce((a,l)=>a+l.q,0), sub=n*PRICE, f=fee(sub);
+  app.innerHTML=`<div class="wrap page"><div class="ap">
+    <h1 dir="auto">${esc(t("ordT").replace("{id}",o.oid||""))}</h1>
+    <p class="muted2" style="margin:-6px 0 0">${t("ordNote")}</p>
+    <div>${lines.map(l=>{const p=byId[l.id];return `<div class="it" data-open="${p.id}" style="cursor:pointer">
+      <img src="img/${p.id}-${NOCUT.has(p.id)?"l":"c"}.webp" alt="" loading="lazy" style="object-fit:contain;background:#fff;border:1px solid var(--line)">
+      <div><b style="display:block;font-size:14.5px">${esc(nm(p))}</b>${l.size?`<span class="it-sz">${t("size")||"Size"}: ${esc(l.size)}</span>`:""}
+      <div style="margin-top:6px;font-weight:800">${l.q} × ${amt(omr(PRICE))} = ${money(l.q*PRICE)}</div></div></div>`;}).join("")}</div>
+    <div class="box"><div class="li dark" style="justify-content:space-between"><span>${t("sumItems",n)}</span><b>${money(sub)}</b></div>
+      <div class="li dark" style="justify-content:space-between"><span>${t("delivery")||"Delivery"}</span><b>${f?money(f):t("free")||"FREE"}</b></div>
+      <div class="li dark" style="justify-content:space-between"><b>${t("total")||"Total"}</b><b>${money(sub+f)}</b></div></div>
+    <button class="btn full" data-nav="home">${t("ordShop")}</button>
+  </div></div>`;
+}
+
 /* ===== language ===== */
 function applyLang(){
   const root=document.documentElement;
@@ -1057,14 +1076,14 @@ function setLang(l){ saveCust(); LANG=l; if(typeof msgL!=="undefined") msgL=l; s
 const cur=()=>stack[stack.length-1];
 function render(){
   const v=cur().v;
-  ({home,product:()=>product(cur().id),cart:cartView,checkout,done,cats,help,join,mysales})[v]();
+  ({home,product:()=>product(cur().id),cart:cartView,checkout,done,cats,help,join,mysales,order:orderView})[v]();
   const navKey={home:"home",product:"home",cats:"cats",cart:"cart",checkout:"cart",done:"cart",help:"help",join:"help",mysales:"help"}[v];
   document.querySelectorAll("#bn [data-nav]").forEach(b=>{ if(b.dataset.nav===navKey) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
   const main=(v==="home"||v==="cats"||v==="help");
   $("#bn").hidden=!main; $("#hdr").hidden=!main;
   $("#float").hidden = v!=="product"; $("#float").classList.remove("solid");
-  $("#topbar").hidden = !(v==="cart"||v==="checkout"||v==="done"||v==="join"||v==="mysales");
-  $("#tbTitle").textContent = v==="cart"?t("cartTitle",count()):v==="checkout"?t("checkout"):(v==="join"||v==="mysales")?t("affTitle"):t("orderPlaced");
+  $("#topbar").hidden = !(v==="cart"||v==="checkout"||v==="done"||v==="join"||v==="mysales"||v==="order");
+  $("#tbTitle").textContent = v==="cart"?t("cartTitle",count()):v==="checkout"?t("checkout"):(v==="join"||v==="mysales")?t("affTitle"):v==="order"?(cur().oid||""):t("orderPlaced");
   setHH(); dock(); window.scrollTo(0,0);
 }
 function go(v,replace,extra={}){
@@ -1170,6 +1189,7 @@ const setHH=()=>document.documentElement.style.setProperty("--hh",$("#hdr").offs
 addEventListener("resize",setHH);
 
 (()=>{ const u=new URLSearchParams(location.search), c=u.get("aff"), k=u.get("k");
+  if(u.has("o")&&u.has("i")){ stack=[{v:"home"},{v:"order",oid:(u.get("o")||"").slice(0,20),items:u.get("i")}]; }
   if((u.has("join")||u.has("earn"))&&!(c&&k)){ stack=[{v:"home"},{v:"join"}]; }
   if(c&&k){ const old=store.get("ds_aff",null); store.set("ds_aff",{code:c.toLowerCase(),key:k,name:old&&old.code===c.toLowerCase()?old.name:""}); stack=[{v:"home"},{v:"join"}]; } })();
 applyLang(); badges(); render(); welcome();
