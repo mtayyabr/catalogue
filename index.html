@@ -1141,6 +1141,7 @@ const setHH=()=>document.documentElement.style.setProperty("--hh",$("#hdr").offs
 addEventListener("resize",setHH);
 
 (()=>{ const u=new URLSearchParams(location.search), c=u.get("aff"), k=u.get("k");
+  if(u.has("join")&&!(c&&k)){ stack=[{v:"home"},{v:"join"}]; }
   if(c&&k){ const old=store.get("ds_aff",null); store.set("ds_aff",{code:c.toLowerCase(),key:k,name:old&&old.code===c.toLowerCase()?old.name:""}); stack=[{v:"home"},{v:"mysales"}]; } })();
 applyLang(); badges(); render(); welcome();
 if(REF&&SHEET_URL) apiGet({action:"aff",code:REF}).then(r=>{ if(r&&r.ok){ refLabel=r.name; if(cur().v==="home") rerenderInst(); } else { REF=""; ss_.set("ds_ref",""); } }).catch(()=>{});
