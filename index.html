@@ -1,6 +1,14 @@
 <title>Dollar Store Oman</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#FFD101">
+<link rel="icon" type="image/png" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Dollar Store">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap">
 <style>
@@ -164,6 +172,20 @@ span.amt{display:inline!important;margin:0!important;white-space:nowrap;unicode-
 [dir="rtl"] .fdbtn .fd{padding:7px 10px 7px 30px}
 .fdbtn .chev{position:absolute;inset-inline-end:8px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center}
 .fdbtn:active .fd{filter:brightness(.96)}
+.inst{display:flex;align-items:center;gap:10px;margin:10px 0 0;padding:10px;border:1px solid var(--line);border-radius:12px;background:#FFFBE6}
+.inst img{width:42px;height:42px;border-radius:10px;flex:none}
+.inst div{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.inst b{font-size:14px;font-weight:800}
+.inst span{font-size:12px;color:var(--ink2)}
+.inst .btn{height:34px;padding:0 16px;font-size:14px;flex:none}
+.inst-x{width:28px;height:28px;flex:none;border-radius:50%;color:var(--ink3);font-size:20px;line-height:1;display:grid;place-items:center}
+.ist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.ist li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.4}
+.ist li>i{flex:none;width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;font-style:normal;font-weight:800;font-size:13px;display:grid;place-items:center}
+.ist svg{vertical-align:-4px}
+.ist-app{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.ist-app img{width:52px;height:52px;border-radius:12px}
+.ist-app b{display:block;font-size:16px}.ist-app span{font-size:13px;color:var(--ink2)}
 .am-scrim{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
 .am-sheet{background:#fff;width:100%;max-width:620px;max-height:86%;display:flex;flex-direction:column;border-radius:18px 18px 0 0;padding-bottom:env(safe-area-inset-bottom,0px)}
 .am-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 14px 8px}
@@ -332,6 +354,11 @@ footer{padding:20px 0;color:var(--ink3);font-size:12px;text-align:center;display
   <div class="am-body" id="amBody"></div>
 </div></div>
 
+<div class="am-scrim" id="instScrim" hidden><div class="am-sheet" role="dialog" aria-modal="true" aria-labelledby="instTitle">
+  <div class="am-head"><h2 id="instTitle"></h2><button class="btn am-done" id="instDone"></button></div>
+  <div class="am-body" id="instBody"></div>
+</div></div>
+
 <nav class="bn" id="bn" aria-label="Main">
   <div class="in">
     <button data-nav="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 11 12 4l9 7v9H14v-6h-4v6H3z"/></svg><span data-t="navHome">Home</span></button>
@@ -483,6 +510,18 @@ const T = {
  waFallback:[id=>`If WhatsApp doesn't open, message <b dir="ltr">+968 7912 3698</b> with order number ${id}.`, id=>`إذا لم يفتح واتساب، راسلنا على <b dir="ltr">+968 7912 3698</b> مع رقم الطلب ${id}.`],
  keepShop:["Keep shopping","متابعة التسوق"],
  catsTitle:["Categories","الأقسام"], catEach:[n=>`${n} item${n>1?"s":""} · {R}0.729 each`, n=>`${n} ${n===1?"منتج":n===2?"منتجان":n<=10?"منتجات":"منتج"} · {R}0.729 للقطعة`],
+ instT:["Get the Dollar Store app","احصل على تطبيق دولار ستور"], instS:["Add it to your home screen – free, no download","أضِفه إلى شاشتك الرئيسية – مجانًا وبدون تحميل"],
+ instAdd:["Add","إضافة"], instBtn:["Add to home screen","أضِف إلى الشاشة الرئيسية"], instHead:["Add to home screen","أضِف إلى الشاشة الرئيسية"], instOk:["Got it","حسنًا"],
+ instIos1:["Tap the Share button {SH} at the bottom of Safari","اضغط زر المشاركة {SH} أسفل متصفح سفاري"],
+ instIos2:["Scroll down and tap <b>Add to Home Screen</b>","مرّر للأسفل واضغط <b>إضافة إلى الشاشة الرئيسية</b>"],
+ instIos3:["Tap <b>Add</b> (top right)","اضغط <b>إضافة</b> (أعلى الشاشة)"],
+ instIos0:["Not in Safari? Copy the link and open it in Safari first.","لست في سفاري؟ انسخ الرابط وافتحه في سفاري أولًا."],
+ instApp1:["Tap the menu <b>⋮</b> (top right)","اضغط القائمة <b>⋮</b> (أعلى الشاشة)"],
+ instApp2:["Tap <b>Open in Chrome</b> (or your browser)","اضغط <b>فتح في Chrome</b> (أو متصفحك)"],
+ instApp3:["Tap <b>Add to home screen</b> on our page again","اضغط <b>أضِف إلى الشاشة الرئيسية</b> في صفحتنا مرة أخرى"],
+ instAnd1:["Tap the browser menu <b>⋮</b> (top right)","اضغط قائمة المتصفح <b>⋮</b> (أعلى الشاشة)"],
+ instAnd2:["Tap <b>Add to Home screen</b> or <b>Install app</b>","اضغط <b>إضافة إلى الشاشة الرئيسية</b> أو <b>تثبيت التطبيق</b>"],
+ instAnd3:["Tap <b>Add</b> / <b>Install</b>","اضغط <b>إضافة</b> / <b>تثبيت</b>"],
  helpTitle:["Help","المساعدة"], language:["Language","اللغة"],
  hDel:["Delivery","التوصيل"], hDelS:["Free on orders of {R}10 or more (14 items). Below {R}10, delivery is {R}1.","مجاني للطلبات من {R}10 أو أكثر (14 منتجًا). للطلبات أقل من {R}10 رسوم التوصيل {R}1"],
  hRet:["Lifetime money-back guarantee","ضمان استرداد المبلغ مدى الحياة"], hRetS:["On unused products. Bring the product and your receipt for a full refund or exchange.","للمنتجات غير المستعملة. أحضر المنتج والإيصال لاسترداد كامل المبلغ أو الاستبدال."],
@@ -523,6 +562,7 @@ const imgs=p=>[
   {src:`img/${p.id}-d1.webp`,cap:`${t("closeup")}: ${p.d[0][LANG]}`,kind:"d"},
   {src:`img/${p.id}-d2.webp`,cap:`${t("closeup")}: ${p.d[1][LANG]}`,kind:"d"}];
 const I={
+ phone:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M12 8v6M9 11l3 3 3-3"/></svg>`,
   truck:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.8"/><circle cx="17.5" cy="18" r="1.8"/></svg>`,
   shield:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>`,
   cash:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>`,
@@ -568,6 +608,7 @@ function home(){
    <div class="tabs" role="tablist"><div class="wrap" style="display:flex;gap:18px">${tabs.map(([k,lab])=>`<button class="tab" role="tab" aria-selected="${k===tab}" data-tab="${k}">${esc(lab)}</button>`).join("")}</div></div>
    <div class="wrap">
      <div class="trust" aria-label="${esc(t("promises"))}"><div class="track">${trustHTML()}</div></div>
+     ${!q&&tab==="all"&&showInst()?`<div class="inst"><img src="img/icon-192.png" alt=""><div><b>${t("instT")}</b><span>${t("instS")}</span></div><button class="btn" data-install>${t("instAdd")}</button><button class="inst-x" data-instx aria-label="✕">×</button></div>`:""}
      ${!q&&tab==="all"?`
      <section class="promo">
        <div class="promo-top"><h2>${I.bolt}${t("promoTitle")}</h2><button class="see" data-tab="all" data-jump="1">${t("seeAll")}</button></div>
@@ -762,6 +803,7 @@ function help(){
       <div class="li">${I.cash}<div><b>${t("hPay")}</b><span>${t("hPayS")}</span></div></div>
     </div>
     <a class="btn wa full" href="https://api.whatsapp.com/send?phone=${STORE_WA}" target="_blank" rel="noopener">${I.wa}${t("chatWa")}</a>
+    ${isStandalone()?"":`<button class="btn dark full" data-install>${I.phone}${t("instBtn")}</button>`}
     <p class="muted" style="text-align:center;margin:0">WhatsApp: <b dir="ltr">+968 7912 3698</b></p>
     <footer><b>${t("store")}</b><span>${t("address")}</span></footer>
   </div></div>`;
@@ -827,8 +869,32 @@ function dock(){
 }
 
 /* ===== events ===== */
+/* ===== add to home screen ===== */
+let instEvt=null;
+const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const inApp=()=>/FBAN|FBAV|Instagram|WhatsApp|Snapchat|TikTok|Line\/|; wv\)/i.test(navigator.userAgent);
+const showInst=()=>!isStandalone()&&!store.get("ds_instx",0);
+addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); instEvt=e; });
+addEventListener("appinstalled",()=>{ instEvt=null; store.set("ds_instx",1); closeInst(); if(cur().v==="home"||cur().v==="help") render(); });
+const SH=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A7AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5v10h14V11h-1"/></svg>`;
+async function install(){
+  if(instEvt){ instEvt.prompt(); try{ await instEvt.userChoice; }catch(_){} instEvt=null; return; }
+  const steps = isIOS() ? ["instIos1","instIos2","instIos3"] : inApp() ? ["instApp1","instApp2","instApp3"] : ["instAnd1","instAnd2","instAnd3"];
+  $("#instTitle").textContent=t("instHead"); $("#instDone").textContent=t("instOk");
+  $("#instBody").innerHTML=`<div class="ist-app"><img src="img/icon-192.png" alt=""><div><b>${t("store")}</b><span dir="ltr">mtayyabr.github.io/catalogue</span></div></div>
+    <ol class="ist">${steps.map((k,i)=>`<li><i>${i+1}</i><span>${t(k).replace("{SH}",SH)}</span></li>`).join("")}</ol>
+    ${isIOS()?`<p class="muted" style="margin:14px 0 0;font-size:13px">${t("instIos0")}</p>`:""}`;
+  $("#instScrim").hidden=false; document.body.style.overflow="hidden";
+}
+function closeInst(){ $("#instScrim").hidden=true; document.body.style.overflow=""; }
+if("serviceWorker" in navigator && location.protocol==="https:" && /github\.io$/.test(location.hostname)) navigator.serviceWorker.register("sw.js").catch(()=>{});
+
 document.addEventListener("click",e=>{
   const x=e.target;
+  if(x.closest("[data-install]")){ install(); return; }
+  if(x.closest("[data-instx]")){ store.set("ds_instx",1); render(); return; }
+  if(x.closest("#instDone")||x.id==="instScrim"){ closeInst(); return; }
   const inc=x.closest("[data-inc]"), dec=x.closest("[data-dec]"), op=x.closest("[data-open]"), nv=x.closest("[data-nav]"), tb=x.closest("[data-tab]"), ct=x.closest("[data-cat]"), lg=x.closest("[data-lang]");
   if(x.closest("[data-addmore]")){ openAddMore(); return; }
   if(x.closest("#amDone")||x.id==="amScrim"){ closeAddMore(); return; }
