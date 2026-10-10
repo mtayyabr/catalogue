@@ -21,7 +21,7 @@ function doPost(e) {
   sh.appendRow([new Date(o.date), o.id, "+" + o.phone, o.name, o.area, items, qty,
                 Number(o.subtotal), Number(o.delivery), Number(o.total), o.lang === "ar" ? "Arabic" : "English", "New"]);
   MailApp.sendEmail(ALERT_EMAIL, `New order ${o.id} – ${o.total} OMR`,
-    o.text + `\n\nReply on WhatsApp: https://wa.me/${o.phone}`);
+    o.text + `\n\nReply on WhatsApp: https://api.whatsapp.com/send?phone=${o.phone}`);
   return ContentService.createTextOutput("ok");
 }
 

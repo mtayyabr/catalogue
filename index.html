@@ -730,7 +730,7 @@ function placeOrder(){
 }
 function done(){
   const o=lastOrder; if(!o) return go("home",true);
-  const wa=`https://wa.me/${STORE_WA}?text=${encodeURIComponent(o.text)}`;
+  const wa=`https://api.whatsapp.com/send?phone=${STORE_WA}&text=${encodeURIComponent(o.text)}`;
   app.innerHTML=`<div class="wrap page"><div class="ctn">
     ${stepsHTML(2)}
     ${fdHTML(o.sub,{placed:true})}
@@ -761,7 +761,7 @@ function help(){
       <div class="li">${I.shield}<div><b>${t("hRet")}</b><span>${t("hRetS")}</span></div></div>
       <div class="li">${I.cash}<div><b>${t("hPay")}</b><span>${t("hPayS")}</span></div></div>
     </div>
-    <a class="btn wa full" href="https://wa.me/${STORE_WA}" target="_blank" rel="noopener">${I.wa}${t("chatWa")}</a>
+    <a class="btn wa full" href="https://api.whatsapp.com/send?phone=${STORE_WA}" target="_blank" rel="noopener">${I.wa}${t("chatWa")}</a>
     <p class="muted" style="text-align:center;margin:0">WhatsApp: <b dir="ltr">+968 7912 3698</b></p>
     <footer><b>${t("store")}</b><span>${t("address")}</span></footer>
   </div></div>`;
