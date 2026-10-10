@@ -195,6 +195,18 @@ span.amt{display:inline!important;margin:0!important;white-space:nowrap;unicode-
 .ist-app{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .ist-app img{width:52px;height:52px;border-radius:12px}
 .ist-app b{display:block;font-size:16px}.ist-app span{font-size:13px;color:var(--ink2)}
+.wel{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px}
+.wel .card2{background:#fff;border-radius:22px;width:100%;max-width:360px;padding:26px 22px 18px;text-align:center}
+.wel img{width:96px;height:96px;border-radius:22px;box-shadow:0 4px 14px rgba(0,0,0,.15)}
+.wel h2{margin:16px 0 6px;font-size:22px;font-weight:900;line-height:1.2}
+.wel p{margin:0 0 18px;color:var(--ink2);font-size:15px;line-height:1.4}
+.wel .btn{width:100%;height:54px;font-size:18px}
+.wel .later{margin-top:10px;height:40px;width:100%;color:var(--ink3);font-weight:700;font-size:15px}
+.wel .ios{font-size:17px;color:var(--ink);font-weight:600}
+.wel .ios svg{width:24px;height:24px;vertical-align:-6px}
+.wel .arrow{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);color:#fff;animation:bob 1s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,10px)}}
+@media (prefers-reduced-motion:reduce){.wel .arrow{animation:none}}
 .am-scrim{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
 .am-sheet{background:#fff;width:100%;max-width:620px;max-height:86%;display:flex;flex-direction:column;border-radius:18px 18px 0 0;padding-bottom:env(safe-area-inset-bottom,0px)}
 .am-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 14px 8px}
@@ -516,7 +528,8 @@ const T = {
  catsTitle:["Categories","الأقسام"], catEach:[n=>`${n} item${n>1?"s":""} · {R}0.729 each`, n=>`${n} ${n===1?"منتج":n===2?"منتجان":n<=10?"منتجات":"منتج"} · {R}0.729 للقطعة`],
  instT:["Get the Dollar Store app","احصل على تطبيق دولار ستور"], instS:["One tap – free, no download","بضغطة واحدة – مجانًا وبدون تحميل"],
  instIos:["Tap {SH} below, then <b>Add to Home Screen</b>","اضغط {SH} بالأسفل، ثم <b>إضافة إلى الشاشة الرئيسية</b>"],
- instAdd:["Add","إضافة"], instBtn:["Add to home screen","أضِف إلى الشاشة الرئيسية"],
+ instAdd:["Add","إضافة"], welT:["Add Dollar Store to your phone","أضِف دولار ستور إلى هاتفك"], welS:["Shop anytime with one tap – free","تسوّق في أي وقت بضغطة واحدة – مجانًا"],
+ welBtn:["Add to phone","أضِف إلى الهاتف"], welLater:["Not now","ليس الآن"], instBtn:["Add to home screen","أضِف إلى الشاشة الرئيسية"],
  helpTitle:["Help","المساعدة"], language:["Language","اللغة"],
  hDel:["Delivery","التوصيل"], hDelS:["Free on orders of {R}10 or more (14 items). Below {R}10, delivery is {R}1.","مجاني للطلبات من {R}10 أو أكثر (14 منتجًا). للطلبات أقل من {R}10 رسوم التوصيل {R}1"],
  hRet:["Lifetime money-back guarantee","ضمان استرداد المبلغ مدى الحياة"], hRetS:["On unused products. Bring the product and your receipt for a full refund or exchange.","للمنتجات غير المستعملة. أحضر المنتج والإيصال لاسترداد كامل المبلغ أو الاستبدال."],
@@ -874,18 +887,34 @@ const showInst=()=>!isStandalone()&&!store.get("ds_instx",0)&&(!!instEvt||iosSaf
 const SH=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A7AFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5v10h14V11h-1"/></svg>`;
 const instHTML=()=>`<div class="inst"><img src="img/icon-192.png" alt=""><div><b>${t("instT")}</b><span>${instEvt?t("instS"):t("instIos").replace("{SH}",SH)}</span></div>${instEvt?`<button class="btn" data-install>${t("instAdd")}</button>`:""}<button class="inst-x" data-instx aria-label="✕">×</button></div>`;
 const rerenderInst=()=>{ const v=cur().v; if(v==="home"||v==="help"){ const y=scrollY; render(); scrollTo(0,y); } };
-addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); instEvt=e; rerenderInst(); });
+addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); instEvt=e; rerenderInst(); welcome(); });
 addEventListener("appinstalled",()=>{ instEvt=null; store.set("ds_instx",1); rerenderInst(); });
+/* QR code / WhatsApp link with ?app opens a big "Add to phone" pop-up */
+const wantApp=/[?&]app\b/.test(location.search);
+let welShown=false;
+function welcome(){
+  if(!wantApp||welShown||isStandalone()||!(instEvt||iosSafari())) return;
+  welShown=true;
+  const w=document.createElement("div"); w.className="wel"; w.id="wel"; w.setAttribute("role","dialog"); w.setAttribute("aria-modal","true");
+  w.innerHTML=`<div class="card2"><img src="img/icon-192.png" alt=""><h2>${t("welT")}</h2>
+    ${instEvt?`<p>${t("welS")}</p><button class="btn" data-install>${I.phone}${t("welBtn")}</button>`
+             :`<p class="ios">${t("instIos").replace("{SH}",SH)}</p>`}
+    <button class="later" data-wellater>${t("welLater")}</button></div>
+    ${instEvt?"":`<svg class="arrow" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v15M6 13l6 6 6-6"/></svg>`}`;
+  document.body.appendChild(w);
+}
+const closeWel=()=>{ const w=$("#wel"); if(w) w.remove(); };
 async function install(){
   if(!instEvt) return;
   instEvt.prompt(); try{ const c=await instEvt.userChoice; if(c&&c.outcome==="accepted") store.set("ds_instx",1); }catch(_){}
-  instEvt=null; rerenderInst();
+  instEvt=null; closeWel(); rerenderInst();
 }
 if("serviceWorker" in navigator && location.protocol==="https:" && /github\.io$/.test(location.hostname)) navigator.serviceWorker.register("sw.js").catch(()=>{});
 
 document.addEventListener("click",e=>{
   const x=e.target;
   if(x.closest("[data-install]")){ install(); return; }
+  if(x.closest("[data-wellater]")||x.id==="wel"){ closeWel(); return; }
   if(x.closest("[data-instx]")){ store.set("ds_instx",1); render(); return; }
   const inc=x.closest("[data-inc]"), dec=x.closest("[data-dec]"), op=x.closest("[data-open]"), nv=x.closest("[data-nav]"), tb=x.closest("[data-tab]"), ct=x.closest("[data-cat]"), lg=x.closest("[data-lang]");
   if(x.closest("[data-addmore]")){ openAddMore(); return; }
@@ -910,5 +939,5 @@ addEventListener("scroll",()=>{const f=$("#float"); if(!f.hidden) f.classList.to
 const setHH=()=>document.documentElement.style.setProperty("--hh",$("#hdr").offsetHeight+"px");
 addEventListener("resize",setHH);
 
-applyLang(); badges(); render();
+applyLang(); badges(); render(); welcome();
 </script>
