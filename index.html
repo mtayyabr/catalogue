@@ -457,6 +457,7 @@ const CATS = [
  ["home","Home, Kitchen & Bath","المنزل والمطبخ والحمّام"],
  ["light","Lighting & Electrical","الإضاءة والكهرباء"],
  ["beauty","Beauty & Care","الجمال والعناية"],
+ ["travel","Travel & Outdoor","السفر والرحلات"],
  ["wear","Clothing & Shoes","ملابس وأحذية"],
  ["jewel","Jewellery","مجوهرات وإكسسوارات"],
  ["office","Stationery & Office","القرطاسية والمكتب"]
@@ -464,8 +465,14 @@ const CATS = [
 /* merged categories (Oct 2026): hair, care, makeup → beauty · bath → home · car → light */
 const CAT_MERGE={hair:"beauty",care:"beauty",makeup:"beauty",bath:"home",car:"light"};
 const CATFIL_OLD={"baby": "Pambata at Sanggol", "home": "Bahay at Kusina", "light": "Ilaw", "bath": "Banyo", "car": "Sasakyan at Elektrikal", "care": "Personal Care", "hair": "Pang-buhok", "makeup": "Makeup", "wear": "Damit at Sapatos", "jewel": "Alahas at Accessories", "office": "Stationery at Opisina"};
-const CATFIL={baby:"Pambata at Sanggol",home:"Bahay, Kusina at Banyo",light:"Ilaw at Elektrikal",beauty:"Ganda at Pangangalaga",wear:"Damit at Sapatos",jewel:"Alahas at Accessories",office:"Stationery at Opisina"};
+const CATFIL={baby:"Pambata at Sanggol",home:"Bahay, Kusina at Banyo",light:"Ilaw at Elektrikal",beauty:"Ganda at Pangangalaga",travel:"Biyahe at Outdoor",wear:"Damit at Sapatos",jewel:"Alahas at Accessories",office:"Stationery at Opisina"};
 const CAT = Object.fromEntries(CATS.map(([k,en,ar])=>[k,{en,ar,fil:CATFIL[k]||en}]));
+/* extra categories: a product also shows in these (its main category is in P) */
+const XCAT={65:["home"],55:["travel"],51:["travel"],21:["travel"],20:["travel"],49:["travel"],
+ 16:["home"],26:["home"],53:["baby","home"],1:["home"],22:["wear"],25:["wear"],
+ 34:["jewel"],40:["jewel"],61:["baby"],62:["baby"],63:["baby"]};
+const catsOf=p=>[p.cat,...(XCAT[p.id]||[])];
+const inCat=(p,k)=>p.cat===k||(XCAT[p.id]||[]).includes(k);
 
 /* ===== PRODUCTS (id = photo number)
    [id, category, English name, Arabic name, English blurb, Arabic blurb, [close-up 1 en, ar], [close-up 2 en, ar]] ===== */
@@ -533,7 +540,7 @@ const P = [
  [62,"office","Space Travel Pencil Sharpener, Pink","مبراة أقلام سبيس ترافل، وردي","Crank pencil sharpener with a cute astronaut design. Comes boxed.","مبراة أقلام بذراع دوّار بتصميم رائد فضاء لطيف. تأتي في علبة.",["Astronaut design","تصميم رائد فضاء"],["Crank handle","ذراع دوّار"]],
  [63,"office","Mr. Dream Pencil Sharpener","مبراة أقلام مستر دريم","Crank pencil sharpener with cute characters, in a gift box.","مبراة أقلام بذراع دوّار بشخصيات لطيفة، في علبة هدية.",["Cute character design","تصميم بشخصيات لطيفة"],["Crank handle","ذراع دوّار"]],
  [64,"office","Desk Mat, Brown Leather-Look","لبّاد مكتب بمظهر الجلد، بني","Large mat for your laptop, keyboard and writing.","لبّاد كبير للابتوب ولوحة المفاتيح والكتابة.",["Leather-look surface","سطح بمظهر الجلد"],["Rounded corners","زوايا دائرية"]],
- [65,"home","Inflatable Travel Pillow, Purple (47 × 30 cm)","وسادة سفر قابلة للنفخ، بنفسجي (47 × 30 سم)","Soft velvet-touch air pillow. Inflates in seconds and folds small. For travel, camping, office naps or the beach.","وسادة هوائية بملمس مخملي ناعم. تُنفخ في ثوانٍ وتُطوى بحجم صغير. للسفر والتخييم وقيلولة المكتب والشاطئ.",["Soft velvet-touch flocked surface","سطح مخملي ناعم الملمس"],["47 × 30 cm when inflated","47 × 30 سم عند النفخ"]],
+ [65,"travel","Inflatable Travel Pillow, Purple (47 × 30 cm)","وسادة سفر قابلة للنفخ، بنفسجي (47 × 30 سم)","Soft velvet-touch air pillow. Inflates in seconds and folds small. For travel, camping, office naps or the beach.","وسادة هوائية بملمس مخملي ناعم. تُنفخ في ثوانٍ وتُطوى بحجم صغير. للسفر والتخييم وقيلولة المكتب والشاطئ.",["Soft velvet-touch flocked surface","سطح مخملي ناعم الملمس"],["47 × 30 cm when inflated","47 × 30 سم عند النفخ"]],
  [25,"baby","Kids Cat Ankle Socks, Blue Set (5 pairs)","طقم جوارب أطفال بوجه قطة، أزرق (5 أزواج)","Soft socks with cute cat faces. Price is for the whole set.","جوارب ناعمة بوجوه قطط لطيفة. السعر للطقم كاملًا.",["Cute cat faces","وجوه قطط لطيفة"],["Soft knit","نسيج ناعم"]]
 ].map(([id,cat,en,ar,ben,bar,d1,d2])=>({id,cat,name:{en,ar},blurb:{en:ben,ar:bar},d:[{en:d1[0],ar:d1[1]},{en:d2[0],ar:d2[1]}]}));
 P.forEach(p=>{ if(CAT_MERGE[p.cat]) p.cat=CAT_MERGE[p.cat]; });
@@ -742,7 +749,7 @@ function cardHTML(p){
 
 /* ===== views ===== */
 function home(){
-  const list=P.filter(p=>(tab==="all"||p.cat===tab)&&(!q||[p.name.en,p.name.ar,p.name.fil,CAT[p.cat].en,CAT[p.cat].ar,CAT[p.cat].fil,p.blurb.en,p.blurb.ar,p.blurb.fil].join(" ").toLowerCase().includes(q)));
+  const list=P.filter(p=>(tab==="all"||inCat(p,tab))&&(!q||[p.name.en,p.name.ar,p.name.fil,...catsOf(p).flatMap(k=>[CAT[k].en,CAT[k].ar,CAT[k].fil]),p.blurb.en,p.blurb.ar,p.blurb.fil].join(" ").toLowerCase().includes(q)));
   const tabs=[["all",t("all")],...CATS.map(([k])=>[k,CAT[k][LANG]])];
   const prevX=$(".tabs")?$(".tabs").scrollLeft:0;   // keep where the tab bar was, then slide from there
   app.innerHTML=`
@@ -778,7 +785,7 @@ function home(){
 let pUpd=()=>{};
 function product(id){
   const p=byId[id], ims=imgs(p);
-  const more=P.filter(x=>x.cat===p.cat&&x.id!==id).slice(0,6);
+  const more=P.filter(x=>inCat(x,p.cat)&&x.id!==id).slice(0,6);
   app.innerHTML=`
    <div class="page">
     <div class="gal-wrap">
@@ -932,7 +939,7 @@ function done(){
 function cats(){
   app.innerHTML=`<div class="wrap page"><div class="cat-list">
     <h1 class="ctitle">${t("catsTitle")}</h1>
-    ${CATS.map(([k])=>{const ps=P.filter(p=>p.cat===k);return `<button class="cat-row" data-cat="${k}"><span class="pics">${ps.slice(0,3).map(p=>`<img src="img/${p.id}-l.webp" alt="" loading="lazy">`).join("")}</span><span><b>${esc(CAT[k][LANG])}</b><span>${t("catEach",ps.length)}</span></span></button>`}).join("")}
+    ${CATS.map(([k])=>{const ps=P.filter(p=>inCat(p,k));return `<button class="cat-row" data-cat="${k}"><span class="pics">${ps.slice(0,3).map(p=>`<img src="img/${p.id}-l.webp" alt="" loading="lazy">`).join("")}</span><span><b>${esc(CAT[k][LANG])}</b><span>${t("catEach",ps.length)}</span></span></button>`}).join("")}
   </div></div>`;
 }
 function help(){
@@ -1079,11 +1086,11 @@ function orderView(){
 
 /* ===== search-bar dropdown: categories + useful links ===== */
 function sddHTML(){
-  const thumb=k=>{const p=P.find(x=>x.cat===k);return p?`<img src="img/${p.id}-t.jpg" alt="" loading="lazy">`:`<span class="ic">🛍️</span>`;};
+  const thumb=k=>{const p=P.find(x=>x.cat===k)||P.find(x=>inCat(x,k));return p?`<img src="img/${p.id}-t.jpg" alt="" loading="lazy">`:`<span class="ic">🛍️</span>`;};
   const shareTxt=encodeURIComponent(`Dollar Store Oman – Everything 0.729 OMR 👇\n${SITE}`);
   return `<h4>${t("sddCats")}</h4>
     <button class="row" data-cat="all" data-sdd><span class="ic">🛍️</span>${t("sddAll")}<small>${P.length}</small></button>
-    ${CATS.map(([k])=>`<button class="row" data-cat="${k}" data-sdd>${thumb(k)}${esc(CAT[k][LANG])}<small>${P.filter(p=>p.cat===k).length}</small></button>`).join("")}
+    ${CATS.map(([k])=>`<button class="row" data-cat="${k}" data-sdd>${thumb(k)}${esc(CAT[k][LANG])}<small>${P.filter(p=>inCat(p,k)).length}</small></button>`).join("")}
     <h4>${t("sddMore")}</h4>
     <button class="row" data-nav="help" data-sdd><span class="ic">❓</span>${t("helpTitle")}</button>
     <button class="row" data-nav="join" data-sdd><span class="ic">💰</span>${t("helpAff")}</button>
