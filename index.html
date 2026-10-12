@@ -417,6 +417,9 @@ input,textarea{font:inherit;font-size:15px;color:var(--ink);background:#fff;bord
 .help{display:grid;gap:10px;padding-top:12px}
 .help .box .li b{color:var(--ink)}
 footer{padding:20px 0;color:var(--ink3);font-size:12px;text-align:center;display:grid;gap:3px}
+.sz .sw{display:inline-block;width:26px;height:26px;border-radius:50%;margin-inline-end:7px;vertical-align:middle;box-shadow:0 0 0 1px rgba(0,0,0,.15);background-color:#fff}
+.sz[aria-pressed="true"] .sw{box-shadow:0 0 0 2px #fff,0 0 0 3px var(--hot)}
+.sz:has(.sw){display:inline-flex;align-items:center;padding-inline-start:6px}
 </style>
 
 <header id="hdr">
@@ -486,6 +489,13 @@ const CAT = Object.fromEntries(CATS.map(([k,en,ar])=>[k,{en,ar,fil:CATFIL[k]||en
 const OPTL={5:"colour",13:"colour",17:"colour",22:"option",61:"colour",59:"option",55:"design",57:"option",70:"colour"};   // label for the choice row (default: size)
 const optLab=id=>t(OPTL[id]||"size");
 const OPTN={"Green": ["أخضر", "Berde"], "Red": ["أحمر", "Pula"], "Blue": ["أزرق", "Asul"], "Black": ["أسود", "Itim"], "Pink": ["وردي", "Pink"], "White": ["أبيض", "Puti"], "Beige": ["بيج", "Beige"], "Pastel (6 pairs)": ["ألوان فاتحة (6 أزواج)", "Pastel (6 pares)"], "Blue (5 pairs)": ["أزرق (5 أزواج)", "Asul (5 pares)"], "White & Silver 41": ["أبيض وفضي 41", "Puti at Silver 41"], "Pink 41": ["وردي 41", "Pink 41"], "Pink 42": ["وردي 42", "Pink 42"], "Dark green": ["أخضر داكن", "Dark green"], "Dark blue": ["أزرق داكن", "Dark blue"], "Red 2XL": ["أحمر 2XL", "Pula 2XL"], "Red 3XL": ["أحمر 3XL", "Pula 3XL"], "Zebra 2XL": ["نقشة الحمار الوحشي 2XL", "Zebra 2XL"], "Zebra 3XL": ["نقشة الحمار الوحشي 3XL", "Zebra 3XL"], "Pink polka dot": ["وردي منقّط", "Pink polka dot"], "Mint bows": ["نعناعي بفيونكات", "Mint na may ribbon"], "Red cherries": ["أحمر بالكرز", "Pula na may cherry"], "Yellow polka dot": ["أصفر منقّط", "Dilaw polka dot"]};
+/* colour / pattern swatch for an option button (photo of that version, or a colour dot) */
+const SWC={"Dark green":"#1E5B47","Dark blue":"#24395E"};
+const swatch=(id,z)=>{ if(VAR[id]&&VAR[id][z]) return `url(img/${VAR[id][z]}-t.jpg)`;
+  if(id==55) return `url(img/sw/55-${SIZES[55].indexOf(z)}.jpg)`;
+  if(id==57) return `url(img/sw/57-${z.startsWith("Zebra")?1:0}.jpg)`;
+  return SWC[z]||""; };
+const szInner=(id,z,q)=>{ const w=swatch(id,z); return (w?`<span class="sw" style="background:${w.startsWith("url")?w+" center/cover":w}"></span>`:"")+esc(optName(z))+(q?`<i>${q}</i>`:""); };
 const optName=z=>{ const o=OPTN[z]; return o&&LANG==="ar"?o[0]:o&&LANG==="fil"?o[1]:z; };
 const XCAT={68:["beauty"],65:["home"],55:["travel"],51:["travel"],21:["travel"],20:["travel"],49:["travel"],
  16:["home"],26:["home"],53:["baby","home"],1:["home"],22:["wear"],25:["wear"],
@@ -833,7 +843,7 @@ function product(id){
       ${priceHTML()}
       <h1>${esc(nm(p))}</h1>
       <div class="sub">${esc(p.blurb[LANG])}</div>
-      ${SIZES[id]?`<div class="sizes"><div class="sz-l">${optLab(id)}</div><div class="sz-row">${SIZES[id].map(z=>`<button class="sz" data-size="${esc(z)}" aria-pressed="false">${esc(optName(z))}</button>`).join("")}</div></div>`:""}
+      ${SIZES[id]?`<div class="sizes"><div class="sz-l">${optLab(id)}</div><div class="sz-row">${SIZES[id].map(z=>`<button class="sz" data-size="${esc(z)}" aria-pressed="false">${szInner(id,z,0)}</button>`).join("")}</div></div>`:""}
       ${FEAT[p.id]?`<div class="feats">${FEAT[p.id].map(f=>`<span>${esc(f[L()])}</span>`).join("")}</div>`:""}
       <div class="box">
         <div class="li">${I.truck}<div><b>${t("pdDel")}</b><span>${t("pdDelS")}</span></div></div>
@@ -858,7 +868,7 @@ function product(id){
   const key=()=>psel?id+"|"+psel:String(id);
   app.querySelectorAll("[data-size]").forEach(b=>b.onclick=()=>{psel=b.dataset.size; if(VAR[id]&&VAR[id][psel]!==VAR[id][selOpt[id]]){ selOpt[id]=psel; const y=scrollY; product(id); scrollTo(0,y); return; } selOpt[id]=psel; pUpd();});
   pUpd=()=>{ if(!$("#pq")) return; const n=cart[key()]||0;
-    app.querySelectorAll("[data-size]").forEach(b=>{b.setAttribute("aria-pressed",b.dataset.size===psel);const q=cart[id+"|"+b.dataset.size];b.innerHTML=esc(optName(b.dataset.size))+(q?`<i>${q}</i>`:"");});
+    app.querySelectorAll("[data-size]").forEach(b=>{b.setAttribute("aria-pressed",b.dataset.size===psel);const q=cart[id+"|"+b.dataset.size];b.innerHTML=szInner(id,b.dataset.size,q);});
     $("#pq").textContent=n; $("#pm").disabled=n===0;
     $("#pAdd").innerHTML = n ? t("viewCartBtn",count()) : t("addBtn",money(PRICE)); };
   $("#pm").onclick=()=>setQty(key(),(cart[key()]||0)-1);
