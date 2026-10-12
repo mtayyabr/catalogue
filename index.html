@@ -69,6 +69,18 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 
 /* ---------- header ---------- */
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--brand)}
+.sdd{position:absolute;left:0;right:0;top:100%;z-index:51}
+.sdd-in{background:#fff;border-radius:0 0 16px 16px;box-shadow:0 12px 28px rgba(0,0,0,.18);max-height:min(72vh,620px);overflow-y:auto;padding:6px 0 10px;overscroll-behavior:contain}
+.sdd-scrim{position:fixed;inset:0;z-index:49;background:rgba(0,0,0,.35)}
+.sdd h4{margin:10px 14px 4px;font-size:12px;font-weight:800;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em}
+.sdd .row{display:flex;align-items:center;gap:12px;width:100%;padding:8px 14px;text-align:start;font-size:15px;font-weight:600;color:var(--ink);text-decoration:none}
+.sdd .row:active{background:var(--soft)}
+.sdd .row img{width:38px;height:38px;border-radius:8px;object-fit:cover;border:1px solid var(--line);flex:none;background:#fff}
+.sdd .row .ic{width:38px;height:38px;border-radius:10px;background:var(--soft);display:grid;place-items:center;flex:none;font-size:18px}
+.sdd .row small{margin-inline-start:auto;color:var(--ink3);font-weight:600;font-size:12.5px}
+.sdd .langs{display:flex;gap:8px;padding:6px 14px}
+.sdd .langs button{flex:1;height:38px;border-radius:999px;border:1.5px solid var(--line);font-weight:800;font-size:14px}
+.sdd .langs button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
 .hrow{display:flex;align-items:center;gap:8px;padding-block:8px}
 .logo{flex-shrink:0;display:block;width:36px;height:46px;border-radius:7px;overflow:hidden;background:var(--brand)}
 .logo img{width:100%;height:100%;object-fit:cover}
@@ -403,7 +415,9 @@ footer{padding:20px 0;color:var(--ink3);font-size:12px;text-align:center;display
     <button class="icobtn back" id="backBtn" aria-label="Go back"><svg class="flip" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path class="flip-p" d="M15 5l-7 7 7 7"/></svg></button>
     <button class="icobtn cart" id="cartBtn" aria-label="Cart"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.7a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg><span class="badge" id="hBadge" hidden>0</span></button>
   </div>
+  <div class="sdd" id="sdd" hidden><div class="wrap sdd-in" id="sddIn"></div></div>
 </header>
+<div class="sdd-scrim" id="sddScrim" hidden></div>
 <div class="topbar" id="topbar" hidden><button class="tb-back" id="tbBack" aria-label="Go back"><svg class="flip" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path class="flip-p" d="M15 5l-7 7 7 7"/></svg></button><h1 id="tbTitle">Cart</h1><span style="width:40px"></span></div>
 <div class="float" id="float" hidden>
   <button class="fbtn" id="fBack" aria-label="Go back"><svg class="flip" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path class="flip-p" d="M15 5l-7 7 7 7"/></svg></button>
@@ -578,7 +592,7 @@ const T = {
  catsTitle:["Categories","الأقسام"], catEach:[n=>`${n} item${n>1?"s":""} · {R}0.729 each`, n=>`${n} ${n===1?"منتج":n===2?"منتجان":n<=10?"منتجات":"منتج"} · {R}0.729 للقطعة`],
  instT:["Get the Dollar Store app","احصل على تطبيق دولار ستور"], instS:["One tap – free, no download","بضغطة واحدة – مجانًا وبدون تحميل"],
  instIos:["Tap {SH} below, then <b>Add to Home Screen</b>","اضغط {SH} بالأسفل، ثم <b>إضافة إلى الشاشة الرئيسية</b>"],
- instAdd:["Add","إضافة","Idagdag"], ordT:["Order {id}","الطلب {id}","Order {id}"], ordShop:["Shop more","تسوّق المزيد","Mamili pa"], ordNote:["Photos of the items in this order","صور منتجات هذا الطلب","Mga larawan ng items sa order na ito"], sharedBy:["Shared by {N} 👋","مشاركة من {N} 👋"],
+ instAdd:["Add","إضافة","Idagdag"], sddCats:["Shop by category","تسوّق حسب القسم","Mamili ayon sa kategorya"], sddMore:["More","المزيد","Iba pa"], sddShare:["Share this shop","شارك المتجر","I-share ang shop"], sddAll:["All products","كل المنتجات","Lahat ng produkto"], ordT:["Order {id}","الطلب {id}","Order {id}"], ordShop:["Shop more","تسوّق المزيد","Mamili pa"], ordNote:["Photos of the items in this order","صور منتجات هذا الطلب","Mga larawan ng items sa order na ito"], sharedBy:["Shared by {N} 👋","مشاركة من {N} 👋"],
  helpAff:["Earn 10% – join our affiliate program","اربح 10% – انضم إلى برنامج الشركاء"], helpAffS:["Share your link and earn on every order","شارك رابطك واربح من كل طلب"],
  helpAffMe:["My affiliate link & earnings","رابطي وأرباحي"],
  eLine1:["Get your own link – free","احصل على رابطك – مجانًا"], eLine2:["Share it on WhatsApp","شاركه عبر واتساب"], eLine3:["Earn 10% of every order through it","اربح 10% من كل طلب عبره"],
@@ -1060,6 +1074,26 @@ function orderView(){
   </div></div>`;
 }
 
+/* ===== search-bar dropdown: categories + useful links ===== */
+function sddHTML(){
+  const thumb=k=>{const p=P.find(x=>x.cat===k);return p?`<img src="img/${p.id}-t.jpg" alt="" loading="lazy">`:`<span class="ic">🛍️</span>`;};
+  const shareTxt=encodeURIComponent(`Dollar Store Oman – Everything 0.729 OMR 👇\n${SITE}`);
+  return `<h4>${t("sddCats")}</h4>
+    <button class="row" data-cat="all" data-sdd><span class="ic">🛍️</span>${t("sddAll")}<small>${P.length}</small></button>
+    ${CATS.map(([k])=>`<button class="row" data-cat="${k}" data-sdd>${thumb(k)}${esc(CAT[k][LANG])}<small>${P.filter(p=>p.cat===k).length}</small></button>`).join("")}
+    <h4>${t("sddMore")}</h4>
+    <button class="row" data-nav="help" data-sdd><span class="ic">❓</span>${t("helpTitle")}</button>
+    <button class="row" data-nav="join" data-sdd><span class="ic">💰</span>${t("helpAff")}</button>
+    <button class="row" data-nav="cart" data-sdd><span class="ic">🛒</span>${t("navCart")}${count()?`<small>${count()}</small>`:""}</button>
+    <a class="row" href="https://api.whatsapp.com/send?phone=${STORE_WA}" target="_blank" rel="noopener" data-sdd><span class="ic">💬</span>${t("chatWa")}</a>
+    <a class="row" href="https://api.whatsapp.com/send?text=${shareTxt}" target="_blank" rel="noopener" data-sdd><span class="ic">📤</span>${t("sddShare")}</a>
+    ${instEvt&&!isStandalone()?`<button class="row" data-install data-sdd><span class="ic">📲</span>${t("instBtn")}</button>`:""}
+    <h4>${t("language")}</h4>
+    <div class="langs"><button data-lang="en" data-sdd aria-pressed="${LANG==="en"}">English</button><button data-lang="ar" data-sdd aria-pressed="${LANG==="ar"}">العربية</button><button data-lang="fil" data-sdd aria-pressed="${LANG==="fil"}">Filipino</button></div>`;
+}
+function openSdd(){ if(!$("#sdd").hidden) return; $("#sddIn").innerHTML=sddHTML(); $("#sdd").hidden=false; $("#sddScrim").hidden=false; }
+function closeSdd(){ $("#sdd").hidden=true; $("#sddScrim").hidden=true; }
+
 /* ===== language ===== */
 function applyLang(){
   const root=document.documentElement;
@@ -1156,6 +1190,8 @@ if("serviceWorker" in navigator && location.protocol==="https:" && /github\.io$/
 
 document.addEventListener("click",e=>{
   const x=e.target;
+  if(x.id==="sddScrim"){ closeSdd(); return; }
+  if(x.closest("[data-sdd]")){ closeSdd(); $("#q").blur(); }
   if(x.closest("[data-install]")){ install(); return; }
   const cp=x.closest("[data-copy]"); if(cp){ const done=()=>{const o=cp.textContent;cp.textContent=t("copied");setTimeout(()=>cp.textContent=o,1500);};
     (navigator.clipboard?navigator.clipboard.writeText(cp.dataset.copy):Promise.reject()).then(done).catch(()=>{const ta=document.createElement("textarea");ta.value=cp.dataset.copy;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done();}catch(_){}ta.remove();}); return; }
@@ -1176,7 +1212,9 @@ document.addEventListener("click",e=>{
   if(lg){ setLang(lg.dataset.lang); return; }
   if(tb){ tab=tb.dataset.tab; render(); if(tb.dataset.jump) setTimeout(()=>$("#gridTop")?.scrollIntoView({behavior:"smooth"}),30); return; }
 });
-$("#q").addEventListener("input",e=>{ q=e.target.value.trim().toLowerCase(); if(cur().v!=="home"){ stack=[{v:"home"}]; } render(); $("#q").focus(); });
+$("#q").addEventListener("focus",()=>{ if(!$("#q").value.trim()) openSdd(); });
+$("#q").addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeSdd(); $("#q").blur(); } });
+$("#q").addEventListener("input",e=>{ q=e.target.value.trim().toLowerCase(); q?closeSdd():openSdd(); if(cur().v!=="home"){ stack=[{v:"home"}]; } render(); $("#q").focus(); });
 $("#backBtn").onclick=()=>{ if(!back()) window.scrollTo({top:0,behavior:"smooth"}); };
 $("#langBtn").onclick=()=>setLang(LANG==="en"?"ar":LANG==="ar"?"fil":"en");
 $("#cartBtn").onclick=()=>go("cart");
