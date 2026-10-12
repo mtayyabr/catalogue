@@ -506,13 +506,13 @@ const swatch=(id,z)=>{ if(id==13) return LAMP[z]||""; if(VAR[id]&&VAR[id][z]) re
   return SWC[z]||""; };
 const szInner=(id,z,q)=>{ const w=swatch(id,z); return (w?`<span class="sw" style="background:${w.startsWith("url")?w+" center/cover":w}"></span>`:"")+esc(optName(z))+(q?`<i>${q}</i>`:""); };
 const optName=z=>{ const o=OPTN[z]; return o&&LANG==="ar"?o[0]:o&&LANG==="fil"?o[1]:z; };
-const XCAT={71:["wear"],68:["beauty"],65:["home"],55:["travel"],51:["travel"],21:["travel"],20:["travel"],49:["travel"],
+const XCAT={78:["travel"],71:["wear"],68:["beauty"],65:["home"],55:["travel"],51:["travel"],21:["travel"],20:["travel"],49:["travel"],
  16:["home"],26:["home"],53:["baby","home"],1:["home"],22:["wear"],25:["wear"],
  34:["jewel"],40:["jewel"],61:["baby"],62:["baby"],63:["baby"]};
 const catsOf=p=>[p.cat,...(XCAT[p.id]||[])];
 /* NEW ARRIVALS – date each product was added (Muscat date). Launch batch (ids 1–64, 10 Oct 2026) is not marked new.
    Add a line here for every new product; the NEW badge, home row, New tab and search entry update by themselves. */
-const ADDED={65:"2026-10-12",66:"2026-10-12",67:"2026-10-12",68:"2026-10-12",69:"2026-10-12",70:"2026-10-12",71:"2026-10-12",72:"2026-10-12",73:"2026-10-12",74:"2026-10-12",75:"2026-10-12",76:"2026-10-12",77:"2026-10-12"};
+const ADDED={65:"2026-10-12",66:"2026-10-12",67:"2026-10-12",68:"2026-10-12",69:"2026-10-12",70:"2026-10-12",71:"2026-10-12",72:"2026-10-12",73:"2026-10-12",74:"2026-10-12",75:"2026-10-12",76:"2026-10-12",77:"2026-10-12",78:"2026-10-12",79:"2026-10-12",80:"2026-10-12"};
 const NEW_DAYS=21;   // how long a product counts as new
 const isNew=p=>{ const d=ADDED[p.id]; return !!d && Date.now()-Date.parse(d+"T00:00:00+04:00") < NEW_DAYS*864e5; };
 const newList=()=>P.filter(isNew).sort((a,b)=>ADDED[b.id].localeCompare(ADDED[a.id])||b.id-a.id);
@@ -598,6 +598,9 @@ const P = [
  [75, "home", "Floor-Cleaning Slippers, Green tartan", "شباشب لتنظيف الأرضيات، أخضر مربعات", "Open-toe house slippers with a mop edge that dusts the floor as you walk. 6 designs.", "شباشب منزلية مفتوحة بحافة ممسحة تنظّف الأرضية أثناء المشي. 6 تصاميم.", ["Soft checked fabric upper", "سطح قماشي ناعم بنقشة مربعات"], ["Mop fringe cleans as you walk", "أهداب ممسحة تنظّف أثناء المشي"]],
  [76, "home", "Floor-Cleaning Slippers, Blue check, white frill", "شباشب لتنظيف الأرضيات، أزرق مربعات، حافة بيضاء", "Open-toe house slippers with a mop edge that dusts the floor as you walk. 6 designs.", "شباشب منزلية مفتوحة بحافة ممسحة تنظّف الأرضية أثناء المشي. 6 تصاميم.", ["Soft checked fabric upper", "سطح قماشي ناعم بنقشة مربعات"], ["Soft frill edge picks up dust", "حافة مكشكشة ناعمة تلتقط الغبار"]],
  [77, "home", "Tulip Garden Sprinkler", "رشاش حديقة على شكل توليب", "Lawn sprinkler with a tulip head. Push it into the soil, connect the hose and water. Strong, light plastic with a smooth finish. 1 sprinkler, boxed. By Worth Garden Products.", "رشاش للعشب برأس على شكل توليب. اغرزه في التربة وصِل الخرطوم واسقِ. بلاستيك قوي وخفيف بملمس ناعم. رشاش واحد في علبة. من Worth Garden Products.", ["Tulip spray head", "رأس رش على شكل توليب"], ["Screw-on threaded fitting", "وصلة ملولبة تُركّب بالبرم"]],
+ [78,"light","USB-A to Type-C Charging Cable, 1 m, White","كابل شحن USB إلى Type-C، 1 متر، أبيض","1-metre charging cable with a USB-A plug and a Type-C end. Fast charging and data sync, with reinforced ends that resist bending.","كابل شحن بطول متر واحد بمنفذ USB-A وطرف Type-C. شحن سريع ونقل بيانات، مع أطراف مقوّاة تقاوم الانثناء.",["Type-C end","طرف Type-C"],["USB-A plug with reinforced end","منفذ USB-A بطرف مقوّى"]],
+ [79,"light","LED Bulb 38W, Super Bright, E27","لمبة LED ‏38 واط، إضاءة قوية جدًا، E27","Super-bright 3610-lumen LED bulb with cool white light. E27 screw base, AC 165–220 V. Saves up to 85% energy and lasts long. Boxed.","لمبة LED قوية جدًا بقوة 3610 لومن وضوء أبيض. قاعدة E27 لولبية، 165–220 فولت. توفّر حتى 85% من الطاقة وتدوم طويلًا. في علبة.",["Box: 38W, 3610 lm, AC 165–220 V","العلبة: 38 واط، 3610 لومن، 165–220 فولت"],["E27 screw base","قاعدة E27 لولبية"]],
+ [80,"light","EMDAD LED Bulb 30W, T100, E27","لمبة LED إمداد 30 واط، T100، قاعدة E27","Power-saving 30W LED bulb by EMDAD in the large T100 shape. E27 screw base. Saves up to 85% energy. Boxed.","لمبة LED موفّرة للطاقة 30 واط من إمداد بشكل T100 الكبير. قاعدة E27 لولبية. توفّر حتى 85% من الطاقة. في علبة.",["EMDAD power-saving box","علبة إمداد الموفّرة للطاقة"],["E27 screw base","قاعدة E27 لولبية"]],
  [25,"baby","Kids Cat Ankle Socks, Blue Set (5 pairs)","طقم جوارب أطفال بوجه قطة، أزرق (5 أزواج)","Soft socks with cute cat faces. Price is for the whole set.","جوارب ناعمة بوجوه قطط لطيفة. السعر للطقم كاملًا.",["Cute cat faces","وجوه قطط لطيفة"],["Soft knit","نسيج ناعم"]]
 ].map(([id,cat,en,ar,ben,bar,d1,d2])=>({id,cat,name:{en,ar},blurb:{en:ben,ar:bar},d:[{en:d1[0],ar:d1[1]},{en:d2[0],ar:d2[1]}]}));
 P.forEach(p=>{ if(CAT_MERGE[p.cat]) p.cat=CAT_MERGE[p.cat]; });
@@ -768,7 +771,10 @@ const amt=v=>`<span class="amt">${RS}${v}</span>`;
 const priceHTML=(b=PRICE)=>`<span class="price">${amt(omr(b))}</span>`;
 const money=b=>amt(omr(b));
 /* feature tags shown under the description [English, Arabic] */
-const FEAT={65:[["Soft flocked surface","سطح مخملي ناعم","Malambot na velvet"],["Quick inflate valve","صمام نفخ سريع","Mabilis hipan ang valve"],["Folds small to carry","تُطوى وتُحمل بسهولة","Natitiklop, madaling dalhin"],["Camping · Office · Beach","تخييم · مكتب · شاطئ","Camping · Opisina · Beach"]],37:[["Paddle head","رأس مسطح","Patag na ulo"],["Ball-tip pins","شعيرات بأطراف كروية","Bilugang dulo ng pins"],["Long handle","مقبض طويل","Mahabang hawakan"],["Hanging hole","فتحة للتعليق","May butas pangsabit"]]};
+const FEAT={78:[["Type-C connector","منفذ Type-C","Type-C connector"],["Fast charging","شحن سريع","Mabilis mag-charge"],["Charge & data sync","شحن ونقل بيانات","Charge at data sync"],["Reinforced ends","أطراف مقوّاة","Matibay na dulo"]],
+ 79:[["3610 lm super bright","3610 لومن إضاءة قوية","3610 lm, sobrang liwanag"],["E27 screw base","قاعدة E27 لولبية","E27 na turnilyong base"],["85% energy saving","توفير 85% من الطاقة","85% tipid sa kuryente"],["Long life","عمر طويل","Matagal ang buhay"]],
+ 80:[["Power saving","موفّرة للطاقة","Tipid sa kuryente"],["E27 screw base","قاعدة E27 لولبية","E27 na turnilyong base"],["85% energy saving","توفير 85% من الطاقة","85% tipid sa kuryente"],["Bright T100 shape","شكل T100 بإضاءة قوية","Maliwanag na T100"]],
+ 65:[["Soft flocked surface","سطح مخملي ناعم","Malambot na velvet"],["Quick inflate valve","صمام نفخ سريع","Mabilis hipan ang valve"],["Folds small to carry","تُطوى وتُحمل بسهولة","Natitiklop, madaling dalhin"],["Camping · Office · Beach","تخييم · مكتب · شاطئ","Camping · Opisina · Beach"]],37:[["Paddle head","رأس مسطح","Patag na ulo"],["Ball-tip pins","شعيرات بأطراف كروية","Bilugang dulo ng pins"],["Long handle","مقبض طويل","Mahabang hawakan"],["Hanging hole","فتحة للتعليق","May butas pangsabit"]]};
 const NOCUT=new Set([41,42,43,44,45,46,47,48]);   // only worn photos so far – no product-only photo
 const L2=new Set([33,55,56,63,71]);                              // has a second lifestyle photo
 const imgs=p=>[
