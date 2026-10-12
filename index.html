@@ -187,7 +187,11 @@ span.amt{display:inline!important;margin:0!important;white-space:nowrap;unicode-
 .cpbox.ok button{font-weight:800;color:var(--hot);font-size:13px}
 .cprow{display:flex;gap:8px}.cprow input{flex:1;min-width:0;height:42px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;text-transform:uppercase;letter-spacing:1px;background:#fff}
 .cprow .btn{height:42px;padding:0 16px;width:auto;font-size:14px}
-.cpl{font-size:12.5px;font-weight:800;color:#5A189A;margin-top:3px}.cpl.need{color:#C62828}
+.cpl{font-size:12.5px;font-weight:800;color:#5A189A;margin-top:3px}
+.stk{display:grid;gap:4px;margin-top:6px;font-size:12px;font-weight:800;color:#C62828}
+.stk i{display:block;height:6px;border-radius:9px;background:#FBE3E0;overflow:hidden}.stk i b{display:block;height:100%;background:linear-gradient(90deg,#F2460D,#C62828);border-radius:9px}
+.stk.out{color:var(--ink3)}.stk.out i b{background:var(--ink3)}
+.pd .stk{font-size:14px;margin-top:12px}.pd .stk i{height:8px}.cpl.need{color:#C62828}
 .phw{position:relative}
 .ctl{position:absolute;bottom:8px;inset-inline-end:8px;z-index:2}
 .addc,.stepper{background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 2px 8px rgba(0,0,0,.18);color:var(--hot)}
@@ -688,7 +692,7 @@ const T = {
  catsTitle:["Categories","الأقسام"], catEach:[n=>`${n} item${n>1?"s":""} · {R}0.729 each`, n=>`${n} ${n===1?"منتج":n===2?"منتجان":n<=10?"منتجات":"منتج"} · {R}0.729 للقطعة`],
  instT:["Get the Dollar Store app","احصل على تطبيق دولار ستور"], instS:["One tap – free, no download","بضغطة واحدة – مجانًا وبدون تحميل"],
  instIos:["Tap {SH} below, then <b>Add to Home Screen</b>","اضغط {SH} بالأسفل، ثم <b>إضافة إلى الشاشة الرئيسية</b>"],
- instAdd:["Add","إضافة","Idagdag"], newTab:["New","جديد","Bago"], cpTag:["Coupon","كوبون","Coupon"], cpQ:["Coupon code","كود الكوبون","Coupon code"], cpPh:["Enter code","أدخل الكود","Ilagay ang code"], cpApply:["Apply","تطبيق","Gamitin"], cpBad:["This code is not valid.","هذا الكود غير صحيح.","Hindi valid ang code na ito."], cpOk:["Coupon {C} applied ✓","تم تطبيق الكوبون {C} ✓","Nagamit ang coupon {C} ✓"], cpRule:["Coupon items: {R}0.729 with code, 1 per order.","منتجات الكوبون: {R}0.729 مع الكود، قطعة واحدة لكل طلب.","Coupon items: {R}0.729 gamit ang code, 1 bawat order."], cpRemove:["Remove","إزالة","Alisin"], cpNeedCode:["Enter the coupon code to order this item","أدخل كود الكوبون لطلب هذا المنتج","Ilagay ang coupon code para ma-order ito"], cpNeed:["Coupon deal: {R}0.729 with code <b>DS729</b> · 1 per order","عرض الكوبون: {R}0.729 مع الكود <b>DS729</b> · قطعة واحدة لكل طلب","Coupon deal: {R}0.729 gamit ang code <b>DS729</b> · 1 bawat order"], newTag:["NEW","جديد","BAGO"], sddCats:["Shop by category","تسوّق حسب القسم","Mamili ayon sa kategorya"], sddMore:["More","المزيد","Iba pa"], sddShare:["Share this shop","شارك المتجر","I-share ang shop"], sddAll:["All products","كل المنتجات","Lahat ng produkto"], ordT:["Order {id}","الطلب {id}","Order {id}"], ordShop:["Shop more","تسوّق المزيد","Mamili pa"], ordNote:["Photos of the items in this order","صور منتجات هذا الطلب","Mga larawan ng items sa order na ito"], sharedBy:["Shared by {N} 👋","مشاركة من {N} 👋"],
+ instAdd:["Add","إضافة","Idagdag"], newTab:["New","جديد","Bago"], cpTag:["Coupon","كوبون","Coupon"], stLeft:["Only {N} of {T} left","باقي {N} من {T} فقط","{N} na lang sa {T} ang natitira"], soldOut:["Sold out","نفدت الكمية","Ubos na"], cpQ:["Coupon code","كود الكوبون","Coupon code"], cpPh:["Enter code","أدخل الكود","Ilagay ang code"], cpApply:["Apply","تطبيق","Gamitin"], cpBad:["This code is not valid.","هذا الكود غير صحيح.","Hindi valid ang code na ito."], cpOk:["Coupon {C} applied ✓","تم تطبيق الكوبون {C} ✓","Nagamit ang coupon {C} ✓"], cpRule:["Coupon items: {R}0.729 with code, 1 per order.","منتجات الكوبون: {R}0.729 مع الكود، قطعة واحدة لكل طلب.","Coupon items: {R}0.729 gamit ang code, 1 bawat order."], cpRemove:["Remove","إزالة","Alisin"], cpNeedCode:["Enter the coupon code to order this item","أدخل كود الكوبون لطلب هذا المنتج","Ilagay ang coupon code para ma-order ito"], cpNeed:["Coupon deal: {R}0.729 with code <b>DS729</b> · 1 per order","عرض الكوبون: {R}0.729 مع الكود <b>DS729</b> · قطعة واحدة لكل طلب","Coupon deal: {R}0.729 gamit ang code <b>DS729</b> · 1 bawat order"], newTag:["NEW","جديد","BAGO"], sddCats:["Shop by category","تسوّق حسب القسم","Mamili ayon sa kategorya"], sddMore:["More","المزيد","Iba pa"], sddShare:["Share this shop","شارك المتجر","I-share ang shop"], sddAll:["All products","كل المنتجات","Lahat ng produkto"], ordT:["Order {id}","الطلب {id}","Order {id}"], ordShop:["Shop more","تسوّق المزيد","Mamili pa"], ordNote:["Photos of the items in this order","صور منتجات هذا الطلب","Mga larawan ng items sa order na ito"], sharedBy:["Shared by {N} 👋","مشاركة من {N} 👋"],
  helpAff:["Earn 10% – join our affiliate program","اربح 10% – انضم إلى برنامج الشركاء"], helpAffS:["Share your link and earn on every order","شارك رابطك واربح من كل طلب"],
  helpAffMe:["My affiliate link & earnings","رابطي وأرباحي"],
  eLine1:["Get your own link – free","احصل على رابطك – مجانًا"], eLine2:["Share it on WhatsApp","شاركه عبر واتساب"], eLine3:["Earn 10% of every order through it","اربح 10% من كل طلب عبره"],
@@ -791,6 +795,14 @@ const isCp=id=>CPONLY.has(+id);
 const cpOn=()=>coupon===COUPON_CODE;
 const cpCount=(c=cart)=>Object.keys(c).filter(k=>isCp(pid(k))).reduce((a,k)=>a+c[k],0);
 const cpBlocked=()=>cpCount()>0&&!cpOn();
+/* LIMITED STOCK: pieces for the promotion; ordered pieces are read live from the Google Sheet */
+const STOCK={86:5};
+let SOLD={};
+const leftOf=id=>STOCK[id]===undefined?Infinity:Math.max(0,STOCK[id]-(SOLD[id]||0));
+const stockHTML=id=>{ if(STOCK[id]===undefined) return ""; const l=leftOf(id), pc=Math.round(l/STOCK[id]*100);
+  return `<div class="stk${l?"":" out"}" data-stock="${id}"><span>${l?"🔥 "+t("stLeft").replace("{N}",l).replace("{T}",STOCK[id]):t("soldOut")}</span><i><b style="width:${pc}%"></b></i></div>`; };
+function loadSold(){ if(!SHEET_URL||!Object.keys(STOCK).length) return;
+  apiGet({action:"sold",ids:Object.keys(STOCK).join(",")}).then(r=>{ if(r&&r.ok&&r.sold){ SOLD=r.sold; document.querySelectorAll("[data-stock]").forEach(e=>e.outerHTML=stockHTML(+e.dataset.stock)); } }).catch(()=>{}); }
 const fee=s=>s>=FREE_FROM||s===0?0:DELIVERY;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 /* Omani rial sign (CBO, 2025). Not in phone fonts yet (Unicode 18.0 = U+20C4), so it is drawn as a small vector. */
@@ -846,7 +858,7 @@ function cardHTML(p){
   return `<article class="card">
     <div class="phw"><button class="ph" data-open="${p.id}" aria-label="${esc(t("view"))}: ${esc(nm(p))}"><img src="img/${p.id}-l.webp" alt="${esc(nm(p))}" loading="lazy"><span class="flag">${t("lifetime")}</span>${isNew(p)?`<span class="nb">${t("newTag")}</span>`:""}</button><span class="ctl" data-slot="${p.id}">${addBtn(p.id)}</span></div>
     <button class="nm" data-open="${p.id}">${esc(nm(p))}</button>
-    <div class="row">${pPrice(p.id)}</div>
+    <div class="row">${pPrice(p.id)}</div>${stockHTML(p.id)}
   </article>`;
 }
 
@@ -904,7 +916,7 @@ function product(id){
     </div>
     <div class="thumbs">${ims.map((im,i)=>`<button class="${im.kind==="c"?"c":""}" data-g="${i}" aria-current="${i===0}" aria-label="${esc(im.cap)}"><img src="${im.src}" alt=""></button>`).join("")}</div>
     <div class="pd">
-      ${pPrice(id)}${isCp(id)?`<div class="cpnote">🎟️ ${t("cpNeed").replace(/\{R\}/g,RS)}</div>`:""}
+      ${pPrice(id)}${isCp(id)?`<div class="cpnote">🎟️ ${t("cpNeed").replace(/\{R\}/g,RS)}</div>`:""}${stockHTML(id)}
       <h1>${esc(nm(p))}</h1>
       <div class="sub">${esc(p.blurb[LANG])}</div>
       ${SIZES[id]?`<div class="sizes"><div class="sz-l">${optLab(id)}</div><div class="sz-row">${SIZES[id].map(z=>`<button class="sz" data-size="${esc(z)}" aria-pressed="false">${szInner(id,z,0)}</button>`).join("")}</div></div>`:""}
@@ -1034,6 +1046,7 @@ function placeOrder(){
   const text=[`*New order ${id}*`,...items.map(l=>`${l.qty} × ${l.name} = ${l.amount}`),"",`Items: ${omr(sub)} OMR`,`Delivery: ${f?omr(f)+" OMR":"FREE"}`,`*Total: ${omr(sub+f)} OMR* (cash on delivery)`,"",`WhatsApp: +968 ${phone}`,name&&`Name: ${name}`,area&&`Area: ${area}`,`Language: ${LANG==="ar"?"Arabic":LANG==="fil"?"Filipino":"English"}`,cpUsed&&`Coupon: ${COUPON_CODE}`,"",`📷 Order with photos: ${link}`,REF&&`Affiliate: ${REF.toUpperCase()}`].filter(x=>x!==""&&x!==false).join("\n");
   lastOrder={id,date:new Date().toISOString(),phone:"968"+phone,name,area,items,subtotal:omr(sub),delivery:omr(f),total:omr(sub+f),lang:LANG,text,sub,ref:REF,link,coupon:cpUsed?COUPON_CODE:""};
   if(SHEET_URL){try{fetch(SHEET_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify(lastOrder)}).catch(()=>{});}catch(_){}}
+  Object.keys(cart).forEach(k=>{ const i=pid(k); if(STOCK[i]!==undefined) SOLD[i]=(SOLD[i]||0)+cart[k]; });
   cart={}; store.set("ds_cart",cart); if(cpUsed) setCoupon(""); badges();
   stack=[{v:"home"},{v:"done"}]; render();
 }
@@ -1285,6 +1298,7 @@ document.addEventListener("submit",e=>{ if(e.target.id!=="cpF") return; e.preven
   if(v===COUPON_CODE){ setCoupon(v); cartView(); dock(); } else { $("#cpErr").hidden=false; $("#cpIn").focus(); } });
 function setQty(id,n){
   if(isCp(pid(id))&&n>(cart[id]||0)&&cpCount()>=COUPON_MAX) return;   // 1 coupon item per order
+  if(n>(cart[id]||0)&&n>leftOf(pid(id))) return;                       // limited stock
   if(n<=0) delete cart[id]; else cart[id]=Math.min(n,99);
   store.set("ds_cart",cart); badges();
   document.querySelectorAll(`[data-slot="${pid(id)}"]`).forEach(s=>s.innerHTML=addBtn(pid(id)));
@@ -1379,6 +1393,6 @@ addEventListener("resize",setHH);
   if(u.has("o")&&u.has("i")){ stack=[{v:"home"},{v:"order",oid:(u.get("o")||"").slice(0,20),items:u.get("i")}]; }
   if((u.has("join")||u.has("earn"))&&!(c&&k)){ stack=[{v:"home"},{v:"join"}]; }
   if(c&&k){ const old=store.get("ds_aff",null); store.set("ds_aff",{code:c.toLowerCase(),key:k,name:old&&old.code===c.toLowerCase()?old.name:""}); stack=[{v:"home"},{v:"join"}]; } })();
-applyLang(); badges(); render(); if(!LANG_CHOSEN) openLangPop(true); else welcome();
+applyLang(); badges(); render(); loadSold(); if(!LANG_CHOSEN) openLangPop(true); else welcome();
 if(REF&&SHEET_URL) apiGet({action:"aff",code:REF}).then(r=>{ if(r&&r.ok){ refLabel=r.name; if(cur().v==="home") rerenderInst(); } else { REF=""; ss_.set("ds_ref",""); } }).catch(()=>{});
 </script>

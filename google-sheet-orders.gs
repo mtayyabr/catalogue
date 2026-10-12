@@ -58,7 +58,20 @@ function doGet(e) {
   if (p.action === "aff")   return json_(affInfo_(p.code));
   if (p.action === "stats") return json_(stats_(p.code, p.key, p.phone));
   if (p.action === "open")  return json_(String(p.pin) === STAFF_PIN ? openOrders_() : {ok:false, err:"pin"});
+  if (p.action === "sold")  return json_(sold_(p.ids));
   return ContentService.createTextOutput("DS Orders is connected");
+}
+
+/* ---------- limited stock: pieces ordered per item id (Refused / Cancelled not counted) ---------- */
+function sold_(ids) {
+  const out = {}; String(ids || "").split(",").filter(Boolean).slice(0, 50).forEach(i => out[i] = 0);
+  const sh = tab_("Orders", OH), n = sh.getLastRow();
+  if (n < 2) return {ok:true, sold:out};
+  sh.getRange(2, 1, n - 1, OH.length).getValues().forEach(r => {
+    const st = String(r[11]); if (st === "Refused" || st === "Cancelled") return;
+    String(r[17] || "").split(",").forEach(x => { const [k, q] = x.split(":"); const id = String(k || "").split("|")[0]; if (id in out) out[id] += Number(q) || 0; });
+  });
+  return {ok:true, sold:out};
 }
 
 /* ---------- orders ---------- */
