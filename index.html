@@ -138,6 +138,14 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:va
 .promo p{margin:0;padding:0 14px 10px;font-size:12.5px;font-weight:600;opacity:.95}
 .strip{display:flex;gap:8px;overflow-x:auto;padding:0 14px 14px;scrollbar-width:none}
 .strip::-webkit-scrollbar{display:none}
+.card .nb,.mini .nb{position:absolute;top:6px;left:6px;background:var(--hot);color:#fff;font-size:10.5px;font-weight:900;letter-spacing:.4px;padding:3px 7px;border-radius:6px;line-height:1.2}
+[dir="rtl"] .card .nb,[dir="rtl"] .mini .nb{left:auto;right:6px}
+.mini{position:relative}
+.newrow{margin-top:12px;border-radius:14px;overflow:hidden;background:#FFF4E5;border:1.5px solid #FFD9A8}
+.newrow .nr-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px 10px}
+.newrow h2{margin:0;font-size:19px;font-weight:900;letter-spacing:-.2px;color:var(--ink)}
+.newrow .see{font-size:12.5px;font-weight:700;color:var(--hot);white-space:nowrap}
+.tab[data-new]{color:var(--hot);font-weight:800}
 .mini{flex:0 0 104px;background:#fff;border-radius:10px;overflow:hidden;color:var(--ink);text-align:left}
 .mini img{width:104px;height:104px;object-fit:cover;background:var(--soft)}
 .mini b{display:block;padding:5px 7px 7px;color:var(--hot);font-size:15px;font-weight:900}
@@ -502,7 +510,14 @@ const XCAT={71:["wear"],68:["beauty"],65:["home"],55:["travel"],51:["travel"],21
  16:["home"],26:["home"],53:["baby","home"],1:["home"],22:["wear"],25:["wear"],
  34:["jewel"],40:["jewel"],61:["baby"],62:["baby"],63:["baby"]};
 const catsOf=p=>[p.cat,...(XCAT[p.id]||[])];
-const inCat=(p,k)=>p.cat===k||(XCAT[p.id]||[]).includes(k);
+/* NEW ARRIVALS – date each product was added (Muscat date). Launch batch (ids 1–64, 10 Oct 2026) is not marked new.
+   Add a line here for every new product; the NEW badge, home row, New tab and search entry update by themselves. */
+const ADDED={65:"2026-10-12",66:"2026-10-12",67:"2026-10-12",68:"2026-10-12",69:"2026-10-12",70:"2026-10-12",71:"2026-10-12",72:"2026-10-12",73:"2026-10-12",74:"2026-10-12",75:"2026-10-12",76:"2026-10-12",77:"2026-10-12"};
+const NEW_DAYS=21;   // how long a product counts as new
+const isNew=p=>{ const d=ADDED[p.id]; return !!d && Date.now()-Date.parse(d+"T00:00:00+04:00") < NEW_DAYS*864e5; };
+const newList=()=>P.filter(isNew).sort((a,b)=>ADDED[b.id].localeCompare(ADDED[a.id])||b.id-a.id);
+CAT.new={en:"New arrivals",ar:"وصل حديثًا",fil:"Bagong dating"};
+const inCat=(p,k)=>k==="new"?isNew(p):p.cat===k||(XCAT[p.id]||[]).includes(k);
 
 /* ===== PRODUCTS (id = photo number)
    [id, category, English name, Arabic name, English blurb, Arabic blurb, [close-up 1 en, ar], [close-up 2 en, ar]] ===== */
@@ -651,7 +666,7 @@ const T = {
  catsTitle:["Categories","الأقسام"], catEach:[n=>`${n} item${n>1?"s":""} · {R}0.729 each`, n=>`${n} ${n===1?"منتج":n===2?"منتجان":n<=10?"منتجات":"منتج"} · {R}0.729 للقطعة`],
  instT:["Get the Dollar Store app","احصل على تطبيق دولار ستور"], instS:["One tap – free, no download","بضغطة واحدة – مجانًا وبدون تحميل"],
  instIos:["Tap {SH} below, then <b>Add to Home Screen</b>","اضغط {SH} بالأسفل، ثم <b>إضافة إلى الشاشة الرئيسية</b>"],
- instAdd:["Add","إضافة","Idagdag"], sddCats:["Shop by category","تسوّق حسب القسم","Mamili ayon sa kategorya"], sddMore:["More","المزيد","Iba pa"], sddShare:["Share this shop","شارك المتجر","I-share ang shop"], sddAll:["All products","كل المنتجات","Lahat ng produkto"], ordT:["Order {id}","الطلب {id}","Order {id}"], ordShop:["Shop more","تسوّق المزيد","Mamili pa"], ordNote:["Photos of the items in this order","صور منتجات هذا الطلب","Mga larawan ng items sa order na ito"], sharedBy:["Shared by {N} 👋","مشاركة من {N} 👋"],
+ instAdd:["Add","إضافة","Idagdag"], newTab:["New","جديد","Bago"], newTag:["NEW","جديد","BAGO"], sddCats:["Shop by category","تسوّق حسب القسم","Mamili ayon sa kategorya"], sddMore:["More","المزيد","Iba pa"], sddShare:["Share this shop","شارك المتجر","I-share ang shop"], sddAll:["All products","كل المنتجات","Lahat ng produkto"], ordT:["Order {id}","الطلب {id}","Order {id}"], ordShop:["Shop more","تسوّق المزيد","Mamili pa"], ordNote:["Photos of the items in this order","صور منتجات هذا الطلب","Mga larawan ng items sa order na ito"], sharedBy:["Shared by {N} 👋","مشاركة من {N} 👋"],
  helpAff:["Earn 10% – join our affiliate program","اربح 10% – انضم إلى برنامج الشركاء"], helpAffS:["Share your link and earn on every order","شارك رابطك واربح من كل طلب"],
  helpAffMe:["My affiliate link & earnings","رابطي وأرباحي"],
  eLine1:["Get your own link – free","احصل على رابطك – مجانًا"], eLine2:["Share it on WhatsApp","شاركه عبر واتساب"], eLine3:["Earn 10% of every order through it","اربح 10% من كل طلب عبره"],
@@ -794,7 +809,7 @@ function addBtn(id){const lab=esc(nm(byId[id]));
    : `<button class="addc" data-inc="${id}" aria-label="${esc(t("addTo"))}: ${lab}"><svg width="24" height="22" viewBox="0 0 26 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4.5h2.4l2.3 10.4a1.6 1.6 0 0 0 1.6 1.3h9.1a1.6 1.6 0 0 0 1.6-1.2L21 9.5"/><circle cx="9" cy="20.3" r="1.4"/><circle cx="17.2" cy="20.3" r="1.4"/><path d="M15.6 2.2v6.2M12.5 5.3h6.2" stroke-width="2.2"/></svg></button>`;}
 function cardHTML(p){
   return `<article class="card">
-    <div class="phw"><button class="ph" data-open="${p.id}" aria-label="${esc(t("view"))}: ${esc(nm(p))}"><img src="img/${p.id}-l.webp" alt="${esc(nm(p))}" loading="lazy"><span class="flag">${t("lifetime")}</span></button><span class="ctl" data-slot="${p.id}">${addBtn(p.id)}</span></div>
+    <div class="phw"><button class="ph" data-open="${p.id}" aria-label="${esc(t("view"))}: ${esc(nm(p))}"><img src="img/${p.id}-l.webp" alt="${esc(nm(p))}" loading="lazy"><span class="flag">${t("lifetime")}</span>${isNew(p)?`<span class="nb">${t("newTag")}</span>`:""}</button><span class="ctl" data-slot="${p.id}">${addBtn(p.id)}</span></div>
     <button class="nm" data-open="${p.id}">${esc(nm(p))}</button>
     <div class="row">${priceHTML()}</div>
   </article>`;
@@ -803,10 +818,12 @@ function cardHTML(p){
 /* ===== views ===== */
 function home(){
   const list=P.filter(p=>(tab==="all"||inCat(p,tab))&&(!q||[p.name.en,p.name.ar,p.name.fil,...catsOf(p).flatMap(k=>[CAT[k].en,CAT[k].ar,CAT[k].fil]),p.blurb.en,p.blurb.ar,p.blurb.fil].join(" ").toLowerCase().includes(q)));
-  const tabs=[["all",t("all")],...CATS.map(([k])=>[k,CAT[k][LANG]])];
+  if(tab==="new") list.sort((a,b)=>ADDED[b.id].localeCompare(ADDED[a.id])||b.id-a.id);
+  const NL=newList();
+  const tabs=[...(NL.length?[["new","✨ "+t("newTab")]]:[]),["all",t("all")],...CATS.map(([k])=>[k,CAT[k][LANG]])];
   const prevX=$(".tabs")?$(".tabs").scrollLeft:0;   // keep where the tab bar was, then slide from there
   app.innerHTML=`
-   <div class="tabs" role="tablist"><div class="wrap" style="display:flex;gap:18px">${tabs.map(([k,lab])=>`<button class="tab" role="tab" aria-selected="${k===tab}" data-tab="${k}">${esc(lab)}</button>`).join("")}</div></div>
+   <div class="tabs" role="tablist"><div class="wrap" style="display:flex;gap:18px">${tabs.map(([k,lab])=>`<button class="tab" role="tab" aria-selected="${k===tab}" data-tab="${k}"${k==="new"?' data-new="1"':""}>${esc(lab)}</button>`).join("")}</div></div>
    <div class="wrap">
      <div class="trust" aria-label="${esc(t("promises"))}"><div class="track">${trustHTML()}</div></div>
      ${refLabel&&!q&&tab==="all"?`<div class="aff">${t("sharedBy").replace("{N}",`<b>${esc(refLabel)}</b>`)}</div>`:""}
@@ -817,6 +834,10 @@ function home(){
        <p>${t("promoSub")}</p>
        <div class="strip">${[53,17,22,28,51,44,13,31,36,52,26,32,49,47].map(id=>`<button class="mini" data-open="${id}"><img src="img/${id}-l.webp" alt="${esc(nm(byId[id]))}" loading="lazy"><b>${amt("0.729")}</b></button>`).join("")}</div>
      </section>
+     ${NL.length?`<section class="newrow">
+       <div class="nr-top"><h2>✨ ${esc(CAT.new[LANG])}</h2><button class="see" data-tab="new" data-jump="1">${t("seeAll")}</button></div>
+       <div class="strip">${NL.slice(0,12).map(p=>`<button class="mini" data-open="${p.id}"><img src="img/${p.id}-l.webp" alt="${esc(nm(p))}" loading="lazy"><span class="nb">${t("newTag")}</span><b>${amt("0.729")}</b></button>`).join("")}</div>
+     </section>`:""}
      <div class="perks">
        <div class="perk">${I.truck}<div><b>${t("perk1")}</b><span>${t("perk1s")}</span></div></div>
        <div class="perk">${I.shield}<div><b>${t("perk2")}</b><span>${t("perk2s")}</span></div></div>
@@ -993,7 +1014,7 @@ function done(){
 function cats(){
   app.innerHTML=`<div class="wrap page"><div class="cat-list">
     <h1 class="ctitle">${t("catsTitle")}</h1>
-    ${CATS.map(([k])=>{const ps=P.filter(p=>inCat(p,k));return `<button class="cat-row" data-cat="${k}"><span class="pics">${ps.slice(0,3).map(p=>`<img src="img/${p.id}-l.webp" alt="" loading="lazy">`).join("")}</span><span><b>${esc(CAT[k][LANG])}</b><span>${t("catEach",ps.length)}</span></span></button>`}).join("")}
+    ${[...(newList().length?[["new"]]:[]),...CATS].map(([k])=>{const ps=k==="new"?newList():P.filter(p=>inCat(p,k));return `<button class="cat-row" data-cat="${k}"><span class="pics">${ps.slice(0,3).map(p=>`<img src="img/${p.id}-l.webp" alt="" loading="lazy">`).join("")}</span><span><b>${esc(CAT[k][LANG])}</b><span>${t("catEach",ps.length)}</span></span></button>`}).join("")}
   </div></div>`;
 }
 function help(){
@@ -1143,6 +1164,7 @@ function sddHTML(){
   const thumb=k=>{const p=P.find(x=>x.cat===k)||P.find(x=>inCat(x,k));return p?`<img src="img/${p.id}-t.jpg" alt="" loading="lazy">`:`<span class="ic">🛍️</span>`;};
   const shareTxt=encodeURIComponent(`Dollar Store Oman – Everything 0.729 OMR 👇\n${SITE}`);
   return `<h4>${t("sddCats")}</h4>
+    ${newList().length?`<button class="row" data-cat="new" data-sdd><span class="ic">✨</span><b style="color:var(--hot)">${esc(CAT.new[LANG])}</b><small>${newList().length}</small></button>`:""}
     <button class="row" data-cat="all" data-sdd><span class="ic">🛍️</span>${t("sddAll")}<small>${P.length}</small></button>
     ${CATS.map(([k])=>`<button class="row" data-cat="${k}" data-sdd>${thumb(k)}${esc(CAT[k][LANG])}<small>${P.filter(p=>inCat(p,k)).length}</small></button>`).join("")}
     <h4>${t("sddMore")}</h4>
