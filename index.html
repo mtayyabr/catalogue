@@ -57,7 +57,7 @@ html[lang="ar"]{--font:"Tajawal","Figtree",system-ui,"Segoe UI",Tahoma,Arial,san
 .trust .track{direction:ltr}
 .trust span{unicode-bidi:plaintext}
 .langbtn{flex-shrink:0;height:40px;min-width:40px;padding:0 8px;border-radius:999px;background:#fff;border:2px solid var(--ink);font-weight:800;font-size:14px;color:var(--ink)}
-.lang-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.lang-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .lang-row button{height:46px;border-radius:10px;border:1.5px solid var(--line);font-weight:800;font-size:15px}
 .lang-row button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:#fff}
 html,body{background:var(--page)}
@@ -626,7 +626,7 @@ const T = {
  affErrBlocked:["This number can't join the program. Please contact us on WhatsApp.","لا يمكن لهذا الرقم الانضمام. يرجى التواصل معنا عبر واتساب."],
  kitHi:["Welcome, {N}! 🎉","أهلًا {N}! 🎉"], kitSub:["Share your link. You earn 10% of every order placed through it.","شارك رابطك. تربح 10% من كل طلب يتم عبره."],
  kitLink:["Your link","رابطك"], copy:["Copy","نسخ"], copied:["Copied ✓","تم النسخ ✓"], shareWa:["Share on WhatsApp","شارك عبر واتساب"],
- msgLang:["Language (page + WhatsApp message)","اللغة (الصفحة + رسالة واتساب)","Wika (page + mensahe sa WhatsApp)"], poster:["Download my QR poster","حمّل ملصق QR الخاص بي"], mySales:["My sales & earnings","مبيعاتي وأرباحي"],
+ msgLang:["Language","اللغة","Wika"], poster:["Download my QR poster","حمّل ملصق QR الخاص بي"], mySales:["My sales & earnings","مبيعاتي وأرباحي"],
  keepLink:["Private link to see your earnings on any phone (don't share it):","رابط خاص لرؤية أرباحك من أي هاتف (لا تشاركه):"],
  signOut:["Not you? Sign out","لست أنت؟ تسجيل الخروج"],
  salesT:["My earnings","أرباحي"], sOrders:["Delivered orders","طلبات مسلَّمة"], sSales:["Sales through your link","المبيعات عبر رابطك"],
@@ -661,6 +661,8 @@ Object.assign(TF,{
 for(const k in T){ if(TF[k]!==undefined) T[k][2]=TF[k]; }
 
 let LANG = (()=>{ try{ const s=localStorage.getItem("ds_lang"); if(s) return JSON.parse(s); }catch(e){} return (l=>l.startsWith("ar")?"ar":(l.startsWith("fil")||l.startsWith("tl"))?"fil":"en")((navigator.language||"").toLowerCase()); })();
+const SITE_LANGS=["en","ar"];   // Filipino texts are kept in the code but switched off for now
+if(!SITE_LANGS.includes(LANG)) LANG="en";
 const L = ()=>LANG==="ar"?1:LANG==="fil"?2:0;
 const t = (k,...a)=>{ const v=T[k][L()]??T[k][0]; const out=typeof v==="function"?v(...a):v; return typeof out==="string"?out.replace(/\{R\}([\d.]+\+?)/g,(m,n)=>`<span class="amt">${RS}${n}</span>`):out; };
 const nm = p=>p.name[LANG];
@@ -936,7 +938,7 @@ function help(){
   app.innerHTML=`<div class="wrap page"><div class="help">
     <h1 class="ctitle">${t("helpTitle")}</h1>
     <div><div class="muted" style="margin-bottom:6px;font-weight:700">${t("language")}</div>
-      <div class="lang-row"><button data-lang="en" aria-pressed="${LANG==="en"}">English</button><button data-lang="ar" aria-pressed="${LANG==="ar"}">العربية</button><button data-lang="fil" aria-pressed="${LANG==="fil"}">Filipino</button></div></div>
+      <div class="lang-row"><button data-lang="en" aria-pressed="${LANG==="en"}">English</button><button data-lang="ar" aria-pressed="${LANG==="ar"}">العربية</button></div></div>
     <div class="box">
       <div class="li">${I.truck}<div><b>${t("hDel")}</b><span>${t("hDelS")}</span></div></div>
       <div class="li">${I.shield}<div><b>${t("hRet")}</b><span>${t("hRetS")}</span></div></div>
@@ -1089,7 +1091,7 @@ function sddHTML(){
     <a class="row" href="https://api.whatsapp.com/send?text=${shareTxt}" target="_blank" rel="noopener" data-sdd><span class="ic">📤</span>${t("sddShare")}</a>
     ${instEvt&&!isStandalone()?`<button class="row" data-install data-sdd><span class="ic">📲</span>${t("instBtn")}</button>`:""}
     <h4>${t("language")}</h4>
-    <div class="langs"><button data-lang="en" data-sdd aria-pressed="${LANG==="en"}">English</button><button data-lang="ar" data-sdd aria-pressed="${LANG==="ar"}">العربية</button><button data-lang="fil" data-sdd aria-pressed="${LANG==="fil"}">Filipino</button></div>`;
+    <div class="langs"><button data-lang="en" data-sdd aria-pressed="${LANG==="en"}">English</button><button data-lang="ar" data-sdd aria-pressed="${LANG==="ar"}">العربية</button></div>`;
 }
 function openSdd(){ if(!$("#sdd").hidden) return; $("#sddIn").innerHTML=sddHTML(); $("#sdd").hidden=false; $("#sddScrim").hidden=false; }
 function closeSdd(){ $("#sdd").hidden=true; $("#sddScrim").hidden=true; }
@@ -1100,16 +1102,16 @@ function applyLang(){
   root.lang=LANG; root.dir=LANG==="ar"?"rtl":"ltr";
   document.querySelectorAll("[data-t]").forEach(e=>e.textContent=t(e.dataset.t));
   $("#q").placeholder=t("search"); $("#q").setAttribute("aria-label",t("search"));
-  $("#langBtn").textContent=LANG==="en"?"ع":LANG==="ar"?"FIL":"EN"; $("#langBtn").setAttribute("aria-label",t("switchLang"));
+  $("#langBtn").textContent=LANG==="ar"?"EN":"ع"; $("#langBtn").setAttribute("aria-label",t("switchLang"));
   ["#backBtn","#fBack","#tbBack"].forEach(s=>$(s).setAttribute("aria-label",t("back")));
   ["#cartBtn","#fCart"].forEach(s=>$(s).setAttribute("aria-label",t("cart")));
 }
-function setLang(l){ saveCust(); LANG=l; if(typeof msgL!=="undefined") msgL=l; store.set("ds_lang",l); applyLang(); const y=scrollY; render(); window.scrollTo(0,y); }
+function setLang(l){ saveCust(); LANG=l; if(typeof msgL!=="undefined"&&msgL!=="fil") msgL=l; store.set("ds_lang",l); applyLang(); const y=scrollY; render(); window.scrollTo(0,y); }
 
 /* ===== router ===== */
 const cur=()=>stack[stack.length-1];
 function render(){
-  const v=cur().v;
+  const v=cur().v; if($("#sdd")&&!$("#sdd").hidden&&document.activeElement!==$("#q")) closeSdd();
   ({home,product:()=>product(cur().id),cart:cartView,checkout,done,cats,help,join,mysales,order:orderView})[v]();
   const navKey={home:"home",product:"home",cats:"cats",cart:"cart",checkout:"cart",done:"cart",help:"help",join:"help",mysales:"help"}[v];
   document.querySelectorAll("#bn [data-nav]").forEach(b=>{ if(b.dataset.nav===navKey) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
@@ -1195,7 +1197,7 @@ document.addEventListener("click",e=>{
   if(x.closest("[data-install]")){ install(); return; }
   const cp=x.closest("[data-copy]"); if(cp){ const done=()=>{const o=cp.textContent;cp.textContent=t("copied");setTimeout(()=>cp.textContent=o,1500);};
     (navigator.clipboard?navigator.clipboard.writeText(cp.dataset.copy):Promise.reject()).then(done).catch(()=>{const ta=document.createElement("textarea");ta.value=cp.dataset.copy;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done();}catch(_){}ta.remove();}); return; }
-  const ml=x.closest("[data-msgl]"); if(ml){ msgL=ml.dataset.msgl; if(msgL!==LANG) setLang(msgL); else render(); return; }
+  const ml=x.closest("[data-msgl]"); if(ml){ msgL=ml.dataset.msgl; if(SITE_LANGS.includes(msgL)&&msgL!==LANG) setLang(msgL); else render(); return; }
   if(x.closest("[data-poster]")){ poster().catch(()=>{}); return; }
   const el=x.closest("[data-elogin]"); if(el){ eLogin=el.dataset.elogin==="1"; render(); return; }
   if(x.closest("[data-signout]")){ eData=null;  store.set("ds_aff",null); try{localStorage.removeItem("ds_aff")}catch(_){} render(); return; }
@@ -1216,7 +1218,7 @@ $("#q").addEventListener("focus",()=>{ if(!$("#q").value.trim()) openSdd(); });
 $("#q").addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeSdd(); $("#q").blur(); } });
 $("#q").addEventListener("input",e=>{ q=e.target.value.trim().toLowerCase(); q?closeSdd():openSdd(); if(cur().v!=="home"){ stack=[{v:"home"}]; } render(); $("#q").focus(); });
 $("#backBtn").onclick=()=>{ if(!back()) window.scrollTo({top:0,behavior:"smooth"}); };
-$("#langBtn").onclick=()=>setLang(LANG==="en"?"ar":LANG==="ar"?"fil":"en");
+$("#langBtn").onclick=()=>setLang(LANG==="ar"?"en":"ar");
 $("#cartBtn").onclick=()=>go("cart");
 $("#fCart").onclick=()=>go("cart");
 $("#fBack").onclick=$("#tbBack").onclick=()=>{ back(); };
