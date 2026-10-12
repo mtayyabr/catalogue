@@ -534,6 +534,7 @@ const P = [
  [62,"office","Space Travel Pencil Sharpener, Pink","مبراة أقلام سبيس ترافل، وردي","Crank pencil sharpener with a cute astronaut design. Comes boxed.","مبراة أقلام بذراع دوّار بتصميم رائد فضاء لطيف. تأتي في علبة.",["Astronaut design","تصميم رائد فضاء"],["Crank handle","ذراع دوّار"]],
  [63,"office","Mr. Dream Pencil Sharpener","مبراة أقلام مستر دريم","Crank pencil sharpener with cute characters, in a gift box.","مبراة أقلام بذراع دوّار بشخصيات لطيفة، في علبة هدية.",["Cute character design","تصميم بشخصيات لطيفة"],["Crank handle","ذراع دوّار"]],
  [64,"office","Desk Mat, Brown Leather-Look","لبّاد مكتب بمظهر الجلد، بني","Large mat for your laptop, keyboard and writing.","لبّاد كبير للابتوب ولوحة المفاتيح والكتابة.",["Leather-look surface","سطح بمظهر الجلد"],["Rounded corners","زوايا دائرية"]],
+ [65,"home","Inflatable Travel Pillow, Purple (47 × 30 cm)","وسادة سفر قابلة للنفخ، بنفسجي (47 × 30 سم)","Soft velvet-touch air pillow. Inflates in seconds and folds small. For travel, camping, office naps or the beach.","وسادة هوائية بملمس مخملي ناعم. تُنفخ في ثوانٍ وتُطوى بحجم صغير. للسفر والتخييم وقيلولة المكتب والشاطئ.",["Soft velvet-touch flocked surface","سطح مخملي ناعم الملمس"],["47 × 30 cm when inflated","47 × 30 سم عند النفخ"]],
  [25,"baby","Kids Cat Ankle Socks, Blue Set (5 pairs)","طقم جوارب أطفال بوجه قطة، أزرق (5 أزواج)","Soft socks with cute cat faces. Price is for the whole set.","جوارب ناعمة بوجوه قطط لطيفة. السعر للطقم كاملًا.",["Cute cat faces","وجوه قطط لطيفة"],["Soft knit","نسيج ناعم"]]
 ].map(([id,cat,en,ar,ben,bar,d1,d2])=>({id,cat,name:{en,ar},blurb:{en:ben,ar:bar},d:[{en:d1[0],ar:d1[1]},{en:d2[0],ar:d2[1]}]}));
 P.sort((a,b)=>a.id-b.id);
@@ -692,7 +693,7 @@ const amt=v=>`<span class="amt">${RS}${v}</span>`;
 const priceHTML=(b=PRICE)=>`<span class="price">${amt(omr(b))}</span>`;
 const money=b=>amt(omr(b));
 /* feature tags shown under the description [English, Arabic] */
-const FEAT={37:[["Paddle head","رأس مسطح","Patag na ulo"],["Ball-tip pins","شعيرات بأطراف كروية","Bilugang dulo ng pins"],["Long handle","مقبض طويل","Mahabang hawakan"],["Hanging hole","فتحة للتعليق","May butas pangsabit"]]};
+const FEAT={65:[["Soft flocked surface","سطح مخملي ناعم","Malambot na velvet"],["Quick inflate valve","صمام نفخ سريع","Mabilis hipan ang valve"],["Folds small to carry","تُطوى وتُحمل بسهولة","Natitiklop, madaling dalhin"],["Camping · Office · Beach","تخييم · مكتب · شاطئ","Camping · Opisina · Beach"]],37:[["Paddle head","رأس مسطح","Patag na ulo"],["Ball-tip pins","شعيرات بأطراف كروية","Bilugang dulo ng pins"],["Long handle","مقبض طويل","Mahabang hawakan"],["Hanging hole","فتحة للتعليق","May butas pangsabit"]]};
 const NOCUT=new Set([41,42,43,44,45,46,47,48]);   // only worn photos so far – no product-only photo
 const L2=new Set([33,56,63]);                              // has a second lifestyle photo
 const imgs=p=>[
