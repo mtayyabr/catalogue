@@ -1,5 +1,5 @@
 /* Dollar Store Oman – makes the catalogue installable and open fast / offline */
-const CACHE = "ds-v41";
+const CACHE = "ds-v42";
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", e => e.waitUntil(
   caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())
