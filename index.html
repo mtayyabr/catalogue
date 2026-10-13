@@ -1399,6 +1399,7 @@ const setHH=()=>document.documentElement.style.setProperty("--hh",$("#hdr").offs
 addEventListener("resize",setHH);
 
 (()=>{ const u=new URLSearchParams(location.search), c=u.get("aff"), k=u.get("k");
+  if(u.has("p")){ const pid0=parseInt(u.get("p")), id0=VOF[pid0]?VOF[pid0][0]:pid0; if(byId[id0]&&P.includes(byId[id0])){ if(VOF[pid0]) selOpt[id0]=VOF[pid0][1]; stack=[{v:"home"},{v:"product",id:id0}]; } }
   if(u.has("o")&&u.has("i")){ stack=[{v:"home"},{v:"order",oid:(u.get("o")||"").slice(0,20),items:u.get("i")}]; }
   if((u.has("join")||u.has("earn"))&&!(c&&k)){ stack=[{v:"home"},{v:"join"}]; }
   if(c&&k){ const old=store.get("ds_aff",null); store.set("ds_aff",{code:c.toLowerCase(),key:k,name:old&&old.code===c.toLowerCase()?old.name:""}); stack=[{v:"home"},{v:"join"}]; } })();
