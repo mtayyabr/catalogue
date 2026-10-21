@@ -455,6 +455,68 @@ footer{padding:20px 0;color:var(--ink3);font-size:12px;text-align:center;display
 .sz .sw{display:inline-block;width:26px;height:26px;border-radius:50%;margin-inline-end:7px;vertical-align:middle;box-shadow:0 0 0 1px rgba(0,0,0,.15);background-color:#fff}
 .sz[aria-pressed="true"] .sw{box-shadow:0 0 0 2px #fff,0 0 0 3px var(--hot)}
 .sz:has(.sw){display:inline-flex;align-items:center;padding-inline-start:6px}
+/* ===== FEED (TikTok-style swipe catalogue) ===== */
+html.fd-on,html.fd-on body{background:#000;overscroll-behavior:none}
+.feed{position:fixed;left:0;right:0;top:0;bottom:calc(var(--navh) + env(safe-area-inset-bottom,0px));background:#000;color:#fff;z-index:40;overflow:hidden;
+  --fdtop:96px;--gs:min(100vw,560px,calc(100vh - var(--navh) - var(--fdtop) - 250px));--gs:min(100vw,560px,calc(100dvh - var(--navh) - env(safe-area-inset-bottom,0px) - env(safe-area-inset-top,0px) - var(--fdtop) - 250px))}
+.fd-scroll{position:absolute;inset:0;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;scrollbar-width:none}
+.fd-scroll::-webkit-scrollbar,.fd-gal::-webkit-scrollbar,.fd-tabs::-webkit-scrollbar{display:none}
+.fd-slide{position:relative;height:100%;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden}
+.fd-bg{position:absolute;left:-40px;top:-40px;width:calc(100% + 80px);height:calc(100% + 80px);object-fit:cover;filter:blur(26px) brightness(.5)}
+.fd-shade{position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,0) 20%,rgba(0,0,0,0) 55%,rgba(0,0,0,.72))}
+.fd-in{position:absolute;inset:0;max-width:560px;margin:0 auto}
+.fd-ph{position:absolute;top:calc(var(--fdtop) + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:var(--gs);height:var(--gs)}
+.fd-gal{display:flex;width:100%;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.fd-gal figure{flex:0 0 100%;margin:0;scroll-snap-align:start}
+.fd-gal img{width:100%;height:100%;object-fit:cover;display:block}
+.fd-gal figure.c{background:#fff}.fd-gal figure.c img{object-fit:contain;padding:7%}
+.fd-arr{position:absolute;top:50%;margin-top:-22px;width:44px;height:44px;border:0;border-radius:50%;background:rgba(0,0,0,.38);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.fd-arr.l{left:6px}.fd-arr.r{right:6px}
+.fd-arr.r svg{animation:fdNudgeR 1.6s ease-in-out infinite}.fd-arr.l svg{animation:fdNudgeL 1.6s ease-in-out infinite}
+@keyframes fdNudgeR{50%{transform:translateX(5px)}}@keyframes fdNudgeL{50%{transform:translateX(-5px)}}
+.fd-price{position:absolute;inset-inline-start:12px;bottom:12px;background:var(--brand);color:#141414;border-radius:14px;padding:8px 13px 7px;display:flex;flex-direction:column;align-items:center;line-height:1;box-shadow:0 2px 10px rgba(0,0,0,.25);pointer-events:none}
+.fd-price b{font-size:26px;font-weight:800}.fd-price small{font-size:12px;font-weight:800;margin-top:3px}.fd-price em{font-style:normal;font-size:14px;margin-bottom:3px}
+.fd-txt{position:absolute;inset-inline-start:14px;inset-inline-end:78px;bottom:60px;display:flex;flex-direction:column;gap:6px;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.fd-dots{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.88);min-width:0}
+.fd-dots i{flex:none;width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.55);transition:width .2s}
+.fd-dots i.on{width:18px;background:var(--brand)}
+.fd-cap{margin-inline-start:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fd-cat{font-size:12px;color:rgba(255,255,255,.88)}
+.fd-txt h2{margin:0;font-size:20px;font-weight:800;line-height:1.2}
+.fd-txt p{margin:0;font-size:14px;line-height:1.4;color:rgba(255,255,255,.92);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.fd-rail{position:absolute;inset-inline-end:6px;bottom:60px;display:flex;flex-direction:column;gap:12px;align-items:center}
+.fd-rail button{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;color:#fff;font:700 11px var(--font);padding:0;min-width:60px;cursor:pointer;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.fd-rail .ic{width:48px;height:48px;border-radius:50%;background:rgba(0,0,0,.42);display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.fd-rail .fd-add .ic{background:var(--brand);color:#141414}.fd-rail .fd-add b{font-size:19px;font-weight:800}
+.fd-add.pop .ic{transform:scale(1.18)}
+.fd-top{position:absolute;left:0;right:0;top:0;z-index:3;padding-top:env(safe-area-inset-top,0px);pointer-events:none}
+.fd-top>*{pointer-events:auto}
+.fd-brand{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px 0;max-width:560px;margin:0 auto}
+.fd-brand b{font-size:15px;font-weight:800;white-space:nowrap}.fd-brand b span{color:var(--brand)}
+.fd-tr{display:flex;gap:6px;align-items:center}
+.fd-lang{height:32px;min-width:44px;border-radius:999px;border:1px solid rgba(255,255,255,.45);background:rgba(0,0,0,.4);color:#fff;font:800 12px var(--font);padding:0 10px;cursor:pointer}
+.fd-all{background:var(--brand);color:#141414;font-weight:800;font-size:12px;padding:6px 10px;border-radius:999px;white-space:nowrap}
+.fd-tabs{display:flex;gap:18px;overflow-x:auto;padding:4px 14px 0;scrollbar-width:none;max-width:560px;margin:0 auto}
+.fd-tabs button{flex:none;background:none;border:0;color:rgba(255,255,255,.72);font:600 15px var(--font);padding:8px 0;min-height:42px;border-bottom:2px solid transparent;cursor:pointer;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.fd-tabs button[aria-current="true"]{color:#fff;font-weight:800;border-bottom-color:var(--brand)}
+.fd-next{position:absolute;left:50%;transform:translateX(-50%);bottom:4px;z-index:2;background:none;border:0;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font:700 11px var(--font);min-width:110px;min-height:52px;cursor:pointer;text-shadow:0 1px 3px rgba(0,0,0,.5);white-space:nowrap}
+.fd-next svg{animation:fdBob 1.4s ease-in-out infinite}
+@keyframes fdBob{0%,100%{transform:translateY(0);opacity:.95}50%{transform:translateY(-8px);opacity:.6}}
+.fd-bar{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.18);z-index:2;pointer-events:none}.fd-bar i{display:block;height:100%;width:0;background:var(--brand);transition:width .3s}
+.fd-hint{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);z-index:4;width:270px;background:rgba(0,0,0,.75);border:0;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:12px;color:#fff;font:600 14px var(--font);text-align:start;cursor:pointer}
+.fd-hint span{display:flex;align-items:center;gap:10px}.fd-hint svg{flex:none;color:var(--brand)}
+.fd-hint span:first-child svg{animation:fdBob 1.4s ease-in-out infinite}
+.fd-toast{position:absolute;left:50%;top:110px;transform:translateX(-50%);z-index:5;background:#fff;color:#141414;font-weight:800;font-size:14px;padding:10px 16px;border-radius:999px;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.fd-sheet{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center}
+.fd-sh{background:#fff;color:#141414;width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:18px 18px calc(22px + env(safe-area-inset-bottom,0px))}
+.fd-sh-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}
+.fd-sh-h b{display:block;font-size:18px}.fd-sh-h small{color:var(--ink2);font-size:13px}
+.fd-sh-x{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:var(--soft);font-size:22px;color:#141414;cursor:pointer}
+.fd-sh-g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fd-sh-g button{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:8px;font:700 13px var(--font);color:#141414;padding:6px 0;cursor:pointer}
+.fd-sh-g i{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff}
+.fd-sh-g i svg{width:28px;height:28px}
+@media (prefers-reduced-motion:reduce){.fd-next svg,.fd-arr svg,.fd-hint svg{animation:none!important}}
 </style>
 
 <header id="hdr">
@@ -491,6 +553,7 @@ footer{padding:20px 0;color:var(--ink3);font-size:12px;text-align:center;display
 <nav class="bn" id="bn" aria-label="Main">
   <div class="in">
     <button data-nav="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 11 12 4l9 7v9H14v-6h-4v6H3z"/></svg><span data-t="navHome">Home</span></button>
+    <button data-nav="feed" id="nFeed" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><path d="M10.5 9.2 15 12l-4.5 2.8z" fill="currentColor"/></svg><span data-t="navFeed">Feed</span></button>
     <button data-nav="cats"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg><span data-t="navCategories">Categories</span></button>
     <button data-nav="cart"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.7a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg><span data-t="navCart">Cart</span><span class="badge" id="nBadge" hidden>0</span></button>
     <button data-nav="help"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.3a2.6 2.6 0 0 1 5 .9c0 1.7-2.5 2.2-2.5 3.8"/><circle cx="12" cy="17.3" r=".6" fill="currentColor"/></svg><span data-t="navHelp">Help</span></button>
@@ -782,6 +845,25 @@ Object.assign(TF,{
  viewCartBtn: n=>`Tingnan ang cart (${n})`
 });
 for(const k in T){ if(TF[k]!==undefined) T[k][2]=TF[k]; }
+/* feed (swipe catalogue) text [English, Arabic, Filipino] */
+Object.assign(T,{
+ navFeed:["Feed","تصفّح","Feed"],
+ fdSwipe:["Swipe up","اسحب لأعلى","Swipe pataas"],
+ fdNext:["Next: ","التالي: ","Susunod: "],
+ fdNextP:["Next product","المنتج التالي","Susunod na produkto"],
+ fdHintUp:["Swipe up for the next product","اسحب لأعلى للمنتج التالي","I-swipe pataas para sa susunod na produkto"],
+ fdHintSide:["Swipe sideways for more photos","اسحب جانبًا لمزيد من الصور","I-swipe pagilid para sa iba pang litrato"],
+ fdPrevPh:["Previous photo","الصورة السابقة","Nakaraang litrato"],
+ fdNextPh:["Next photo","الصورة التالية","Susunod na litrato"],
+ fdAdd:["Add","أضف","Idagdag"],
+ fdShare:["Share","مشاركة","I-share"],
+ fdDetails:["Details","التفاصيل","Detalye"],
+ fdCopy:["Copy link","نسخ الرابط","Kopyahin ang link"],
+ fdClose:["Close","إغلاق","Isara"],
+ fdLangL:["Language","اللغة","Wika"],
+ fdMsg:["only 0.729 OMR at Dollar Store Oman 👇","بـ 0.729 ر.ع. فقط من دولار ستور عُمان 👇","0.729 OMR lang sa Dollar Store Oman 👇"],
+ fdIgTip:["Link copied. Paste it in Instagram","تم نسخ الرابط. الصقه في إنستغرام","Nakopya ang link. I-paste sa Instagram"]
+});
 
 let LANG = (()=>{ try{ const s=localStorage.getItem("ds_lang"); if(s) return JSON.parse(s); }catch(e){} return (l=>l.startsWith("ar")?"ar":(l.startsWith("fil")||l.startsWith("tl"))?"fil":"en")((navigator.language||"").toLowerCase()); })();
 const SITE_LANGS=["en","ar","fil"];
@@ -1295,15 +1377,129 @@ function applyLang(){
 }
 function setLang(l){ saveCust(); LANG=l; if(typeof msgL!=="undefined") msgL=l; store.set("ds_lang",l); applyLang(); const y=scrollY; render(); window.scrollTo(0,y); }
 
+/* ===== FEED: TikTok-style swipe catalogue =====
+   Test mode: the Feed tab shows only after opening the site with ?feed (remembered on that phone); ?feed=0 hides it again. */
+const FEED_ON=(()=>{ const m=location.search.match(/[?&]feed(?:=([^&]*))?/); if(m){ const on=m[1]!=="0"; store.set("ds_feedon",on?1:0); return on; } return !!store.get("ds_feedon",0); })();
+if(FEED_ON){ $("#nFeed").hidden=false; $("#bn .in").style.gridTemplateColumns="repeat(5,1fr)"; }
+const FSHORT={coupon:["Coupons","الكوبونات","Coupons"],baby:["Kids","الأطفال","Pambata"],home:["Home","المنزل","Bahay"],light:["Lights","الإضاءة","Ilaw"],beauty:["Beauty","الجمال","Ganda"],travel:["Travel","السفر","Biyahe"],wear:["Fashion","الأزياء","Damit"],jewel:["Jewellery","مجوهرات","Alahas"],office:["Office","المكتب","Opisina"]};
+const fShort=k=>(FSHORT[k]||[])[L()]||CAT[k][LANG];
+const FI={
+ plus:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>`,
+ share:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>`,
+ info:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><circle cx="12" cy="7.6" r=".6" fill="currentColor"/></svg>`,
+ up:`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14l6-6 6 6"/><path d="M6 20l6-6 6 6" opacity=".5"/></svg>`,
+ l:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>`,
+ r:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>`,
+ side:`<svg class="flip" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></svg>`,
+ ig:`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg>`,
+ link:`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>`
+};
+let feedIdx=0, fdObs=null, fdTm=0;
+const fdList=()=>[...CATS.filter(([k])=>k!=="coupon"),...CATS.filter(([k])=>k==="coupon")].flatMap(([k])=>P.filter(p=>p.cat===k));   // coupon deals last
+const fdAddInner=id=>{ const n=qtyOf(id); return `<span class="ic">${n?`<b>${n}</b>`:FI.plus}</span>${esc(t("fdAdd"))}`; };
+const fdUrl=id=>SITE+"?p="+id;
+const fdMsg=p=>`${nm(p)} · ${t("fdMsg")}\n${fdUrl(p.id)}`;
+function fdToast(m){ const e=$("#fdToast"); if(!e) return; e.textContent=m; e.hidden=false; clearTimeout(fdTm); fdTm=setTimeout(()=>{e.hidden=true;},1600); }
+function fdCopy(s,done){ (navigator.clipboard?navigator.clipboard.writeText(s):Promise.reject()).then(done).catch(()=>{const ta=document.createElement("textarea");ta.value=s;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done();}catch(_){}ta.remove();}); }
+function feed(){
+  const FL=fdList(), tot={}, pos=[], first={};
+  FL.forEach((p,i)=>{ tot[p.cat]=(tot[p.cat]||0)+1; pos.push(tot[p.cat]); if(first[p.cat]===undefined) first[p.cat]=i; });
+  if(feedIdx>=FL.length) feedIdx=0;
+  const ck=[...new Set(FL.map(p=>p.cat))];
+  app.innerHTML=`<div class="feed" id="feed">
+   <div class="fd-scroll" id="fdScroll">${FL.map((p,i)=>{ const ims=imgs(p); return `<section class="fd-slide" data-i="${i}" aria-label="${esc(nm(p))}">
+     <img class="fd-bg" src="img/${p.id}-l.webp" alt="" aria-hidden="true" loading="lazy"><div class="fd-shade"></div>
+     <div class="fd-in">
+      <div class="fd-ph">
+       <div class="fd-gal" dir="ltr">${ims.map(im=>`<figure class="${im.kind==="c"?"c":""}"><img src="${im.src}" alt="${esc(nm(p))}, ${esc(im.cap)}" loading="lazy"></figure>`).join("")}</div>
+       <button class="fd-arr l" data-fgo="-1" aria-label="${esc(t("fdPrevPh"))}" hidden>${FI.l}</button>
+       ${ims.length>1?`<button class="fd-arr r" data-fgo="1" aria-label="${esc(t("fdNextPh"))}">${FI.r}</button>`:""}
+       <div class="fd-price">${isCp(p.id)?"<em>🎟️</em>":""}<b>0.729</b><small>${t("omr")}</small></div>
+      </div>
+      <div class="fd-txt">
+       <div class="fd-dots" aria-hidden="true">${ims.map((_,k)=>`<i${k?"":' class="on"'}></i>`).join("")}<span class="fd-cap">${esc(ims[0].cap)}</span></div>
+       <div class="fd-cat">${esc(CAT[p.cat][LANG])} · <bdi dir="ltr">${pos[i]} / ${tot[p.cat]}</bdi></div>
+       <h2>${esc(nm(p))}</h2><p>${esc(p.blurb[LANG])}</p>
+      </div>
+      <div class="fd-rail">
+       <button class="fd-add" data-fadd="${p.id}" aria-label="${esc(t("addTo"))}: ${esc(nm(p))}">${fdAddInner(p.id)}</button>
+       <button data-fshare="${p.id}"><span class="ic">${FI.share}</span>${esc(t("fdShare"))}</button>
+       <button data-open="${p.id}"><span class="ic">${FI.info}</span>${esc(t("fdDetails"))}</button>
+      </div>
+     </div></section>`; }).join("")}</div>
+   <div class="fd-top"><div class="fd-brand"><b>Dollar Store <span>Oman</span></b><div class="fd-tr"><button class="fd-lang" id="fdLang" aria-label="${esc(t("fdLangL"))}">${LANG==="ar"?"ع":LANG==="fil"?"FIL":"EN"}</button><span class="fd-all">${amt("0.729")}</span></div></div>
+     <div class="fd-tabs" id="fdTabs">${ck.map(k=>`<button data-fcat="${k}">${esc(fShort(k))}</button>`).join("")}</div></div>
+   <button class="fd-next" id="fdNext" aria-label="${esc(t("fdNextP"))}">${FI.up}<span id="fdNextT"></span></button>
+   <div class="fd-bar"><i id="fdBar"></i></div>
+   ${store.get("ds_fdhint",0)?"":`<button class="fd-hint" id="fdHint"><span>${FI.up}${esc(t("fdHintUp"))}</span><span>${FI.side}${esc(t("fdHintSide"))}</span></button>`}
+   <div class="fd-toast" id="fdToast" role="status" hidden></div>
+  </div>`;
+  const sc=$("#fdScroll"), slides=[...sc.children];
+  const hideHint=()=>{ const h=$("#fdHint"); if(h){ h.remove(); store.set("ds_fdhint",1); } };
+  const syncBar=()=>{ const b=$("#fdBar"); if(b) b.style.width=Math.min(100,subtotal()/FREE_FROM*100)+"%"; };
+  const setCur=i=>{ feedIdx=i; const p=FL[i], nx=FL[i+1];
+    $("#fdNextT").textContent = nx&&nx.cat!==p.cat ? t("fdNext")+fShort(nx.cat) : t("fdSwipe");
+    const bar=$("#fdTabs");
+    bar.querySelectorAll("[data-fcat]").forEach(b=>{ const on=b.dataset.fcat===p.cat; b.setAttribute("aria-current",on);
+      if(on){ const br=bar.getBoundingClientRect(), r=b.getBoundingClientRect(); if(r.left<br.left||r.right>br.right) bar.scrollBy({left:(r.left+r.width/2)-(br.left+br.width/2),behavior:"smooth"}); } }); };
+  if(fdObs) fdObs.disconnect();
+  fdObs=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ const i=+e.target.dataset.i; if(i!==feedIdx) hideHint(); setCur(i); } }),{root:sc,threshold:.6});
+  slides.forEach(s=>fdObs.observe(s));
+  sc.querySelectorAll(".fd-gal").forEach(g=>g.addEventListener("scroll",()=>{
+    const k=Math.round(g.scrollLeft/g.clientWidth), sl=g.closest(".fd-slide"), ims=imgs(FL[+sl.dataset.i]);
+    sl.querySelectorAll(".fd-dots i").forEach((d,j)=>d.classList.toggle("on",j===k));
+    sl.querySelector(".fd-cap").textContent=ims[k]?ims[k].cap:"";
+    const l=sl.querySelector(".fd-arr.l"), r=sl.querySelector(".fd-arr.r"); if(l) l.hidden=k===0; if(r) r.hidden=k>=ims.length-1;
+    if(k) hideHint(); },{passive:true}));
+  $("#feed").addEventListener("click",e=>{ const x=e.target;
+    if(x.closest("#fdHint")){ hideHint(); return; }
+    const a=x.closest("[data-fadd]");
+    if(a){ const id=+a.dataset.fadd;
+      if(SIZES[id]||isCp(id)||!leftOf(id)){ go("product",false,{id}); return; }   // needs a size/colour, coupon or stock check: open the product page
+      const n0=cart[id]||0; setQty(id,n0+1);
+      if((cart[id]||0)>n0){ a.innerHTML=fdAddInner(id); a.classList.remove("pop"); void a.offsetWidth; a.classList.add("pop"); fdToast(t("added")); syncBar(); }
+      return; }
+    const s=x.closest("[data-fshare]"); if(s){ fdShareOpen(+s.dataset.fshare); return; }
+    const c=x.closest("[data-fcat]"); if(c){ const i=FL.findIndex(p=>p.cat===c.dataset.fcat); if(i>=0) sc.scrollTo({top:i*sc.clientHeight,behavior:"smooth"}); return; }
+    const g=x.closest("[data-fgo]"); if(g){ const gal=g.closest(".fd-ph").querySelector(".fd-gal"); gal.scrollBy({left:gal.clientWidth*(+g.dataset.fgo),behavior:"smooth"}); return; }
+    if(x.closest("#fdNext")){ const n=feedIdx+1<FL.length?feedIdx+1:0; sc.scrollTo({top:n*sc.clientHeight,behavior:"smooth"}); return; }
+    if(x.closest("#fdLang")){ openLangPop(); return; }
+  });
+  requestAnimationFrame(()=>{ sc.scrollTop=feedIdx*sc.clientHeight; setCur(feedIdx); syncBar(); });
+}
+/* share panel: WhatsApp, Instagram (phone share menu, with the photo when the phone allows), copy link */
+function fdShareOpen(id){
+  const p=byId[id]; if(!p||$("#fdSheet")) return;
+  let file=null;   // photo as JPEG, made ready now so the phone's share menu can open straight away on tap
+  const im=new Image(); im.onload=()=>{ try{ const cv=document.createElement("canvas"); cv.width=im.naturalWidth; cv.height=im.naturalHeight; cv.getContext("2d").drawImage(im,0,0); cv.toBlob(b=>{ if(b) file=new File([b],`dollar-store-oman-${id}.jpg`,{type:"image/jpeg"}); },"image/jpeg",.9); }catch(_){} }; im.src=`img/${id}-l.webp`;
+  const w=document.createElement("div"); w.className="fd-sheet"; w.id="fdSheet";
+  w.innerHTML=`<div class="fd-sh" role="dialog" aria-modal="true" aria-labelledby="fdShT">
+    <div class="fd-sh-h"><div><b id="fdShT">${esc(t("fdShare"))}</b><small>${esc(nm(p))} · ${amt("0.729")}</small></div><button class="fd-sh-x" data-fsx aria-label="${esc(t("fdClose"))}">×</button></div>
+    <div class="fd-sh-g"><button data-fsw><i style="background:#25D366">${I.wa}</i>WhatsApp</button><button data-fsi><i style="background:#C13584">${FI.ig}</i>Instagram</button><button data-fsc><i style="background:var(--soft);color:#141414">${FI.link}</i>${esc(t("fdCopy"))}</button></div></div>`;
+  document.body.appendChild(w);
+  const close=()=>w.remove();
+  w.addEventListener("click",e=>{ const x=e.target;
+    if(x===w||x.closest("[data-fsx]")){ close(); return; }
+    if(x.closest("[data-fsw]")){ close(); window.open("https://api.whatsapp.com/send?text="+encodeURIComponent(fdMsg(p)),"_blank","noopener"); return; }
+    if(x.closest("[data-fsc]")){ close(); fdCopy(fdUrl(id),()=>fdToast(t("copied"))); return; }
+    if(x.closest("[data-fsi]")){ close();
+      const data={title:nm(p),text:fdMsg(p)};
+      if(file&&navigator.canShare&&navigator.canShare({files:[file]})) data.files=[file]; else data.url=fdUrl(id);
+      if(navigator.share) navigator.share(data).catch(err=>{ if(!err||err.name!=="AbortError") fdCopy(fdUrl(id),()=>fdToast(t("fdIgTip"))); });
+      else fdCopy(fdUrl(id),()=>fdToast(t("fdIgTip")));
+      return; } });
+}
+
 /* ===== router ===== */
 const cur=()=>stack[stack.length-1];
 function render(){
   const v=cur().v; if($("#sdd")&&!$("#sdd").hidden&&document.activeElement!==$("#q")) closeSdd();
-  ({home,product:()=>product(cur().id),cart:cartView,checkout,done,cats,help,join,mysales,order:orderView})[v]();
-  const navKey={home:"home",product:"home",cats:"cats",cart:"cart",checkout:"cart",done:"cart",help:"help",join:"help",mysales:"help"}[v];
+  ({home,product:()=>product(cur().id),cart:cartView,checkout,done,cats,help,join,mysales,order:orderView,feed})[v]();
+  document.documentElement.classList.toggle("fd-on",v==="feed");
+  const navKey={home:"home",product:"home",cats:"cats",cart:"cart",checkout:"cart",done:"cart",help:"help",join:"help",mysales:"help",feed:"feed"}[v];
   document.querySelectorAll("#bn [data-nav]").forEach(b=>{ if(b.dataset.nav===navKey) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
-  const main=(v==="home"||v==="cats"||v==="help");
-  $("#bn").hidden=!main; $("#hdr").hidden=!main;
+  const main=(v==="home"||v==="cats"||v==="help"||v==="feed");
+  $("#bn").hidden=!main; $("#hdr").hidden=!main||v==="feed";
   const fab=$("#wafab"); fab.hidden=!(v==="home"||v==="cats"); fab.href=waLink(); fab.setAttribute("aria-label",t("chatWa")); fab.title=t("chatWa");
   $("#float").hidden = v!=="product"; $("#float").classList.remove("solid");
   $("#topbar").hidden = !(v==="cart"||v==="checkout"||v==="done"||v==="join"||v==="mysales"||v==="order");
