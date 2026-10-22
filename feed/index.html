@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Dollar Store Oman – Swipe</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#000000">
+<meta name="description" content="Swipe through everything at 0.729 OMR. Free delivery on orders of 10 OMR or more. Cash on delivery.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mtayyabr.github.io/catalogue/feed/">
+<meta property="og:title" content="Dollar Store Oman – Everything 0.729 OMR">
+<meta property="og:description" content="Swipe, add, order on WhatsApp · Free delivery on orders of 10 OMR or more · كل شيء بـ 0.729 ر.ع.">
+<meta property="og:image" content="https://mtayyabr.github.io/catalogue/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="../img/icon-192.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DS Swipe">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap">
+<style>
+/* Dollar Store Oman – SWIPE APP (TikTok-style). Phone first; on a computer it shows as a phone-width column.
+   Products come from ../js/products.js (shared with the catalogue). Cart is shared with the catalogue; Checkout opens the catalogue cart. */
+:root{
+  color-scheme:dark;
+  --brand:#FFD200; --ink:#141414; --ink2:#555; --soft:#F2F2F2; --wa:#25D366; --ig:#C13584;
+  --font:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --top:96px;
+}
+html[lang="ar"]{--font:"Tajawal","Figtree",system-ui,"Segoe UI",Tahoma,Arial,sans-serif}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%;background:#000;color:#fff;font-family:var(--font);-webkit-tap-highlight-color:transparent;overscroll-behavior:none;overflow:hidden}
+button{font-family:inherit;cursor:pointer}
+[dir="rtl"] .flip{transform:scaleX(-1)}
+.rs{height:.78em;width:auto;vertical-align:-.04em;margin-inline-end:.14em;overflow:visible}
+
+/* the app column: full screen on a phone, phone-width in the middle on a computer */
+.app{position:fixed;top:0;bottom:0;left:50%;width:100%;max-width:480px;transform:translateX(-50%);overflow:hidden;background:#000;
+  --gs:min(100vw,480px,calc(100vh - var(--top) - 250px));--gs:min(100vw,480px,calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - var(--top) - 250px))}
+@media (min-width:600px){ body{background:#161616} .app{box-shadow:0 0 0 1px #2a2a2a,0 10px 60px rgba(0,0,0,.6)} }
+
+.scroll{position:absolute;inset:0;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;scrollbar-width:none}
+.scroll::-webkit-scrollbar,.gal::-webkit-scrollbar,.tabs::-webkit-scrollbar{display:none}
+.slide{position:relative;height:100%;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden}
+.bg{position:absolute;left:-40px;top:-40px;width:calc(100% + 80px);height:calc(100% + 80px);object-fit:cover;filter:blur(26px) brightness(.5)}
+.shade{position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,0) 20%,rgba(0,0,0,0) 55%,rgba(0,0,0,.75))}
+.ph{position:absolute;top:calc(var(--top) + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:var(--gs);height:var(--gs)}
+.gal{display:flex;width:100%;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.gal figure{flex:0 0 100%;margin:0;scroll-snap-align:start}
+.gal img{width:100%;height:100%;object-fit:cover;display:block}
+.gal figure.c{background:#fff}.gal figure.c img{object-fit:contain;padding:7%}
+.arr{position:absolute;top:50%;margin-top:-22px;width:44px;height:44px;border:0;border-radius:50%;background:rgba(0,0,0,.4);color:#fff;display:flex;align-items:center;justify-content:center}
+.arr.l{left:6px}.arr.r{right:6px}
+.arr.r svg{animation:nudgeR 1.6s ease-in-out infinite}.arr.l svg{animation:nudgeL 1.6s ease-in-out infinite}
+@keyframes nudgeR{50%{transform:translateX(5px)}}@keyframes nudgeL{50%{transform:translateX(-5px)}}
+.price{position:absolute;inset-inline-start:12px;bottom:12px;background:var(--brand);color:var(--ink);border-radius:14px;padding:8px 13px 7px;display:flex;flex-direction:column;align-items:center;line-height:1;box-shadow:0 2px 10px rgba(0,0,0,.25);pointer-events:none}
+.price b{font-size:26px;font-weight:800}.price small{font-size:12px;font-weight:800;margin-top:3px}.price em{font-style:normal;font-size:11px;font-weight:800;margin-bottom:4px}
+.new{position:absolute;inset-inline-end:10px;top:10px;background:#F2460D;color:#fff;font-size:11px;font-weight:800;padding:4px 8px;border-radius:8px;pointer-events:none}
+.txt{position:absolute;inset-inline-start:14px;inset-inline-end:78px;bottom:calc(60px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:6px;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.dots{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.88);min-width:0}
+.dots i{flex:none;width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.55);transition:width .2s}
+.dots i.on{width:18px;background:var(--brand)}
+.cap{margin-inline-start:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cat{font-size:12px;color:rgba(255,255,255,.88)}
+.txt h2{margin:0;font-size:20px;font-weight:800;line-height:1.2}
+.txt p{margin:0;font-size:14px;line-height:1.4;color:rgba(255,255,255,.92);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.rail{position:absolute;inset-inline-end:6px;bottom:calc(60px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px;align-items:center}
+.rail button{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;color:#fff;font:700 11px var(--font);padding:0;min-width:60px;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.rail .ic{width:48px;height:48px;border-radius:50%;background:rgba(0,0,0,.42);display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.rail .add .ic{background:var(--brand);color:var(--ink)}.rail .add b{font-size:19px;font-weight:800}
+.add.pop .ic{transform:scale(1.18)}
+
+.top{position:absolute;left:0;right:0;top:0;z-index:3;padding-top:env(safe-area-inset-top,0px);pointer-events:none}
+.top>*{pointer-events:auto}
+.brand{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px 0}
+.brand a{color:#fff;text-decoration:none;font-size:15px;font-weight:800;white-space:nowrap}.brand a span{color:var(--brand)}
+.tr{display:flex;gap:6px;align-items:center}
+.lang{height:34px;min-width:44px;border-radius:999px;border:1px solid rgba(255,255,255,.45);background:rgba(0,0,0,.4);color:#fff;font:800 12px var(--font);padding:0 10px}
+.cartb{position:relative;width:38px;height:38px;border-radius:50%;border:0;background:var(--brand);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.cartb b{position:absolute;top:-4px;inset-inline-end:-4px;min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:#F2460D;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #000}
+.tabs{display:flex;gap:18px;overflow-x:auto;padding:4px 14px 0;scrollbar-width:none}
+.tabs button{flex:none;background:none;border:0;color:rgba(255,255,255,.72);font:600 15px var(--font);padding:8px 0;min-height:42px;border-bottom:2px solid transparent;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.tabs button[aria-current="true"]{color:#fff;font-weight:800;border-bottom-color:var(--brand)}
+.next{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(4px + env(safe-area-inset-bottom,0px));z-index:2;background:none;border:0;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font:700 11px var(--font);min-width:110px;min-height:52px;text-shadow:0 1px 3px rgba(0,0,0,.5);white-space:nowrap}
+.next svg{animation:bob 1.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0);opacity:.95}50%{transform:translateY(-8px);opacity:.6}}
+.bar{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.18);z-index:2;pointer-events:none}.bar i{display:block;height:100%;width:0;background:var(--brand);transition:width .3s}
+.hint{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);z-index:4;width:270px;background:rgba(0,0,0,.78);border:0;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:12px;color:#fff;font:600 14px var(--font);text-align:start}
+.hint span{display:flex;align-items:center;gap:10px}.hint svg{flex:none;color:var(--brand)}
+.hint span:first-child svg{animation:bob 1.4s ease-in-out infinite}
+.toast{position:absolute;left:50%;top:110px;transform:translateX(-50%);z-index:6;background:#fff;color:var(--ink);font-weight:800;font-size:14px;padding:10px 16px;border-radius:999px;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+
+/* computer: up/down buttons beside the column */
+.pcnav{position:fixed;top:50%;left:calc(50% + 260px);transform:translateY(-50%);display:none;flex-direction:column;gap:12px;z-index:5}
+.pcnav button{width:52px;height:52px;border-radius:50%;border:1px solid #444;background:#222;color:#fff;display:flex;align-items:center;justify-content:center}
+.pcnav button:hover{background:#333}
+@media (hover:hover) and (pointer:fine) and (min-width:700px){ .pcnav{display:flex} }
+
+/* bottom sheets (cart, size, share, details) */
+.sheet{position:absolute;inset:0;z-index:20;background:rgba(0,0,0,.55);display:flex;align-items:flex-end}
+.sh{background:#fff;color:var(--ink);width:100%;max-height:88%;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 18px calc(22px + env(safe-area-inset-bottom,0px))}
+.sh-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+.sh-h b{display:block;font-size:18px}.sh-h small{color:var(--ink2);font-size:13px}
+.x{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:var(--soft);font-size:22px;color:var(--ink)}
+.shg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.shg button{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:8px;font:700 13px var(--font);color:var(--ink);padding:6px 0}
+.shg i{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border:0;border-radius:14px;background:#0A8A3A;color:#fff;font:800 16px var(--font);text-decoration:none}
+.btn.ghost{background:var(--soft);color:var(--ink);margin-top:8px}
+.sizes{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.sz{min-height:44px;padding:8px 14px;border-radius:12px;border:1.5px solid #ddd;background:#fff;color:var(--ink);font:700 14px var(--font);display:flex;align-items:center;gap:8px}
+.sz .sw{width:22px;height:22px;border-radius:50%;border:1px solid rgba(0,0,0,.15);flex:none}
+.sz i{font-style:normal;background:var(--brand);border-radius:9px;padding:1px 7px;font-size:12px}
+.ci{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #eee}
+.ci img{width:56px;height:56px;border-radius:10px;object-fit:cover;flex:none;background:var(--soft)}
+.ci div{flex:1;min-width:0;font-size:14px;font-weight:600}.ci div small{display:block;color:var(--ink2);font-weight:500}
+.qty{display:flex;align-items:center;gap:4px}
+.qty button{width:36px;height:36px;border-radius:50%;border:0;background:var(--soft);font-size:18px;font-weight:800;color:var(--ink)}
+.qty b{min-width:22px;text-align:center}
+.fdl{margin:12px 0;font-size:14px;color:#0A8A3A;font-weight:700}
+.fdl .track{height:6px;border-radius:3px;background:#e6e6e6;margin-top:6px;overflow:hidden}.fdl .track i{display:block;height:100%;background:#0A8A3A}
+.tot{display:flex;justify-content:space-between;font-size:16px;font-weight:800;margin-bottom:12px}
+.empty{color:var(--ink2);text-align:center;padding:20px 0}
+.det p{font-size:15px;line-height:1.5;margin:0 0 12px}
+.det .cu{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.det figure{margin:0}.det figure img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;display:block}
+.det figcaption{font-size:12px;color:var(--ink2);margin-top:4px}
+
+/* language picker */
+.lp{position:absolute;inset:0;z-index:30;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;padding:20px}
+.lp-b{background:#fff;color:var(--ink);border-radius:20px;padding:24px 20px;width:100%;max-width:340px;text-align:center}
+.lp-b img{width:64px;height:64px;border-radius:14px}
+.lp-b h2{margin:10px 0 4px;font-size:19px}.lp-b p{margin:0 0 16px;color:var(--ink2);font-size:14px}
+.lp-b button{display:block;width:100%;min-height:52px;margin-top:10px;border-radius:14px;border:1.5px solid #ddd;background:#fff;font:800 17px var(--font);color:var(--ink)}
+.lp-b button[aria-current="true"]{border-color:var(--ink);background:var(--soft)}
+@media (prefers-reduced-motion:reduce){.next svg,.arr svg,.hint svg{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<div class="pcnav" id="pcnav" aria-hidden="true"><button id="pcUp" tabindex="-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button><button id="pcDown" tabindex="-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+
+<script src="../js/products.js"></script>
+<script>
+/* ===== settings ===== */
+const SITE="https://mtayyabr.github.io/catalogue/";
+const IMG="../img/";
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const omr=b=>(b/1000).toFixed(3);
+const RS=`<svg class="rs" viewBox="5 7 52 40" role="img" aria-label="OMR"><rect x="7" y="30.2" width="48" height="4.2" fill="currentColor"/><rect x="7" y="41.4" width="48" height="4.2" fill="currentColor"/><path d="M41.3 18.6C39.3 13.2 35.4 9.9 30.4 9.9 24.9 9.9 21.6 14.4 21.6 20.6 21.6 27.6 26.4 32.9 32.3 37.8L38.6 43.3" fill="none" stroke="currentColor" stroke-width="4.2" stroke-linejoin="round"/></svg>`;
+const amt=v=>`<span>${RS}${v}</span>`;
+
+/* ===== language: phone language on a phone; on a computer the visitor chooses (saved, shared with the catalogue) ===== */
+const LANGS=["en","ar","fil"];
+const phoneLang=()=>{ const l=(navigator.language||"").toLowerCase(); return l.startsWith("ar")?"ar":(l.startsWith("fil")||l.startsWith("tl"))?"fil":"en"; };
+const isPC=()=>matchMedia("(hover:hover) and (pointer:fine)").matches;
+const savedLang=store.get("ds_lang",null);
+let LANG=LANGS.includes(savedLang)?savedLang:phoneLang();
+const L=()=>LANG==="ar"?1:LANG==="fil"?2:0;
+
+/* ===== text [English, Arabic, Filipino] ===== */
+const TX={
+ swipe:["Swipe up","اسحب لأعلى","Swipe pataas"],
+ next:["Next: ","التالي: ","Susunod: "],
+ nextP:["Next product","المنتج التالي","Susunod na produkto"],
+ prevP:["Previous product","المنتج السابق","Nakaraang produkto"],
+ hintUp:["Swipe up for the next product","اسحب لأعلى للمنتج التالي","I-swipe pataas para sa susunod na produkto"],
+ hintSide:["Swipe sideways for more photos","اسحب جانبًا لمزيد من الصور","I-swipe pagilid para sa iba pang litrato"],
+ hintPC:["Use the ↑ ↓ keys or mouse wheel to browse","استخدم مفاتيح ↑ ↓ أو عجلة الفأرة للتصفح","Gamitin ang ↑ ↓ o mouse wheel para mag-browse"],
+ prevPh:["Previous photo","الصورة السابقة","Nakaraang litrato"],
+ nextPh:["Next photo","الصورة التالية","Susunod na litrato"],
+ add:["Add","أضف","Idagdag"],
+ addTo:["Add to cart","أضف إلى السلة","Idagdag sa cart"],
+ share:["Share","مشاركة","I-share"],
+ details:["Details","التفاصيل","Detalye"],
+ copy:["Copy link","نسخ الرابط","Kopyahin ang link"],
+ copied:["Link copied ✓","تم نسخ الرابط ✓","Nakopya ang link ✓"],
+ igTip:["Link copied. Paste it in Instagram","تم نسخ الرابط. الصقه في إنستغرام","Nakopya ang link. I-paste sa Instagram"],
+ close:["Close","إغلاق","Isara"],
+ added:["Added ✓","تمت الإضافة ✓","Naidagdag ✓"],
+ inUse:["In use","أثناء الاستخدام","Ginagamit"],
+ actual:["Actual product","المنتج الفعلي","Aktwal na produkto"],
+ closeup:["Close-up","صورة مقرّبة","Close-up"],
+ newTag:["NEW","جديد","BAGO"],
+ coupon:["Coupon deal","عرض كوبون","Coupon deal"],
+ couponGo:["Coupon deal: open it in the catalogue to use the code","عرض كوبون: افتحه في الكتالوج لاستخدام الرمز","Coupon deal: buksan sa catalogue para gamitin ang code"],
+ choose:["Choose","اختر","Pumili"],
+ size:["Size","المقاس","Size"], colour:["Colour","اللون","Kulay"], design:["Design","التصميم","Disenyo"], option:["Option","الخيار","Opsyon"],
+ cart:["Your cart","سلتك","Ang cart mo"],
+ cartEmpty:["Your cart is empty. Tap + on any product.","سلتك فارغة. اضغط + على أي منتج.","Walang laman ang cart. I-tap ang + sa kahit anong produkto."],
+ items:[n=>`${n} item${n===1?"":"s"}`,n=>`${n} منتج`,n=>`${n} item`],
+ total:["Items total","مجموع المنتجات","Kabuuan ng items"],
+ fdNeed:[a=>`Add ${a} more for FREE delivery`,a=>`أضف ${a} للحصول على توصيل مجاني`,a=>`Magdagdag ng ${a} para sa LIBRENG delivery`],
+ fdDone:["You get FREE delivery!","التوصيل مجاني!","LIBRE ang delivery mo!"],
+ checkout:["Checkout · Cash on delivery","إتمام الطلب · الدفع عند الاستلام","Checkout · Cash on delivery"],
+ keep:["Keep swiping","تابع التصفح","Mag-swipe pa"],
+ viewCat:["See it in the catalogue","عرضه في الكتالوج","Tingnan sa catalogue"],
+ msg:["only 0.729 OMR at Dollar Store Oman 👇","بـ 0.729 ر.ع. فقط من دولار ستور عُمان 👇","0.729 OMR lang sa Dollar Store Oman 👇"],
+ langT:["Choose language","اختر اللغة","Piliin ang wika"],
+ langL:["Language","اللغة","Wika"],
+ cartL:["Cart","السلة","Cart"],
+ shopAll:["Open full catalogue","افتح الكتالوج الكامل","Buksan ang buong catalogue"]
+};
+const t=(k,...a)=>{ const v=TX[k][L()]??TX[k][0]; return typeof v==="function"?v(...a):v; };
+const FSHORT={coupon:["Coupons","الكوبونات","Coupons"],baby:["Kids","الأطفال","Pambata"],home:["Home","المنزل","Bahay"],light:["Lights","الإضاءة","Ilaw"],beauty:["Beauty","الجمال","Ganda"],travel:["Travel","السفر","Biyahe"],wear:["Fashion","الأزياء","Damit"],jewel:["Jewellery","مجوهرات","Alahas"],office:["Office","المكتب","Opisina"]};
+const short=k=>(FSHORT[k]||[])[L()]||CAT[k][LANG];
+const nm=p=>p.name[LANG]||p.name.en;
+const optLabel=id=>t(({colour:"colour",design:"design",option:"option"})[OPTL[id]]||"size");
+
+/* ===== icons ===== */
+const IC={
+ plus:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>`,
+ share:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>`,
+ info:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><circle cx="12" cy="7.6" r=".6" fill="currentColor"/></svg>`,
+ up:`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14l6-6 6 6"/><path d="M6 20l6-6 6 6" opacity=".5"/></svg>`,
+ l:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>`,
+ r:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>`,
+ side:`<svg class="flip" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></svg>`,
+ cart:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.7a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg>`,
+ wa:`<svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg>`,
+ ig:`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg>`,
+ link:`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>`
+};
+
+/* ===== products (from the shared list), coupon deals last ===== */
+const isCoupon=p=>p.cat==="coupon";
+const LIST=[...CATS.filter(([k])=>k!=="coupon"),...CATS.filter(([k])=>k==="coupon")].flatMap(([k])=>P.filter(p=>p.cat===k));
+const imgs=p=>[
+  {src:`${IMG}${p.id}-l.webp`,cap:t("inUse"),kind:"l"},
+  ...(L2.has(p.id)?[{src:`${IMG}${p.id}-l2.webp`,cap:t("inUse"),kind:"l"}]:[]),
+  ...(NOCUT.has(p.id)?[]:[{src:`${IMG}${p.id}-c.webp`,cap:t("actual"),kind:"c"}]),
+  {src:`${IMG}${p.id}-d1.webp`,cap:`${t("closeup")}: ${p.d[0][LANG]||p.d[0].en}`,kind:"d"},
+  {src:`${IMG}${p.id}-d2.webp`,cap:`${t("closeup")}: ${p.d[1][LANG]||p.d[1].en}`,kind:"d"}];
+
+/* ===== cart (same storage as the catalogue, so Checkout there shows these items) ===== */
+const getCart=()=>{ const c=store.get("ds_cart",{}); return c&&typeof c==="object"?c:{}; };
+const setCart=c=>store.set("ds_cart",c);
+const count=()=>Object.values(getCart()).reduce((a,b)=>a+b,0);
+const qtyOf=id=>{ const c=getCart(); return Object.keys(c).filter(k=>pid(k)===id).reduce((a,k)=>a+c[k],0); };
+function changeQty(key,d){ const c=getCart(); const n=Math.max(0,Math.min(99,(c[key]||0)+d)); if(n) c[key]=n; else delete c[key]; setCart(c); syncCart(); }
+const shareUrl=id=>SITE+"feed/?p="+id;
+const shareMsg=p=>`${nm(p)} · ${t("msg")}\n${shareUrl(p.id)}`;
+
+/* ===== state ===== */
+let idx=0, obs=null, toastT=0;
+{ const u=new URLSearchParams(location.search), p0=parseInt(u.get("p")), c0=u.get("cat");
+  const id0=VOF[p0]?VOF[p0][0]:p0, i=LIST.findIndex(p=>p.id===id0);
+  if(i>=0) idx=i; else if(c0){ const j=LIST.findIndex(p=>p.cat===c0); if(j>=0) idx=j; } }
+
+function toast(m){ const e=$("#toast"); if(!e) return; e.textContent=m; e.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>{e.hidden=true;},1600); }
+function copy(s,done){ (navigator.clipboard?navigator.clipboard.writeText(s):Promise.reject()).then(done).catch(()=>{const ta=document.createElement("textarea");ta.value=s;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done();}catch(_){}ta.remove();}); }
+const addInner=id=>{ const n=qtyOf(id); return `<span class="ic">${n?`<b>${n}</b>`:IC.plus}</span>${esc(t("add"))}`; };
+function syncCart(){
+  const n=count(), b=$("#cartN"); if(b){ b.hidden=!n; b.textContent=n; }
+  const bar=$("#bar"); if(bar) bar.style.width=Math.min(100,n*PRICE/FREE_FROM*100)+"%";
+  document.querySelectorAll("[data-add]").forEach(a=>a.innerHTML=addInner(+a.dataset.add));
+}
+
+/* ===== render the feed ===== */
+function render(){
+  const root=document.documentElement; root.lang=LANG; root.dir=LANG==="ar"?"rtl":"ltr";
+  const tot={}, pos=[];
+  LIST.forEach(p=>{ tot[p.cat]=(tot[p.cat]||0)+1; pos.push(tot[p.cat]); });
+  const cats=[...new Set(LIST.map(p=>p.cat))];
+  const pc=isPC();
+  $("#app").innerHTML=`
+   <div class="scroll" id="scroll">${LIST.map((p,i)=>{ const ims=imgs(p); return `<section class="slide" data-i="${i}" aria-label="${esc(nm(p))}">
+     <img class="bg" src="${IMG}${p.id}-l.webp" alt="" aria-hidden="true" loading="lazy"><div class="shade"></div>
+     <div class="ph">
+      <div class="gal" dir="ltr">${ims.map(im=>`<figure class="${im.kind==="c"?"c":""}"><img src="${im.src}" alt="${esc(nm(p))}, ${esc(im.cap)}" loading="lazy"></figure>`).join("")}</div>
+      <button class="arr l" data-go="-1" aria-label="${esc(t("prevPh"))}" hidden>${IC.l}</button>
+      ${ims.length>1?`<button class="arr r" data-go="1" aria-label="${esc(t("nextPh"))}">${IC.r}</button>`:""}
+      <div class="price">${isCoupon(p)?`<em>🎟️ ${esc(t("coupon"))}</em>`:""}<b>0.729</b><small>${LANG==="ar"?"ر.ع.":"OMR"}</small></div>
+      ${isNew(p)?`<span class="new">${t("newTag")}</span>`:""}
+     </div>
+     <div class="txt">
+      <div class="dots" aria-hidden="true">${ims.map((_,k)=>`<i${k?"":' class="on"'}></i>`).join("")}<span class="cap">${esc(ims[0].cap)}</span></div>
+      <div class="cat">${esc(CAT[p.cat][LANG])} · <bdi dir="ltr">${pos[i]} / ${tot[p.cat]}</bdi></div>
+      <h2>${esc(nm(p))}</h2><p>${esc(p.blurb[LANG]||p.blurb.en)}</p>
+     </div>
+     <div class="rail">
+      <button class="add" data-add="${p.id}" aria-label="${esc(t("addTo"))}: ${esc(nm(p))}">${addInner(p.id)}</button>
+      <button data-share="${p.id}"><span class="ic">${IC.share}</span>${esc(t("share"))}</button>
+      <button data-det="${p.id}"><span class="ic">${IC.info}</span>${esc(t("details"))}</button>
+     </div></section>`; }).join("")}</div>
+   <div class="top">
+    <div class="brand"><a href="../" aria-label="${esc(t("shopAll"))}">Dollar Store <span>Oman</span></a>
+     <div class="tr"><button class="lang" id="langB" aria-label="${esc(t("langL"))}">${LANG==="ar"?"ع":LANG==="fil"?"FIL":"EN"}</button>
+      <button class="cartb" id="cartB" aria-label="${esc(t("cartL"))}">${IC.cart}<b id="cartN" hidden></b></button></div></div>
+    <div class="tabs" id="tabs">${cats.map(k=>`<button data-cat="${k}">${esc(short(k))}</button>`).join("")}</div>
+   </div>
+   <button class="next" id="nextB" aria-label="${esc(t("nextP"))}">${IC.up}<span id="nextT"></span></button>
+   <div class="bar"><i id="bar"></i></div>
+   ${store.get("ds_fdhint",0)?"":`<button class="hint" id="hint"><span>${IC.up}${esc(pc?t("hintPC"):t("hintUp"))}</span><span>${IC.side}${esc(t("hintSide"))}</span></button>`}
+   <div class="toast" id="toast" role="status" hidden></div>`;
+
+  const sc=$("#scroll");
+  const setCur=i=>{ idx=i; const p=LIST[i], nx=LIST[i+1];
+    $("#nextT").textContent = nx&&nx.cat!==p.cat ? t("next")+short(nx.cat) : t("swipe");
+    const bar=$("#tabs");
+    bar.querySelectorAll("[data-cat]").forEach(b=>{ const on=b.dataset.cat===p.cat; b.setAttribute("aria-current",on);
+      if(on){ const br=bar.getBoundingClientRect(), r=b.getBoundingClientRect(); if(r.left<br.left||r.right>br.right) bar.scrollBy({left:(r.left+r.width/2)-(br.left+br.width/2),behavior:"smooth"}); } });
+    try{ history.replaceState(null,"","?p="+p.id); }catch(_){} };
+  if(obs) obs.disconnect();
+  obs=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ const i=+e.target.dataset.i; if(i!==idx) hideHint(); setCur(i); } }),{root:sc,threshold:.6});
+  [...sc.children].forEach(s=>obs.observe(s));
+  sc.querySelectorAll(".gal").forEach(g=>g.addEventListener("scroll",()=>{
+    const k=Math.round(g.scrollLeft/g.clientWidth), sl=g.closest(".slide"), ims=imgs(LIST[+sl.dataset.i]);
+    sl.querySelectorAll(".dots i").forEach((d,j)=>d.classList.toggle("on",j===k));
+    sl.querySelector(".cap").textContent=ims[k]?ims[k].cap:"";
+    const l=sl.querySelector(".arr.l"), r=sl.querySelector(".arr.r"); if(l) l.hidden=k===0; if(r) r.hidden=k>=ims.length-1;
+    if(k) hideHint(); },{passive:true}));
+  requestAnimationFrame(()=>{ sc.scrollTop=idx*sc.clientHeight; setCur(idx); syncCart(); });
+}
+const hideHint=()=>{ const h=$("#hint"); if(h){ h.remove(); store.set("ds_fdhint",1); } };
+const goTo=i=>{ const sc=$("#scroll"); if(!sc) return; i=(i+LIST.length)%LIST.length; sc.scrollTo({top:i*sc.clientHeight,behavior:"smooth"}); };
+const curGal=()=>{ const s=$(`.slide[data-i="${idx}"] .gal`); return s; };
+
+/* ===== sheets ===== */
+function sheet(html,onClick){
+  closeSheet(); const w=document.createElement("div"); w.className="sheet"; w.id="sheet";
+  w.innerHTML=`<div class="sh" role="dialog" aria-modal="true">${html}</div>`;
+  $("#app").appendChild(w);
+  w.addEventListener("click",e=>{ const x=e.target; if(x===w||x.closest("[data-x]")){ closeSheet(); return; } onClick&&onClick(x); });
+  const f=w.querySelector("button"); if(f) f.focus({preventScroll:true});
+  return w;
+}
+const closeSheet=()=>{ const s=$("#sheet"); if(s) s.remove(); };
+const head=(title,sub)=>`<div class="sh-h"><div><b>${title}</b>${sub?`<small>${sub}</small>`:""}</div><button class="x" data-x aria-label="${esc(t("close"))}">×</button></div>`;
+
+function addProduct(id,btn){
+  const p=byId[id];
+  if(isCoupon(p)){ toast(t("couponGo")); setTimeout(()=>{ location.href="../?p="+id; },900); return; }
+  if(SIZES[id]){ sizeSheet(id); return; }
+  changeQty(String(id),1); popAdd(id);
+}
+function popAdd(id){ document.querySelectorAll(`[data-add="${id}"]`).forEach(a=>{ a.classList.remove("pop"); void a.offsetWidth; a.classList.add("pop"); }); toast(t("added")); }
+function sizeSheet(id){
+  const p=byId[id], c=getCart();
+  const sw=z=>{ const w=swatch(id,z); return w?`<span class="sw" style="background:${w.startsWith("url")?w.replace("url(img/","url("+IMG)+" center/cover":w}"></span>`:""; };
+  sheet(`${head(`${esc(t("choose"))}: ${esc(optLabel(id))}`,esc(nm(p)))}
+    <div class="sizes">${SIZES[id].map(z=>`<button class="sz" data-z="${esc(z)}">${sw(z)}${esc(optName(z))}${c[id+"|"+z]?`<i>${c[id+"|"+z]}</i>`:""}</button>`).join("")}</div>`,
+    x=>{ const b=x.closest("[data-z]"); if(b){ changeQty(id+"|"+b.dataset.z,1); closeSheet(); popAdd(id); } });
+}
+function shareSheet(id){
+  const p=byId[id]; let file=null;
+  const im=new Image(); im.onload=()=>{ try{ const cv=document.createElement("canvas"); cv.width=im.naturalWidth; cv.height=im.naturalHeight; cv.getContext("2d").drawImage(im,0,0); cv.toBlob(b=>{ if(b) file=new File([b],`dollar-store-oman-${id}.jpg`,{type:"image/jpeg"}); },"image/jpeg",.9); }catch(_){} }; im.src=`${IMG}${id}-l.webp`;
+  sheet(`${head(esc(t("share")),`${esc(nm(p))} · ${amt("0.729")}`)}
+    <div class="shg"><button data-s="wa"><i style="background:var(--wa)">${IC.wa}</i>WhatsApp</button><button data-s="ig"><i style="background:var(--ig)">${IC.ig}</i>Instagram</button><button data-s="cp"><i style="background:var(--soft);color:var(--ink)">${IC.link}</i>${esc(t("copy"))}</button></div>`,
+    x=>{ const b=x.closest("[data-s]"); if(!b) return; const s=b.dataset.s; closeSheet();
+      if(s==="wa"){ window.open("https://api.whatsapp.com/send?text="+encodeURIComponent(shareMsg(p)),"_blank","noopener"); return; }
+      if(s==="cp"){ copy(shareUrl(id),()=>toast(t("copied"))); return; }
+      const data={title:nm(p),text:shareMsg(p)};
+      if(file&&navigator.canShare&&navigator.canShare({files:[file]})) data.files=[file]; else data.url=shareUrl(id);
+      if(navigator.share) navigator.share(data).catch(err=>{ if(!err||err.name!=="AbortError") copy(shareUrl(id),()=>toast(t("igTip"))); });
+      else copy(shareUrl(id),()=>toast(t("igTip"))); });
+}
+function detSheet(id){
+  const p=byId[id];
+  sheet(`${head(esc(nm(p)),`${amt("0.729")} · ${esc(CAT[p.cat][LANG])}`)}
+    <div class="det"><p>${esc(p.blurb[LANG]||p.blurb.en)}</p>
+     <div class="cu">${p.d.map((d,k)=>`<figure><img src="${IMG}${p.id}-d${k+1}.webp" alt="${esc(d[LANG]||d.en)}" loading="lazy"><figcaption>${esc(d[LANG]||d.en)}</figcaption></figure>`).join("")}</div>
+     <button class="btn" data-dadd>${IC.plus}${esc(t("addTo"))}</button>
+     <a class="btn ghost" href="../?p=${p.id}">${esc(t("viewCat"))}</a></div>`,
+    x=>{ if(x.closest("[data-dadd]")){ closeSheet(); addProduct(id); } });
+}
+function cartSheet(){
+  const c=getCart(), keys=Object.keys(c).filter(k=>byId[pid(k)]), n=keys.reduce((a,k)=>a+c[k],0), sub=n*PRICE, left=FREE_FROM-sub;
+  sheet(`${head(esc(t("cart")),esc(t("items",n)))}
+    ${n?`<div>${keys.map(k=>{ const p=byId[pid(k)], z=psz(k), ph=vid(k); return `<div class="ci"><img src="${IMG}${ph}-l.webp" alt=""><div>${esc(nm(p))}${z?`<small>${esc(optName(z))}</small>`:""}</div>
+       <div class="qty"><button data-q="${esc(k)}" data-d="-1" aria-label="−">−</button><b>${c[k]}</b><button data-q="${esc(k)}" data-d="1" aria-label="+">+</button></div></div>`; }).join("")}</div>
+     <div class="fdl">${left>0?t("fdNeed",amt(omr(left))):t("fdDone")}<div class="track"><i style="width:${Math.min(100,sub/FREE_FROM*100)}%"></i></div></div>
+     <div class="tot"><span>${esc(t("total"))}</span><span>${amt(omr(sub))}</span></div>
+     <a class="btn" href="../?cart">${esc(t("checkout"))}</a>`:`<p class="empty">${esc(t("cartEmpty"))}</p>`}
+    <button class="btn ghost" data-x>${esc(t("keep"))}</button>`,
+    x=>{ const b=x.closest("[data-q]"); if(b){ changeQty(b.dataset.q,+b.dataset.d); cartSheet(); } });
+}
+function langSheet(first){
+  const w=document.createElement("div"); w.className="lp"; w.id="lp"; w.setAttribute("role","dialog"); w.setAttribute("aria-modal","true");
+  w.innerHTML=`<div class="lp-b"><img src="${IMG}icon-192.png" alt=""><h2>Choose language · اختر اللغة</h2><p>Piliin ang wika</p>
+    ${[["en","English"],["ar","العربية"],["fil","Filipino"]].map(([k,n])=>`<button data-l="${k}" aria-current="${k===LANG}" lang="${k}">${n}</button>`).join("")}</div>`;
+  $("#app").appendChild(w);
+  w.addEventListener("click",e=>{ const b=e.target.closest("[data-l]"); if(b){ LANG=b.dataset.l; store.set("ds_lang",LANG); w.remove(); render(); } else if(e.target===w&&!first){ w.remove(); } });
+  const f=w.querySelector(`[data-l="${LANG}"]`); if(f) f.focus({preventScroll:true});
+}
+
+/* ===== events ===== */
+$("#app").addEventListener("click",e=>{ const x=e.target;
+  if(x.closest('a[href^="../"]')) store.set("ds_lang",LANG);   // going to the catalogue: keep the same language there (no language pop-up)
+  if(x.closest("#sheet")||x.closest("#lp")) return;
+  if(x.closest("#hint")){ hideHint(); return; }
+  const a=x.closest("[data-add]"); if(a){ addProduct(+a.dataset.add); return; }
+  const s=x.closest("[data-share]"); if(s){ shareSheet(+s.dataset.share); return; }
+  const d=x.closest("[data-det]"); if(d){ detSheet(+d.dataset.det); return; }
+  const c=x.closest("[data-cat]"); if(c){ const i=LIST.findIndex(p=>p.cat===c.dataset.cat); if(i>=0) goTo(i); return; }
+  const g=x.closest("[data-go]"); if(g){ const gal=g.closest(".ph").querySelector(".gal"); gal.scrollBy({left:gal.clientWidth*(+g.dataset.go),behavior:"smooth"}); return; }
+  if(x.closest("#nextB")){ goTo(idx+1); return; }
+  if(x.closest("#langB")){ langSheet(false); return; }
+  if(x.closest("#cartB")){ cartSheet(); return; }
+});
+$("#pcUp").onclick=()=>goTo(idx-1);
+$("#pcDown").onclick=()=>goTo(idx+1);
+addEventListener("keydown",e=>{
+  if(e.key==="Escape"){ closeSheet(); const l=$("#lp"); if(l&&savedLang!==null) l.remove(); return; }
+  if($("#sheet")||$("#lp")||e.target.closest("input,textarea")) return;
+  if(e.key==="ArrowDown"||e.key==="PageDown"||e.key===" "){ e.preventDefault(); goTo(idx+1); hideHint(); }
+  else if(e.key==="ArrowUp"||e.key==="PageUp"){ e.preventDefault(); goTo(idx-1); }
+  else if(e.key==="ArrowRight"||e.key==="ArrowLeft"){ const g=curGal(); if(g){ e.preventDefault(); g.scrollBy({left:g.clientWidth*(e.key==="ArrowRight"?1:-1),behavior:"smooth"}); } }
+});
+addEventListener("storage",e=>{ if(e.key==="ds_cart") syncCart(); });   // cart changed in the catalogue tab
+addEventListener("pageshow",syncCart);                                   // back from the catalogue
+addEventListener("resize",()=>{ const sc=$("#scroll"); if(sc) sc.scrollTop=idx*sc.clientHeight; });
+
+render();
+if(savedLang===null&&isPC()) langSheet(true);    // computer, first visit: choose language. Phone: uses the phone's language.
+if("serviceWorker" in navigator && location.protocol==="https:" && /github\.io$/.test(location.hostname)) navigator.serviceWorker.register("../sw.js").catch(()=>{});
+</script>
+</body>
+</html>
