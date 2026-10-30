@@ -1,0 +1,368 @@
+<title>Dollar Store Oman Reels</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Readex+Pro:wght@400;600&display=swap">
+<style id="css">
+/* Layout: full-screen vertical swipe feed (scroll-snap) mixing the store's own reels and lamp photos; right action rail; bilingual caption at bottom. Single dark theme in the store's green and yellow. */
+:root{
+  --ink:#03231a; --deep:#011510; --paper:#f7f4ec; --mute:#9fb8ad;
+  --price:#ffd915; --hot:#ff4d6d; --leaf:#5fdc8f;
+  --display:"Bricolage Grotesque","Arial Black",system-ui,sans-serif;
+  --body:"Readex Pro","Segoe UI",Tahoma,system-ui,sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--deep);color:var(--paper);font-family:var(--body);overflow:hidden}
+.app{position:relative;height:100%;max-width:480px;margin:0 auto;background:var(--ink)}
+.top{position:absolute;top:0;left:0;right:0;z-index:5;padding:calc(8px + env(safe-area-inset-top,0px)) 0 22px;background:linear-gradient(#000000a6,transparent)}
+.chips{display:flex;gap:20px;overflow-x:auto;padding:6px max(16px,env(safe-area-inset-left,0px));scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;background:none;border:0;border-bottom:2px solid transparent;color:#ffffffb3;font:600 .95rem var(--body);padding:6px 0;cursor:pointer;text-shadow:0 1px 3px #0009}
+.chip[aria-pressed="true"]{color:#fff;border-bottom-color:#fff}
+:focus-visible{outline:2px solid var(--price);outline-offset:2px}
+
+.feed{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none}
+.feed::-webkit-scrollbar{display:none}
+.card{position:relative;height:100%;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden;background:#000}
+.bgblur{position:absolute;inset:-30px;background-size:cover;background-position:center;filter:blur(28px) brightness(.72) saturate(1.2);transform:scale(1.1)}
+.media{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center 42%}
+.gal{position:absolute;inset:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.gal::-webkit-scrollbar{display:none}
+.gal img{flex:none;width:100%;height:100%;object-fit:contain;object-position:center 42%;scroll-snap-align:center}
+.card.on .media,.card.on .gal img{animation:kb 9s ease-out forwards}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.07)}}
+.dots{position:absolute;z-index:3;top:calc(58px + env(safe-area-inset-top,0px));left:16px;right:16px;display:flex;gap:4px}
+.dots i{flex:1;height:3px;border-radius:2px;background:#ffffff59}
+.dots i.on{background:#fff}
+
+.rail{position:absolute;right:max(8px,env(safe-area-inset-right,0px));bottom:calc(96px + env(safe-area-inset-bottom,0px));
+  display:flex;flex-direction:column;align-items:center;gap:14px;z-index:3}
+.omr{display:inline-block;width:1.5em;height:.85em;margin-inline-start:.3em;vertical-align:-.06em;background:currentColor;-webkit-mask:url(data:image/png;base64,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) center/contain no-repeat;mask:url(data:image/png;base64,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) center/contain no-repeat}
+.price .was{font:600 .8rem var(--body);opacity:.65;margin-inline-start:6px}
+.price .until{font:700 .62rem var(--body);background:var(--ink);color:var(--price);padding:2px 7px;border-radius:99px;margin-inline-start:6px;align-self:center}
+.avatar{width:46px;height:46px;border-radius:50%;background:var(--price);color:var(--ink);border:2px solid #fff;display:grid;place-items:center;overflow:hidden;margin-bottom:4px}
+.avatar img{width:100%;height:100%;object-fit:cover;object-position:50% 38%;transform:scale(1.25)}
+.end .logo{width:84px;height:84px;flex:none;border-radius:50%;object-fit:cover;object-position:50% 38%;border:3px solid #fff;margin:0 auto;display:block}
+.act{background:none;border:0;color:#fff;display:flex;flex-direction:column;align-items:center;gap:2px;
+  font:600 .72rem var(--body);cursor:pointer;text-shadow:0 1px 3px #000}
+.act i{width:44px;height:44px;display:grid;place-items:center}
+.act svg{width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 3px #0009)}
+.act[aria-pressed="true"].like svg{fill:var(--hot);stroke:var(--hot)}
+.act[aria-pressed="true"].save svg{fill:var(--price);stroke:var(--price)}
+
+.cap{position:absolute;left:0;right:0;bottom:0;z-index:2;
+  padding:80px max(82px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  background:linear-gradient(transparent,#000000d9 65%)}
+.handle{font-weight:700;font-size:.92rem;text-shadow:0 1px 3px #000}
+.name{font:800 1.2rem/1.15 var(--display);margin:6px 0 2px;text-wrap:balance}
+.ar{font:500 .95rem/1.4 var(--body)}
+.price{display:inline-flex;align-items:baseline;gap:6px;margin-top:8px;background:var(--price);color:var(--ink);padding:5px 12px;border-radius:99px;font:800 1.05rem var(--display)}
+.price small{font:600 .68rem var(--body)}
+.more{display:block;background:none;border:0;color:#ffffffcc;font:600 .8rem var(--body);padding:8px 0 0;cursor:pointer}
+.details{display:none;margin-top:4px;font-size:.84rem;line-height:1.5}
+.cap.open .details{display:block}
+.details .spec{color:var(--price);font-weight:600}
+.details .hook{color:#ffffffd9;margin-top:4px}
+.aitag{font-size:.66rem;color:#ffffffa6;margin-top:6px}
+
+.sound{position:absolute;z-index:3;top:calc(118px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));
+  background:#011510b3;color:var(--paper);border:1px solid #ffffff33;border-radius:99px;padding:7px 12px;font:600 .75rem var(--body);cursor:pointer}
+.prog{position:absolute;left:0;right:0;bottom:0;height:3px;background:#ffffff22;z-index:4}
+.prog b{display:block;height:100%;width:0;background:var(--price)}
+
+.burst{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;z-index:4}
+.burst svg{width:110px;height:110px;fill:var(--hot);animation:pop .7s ease-out forwards}
+@keyframes pop{0%{transform:scale(.3);opacity:0}30%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:0}}
+
+.end{display:flex;flex-direction:column;justify-content:safe center;gap:10px;text-align:center;overflow-y:auto;padding-top:64px;padding-bottom:24px;
+  padding-inline:max(24px,env(safe-area-inset-left,0px));background:var(--price);color:var(--ink)}
+.end .big{font:800 3.6rem/1 var(--display);letter-spacing:-.04em}
+.end h2{font:800 2.1rem/1.05 var(--display);margin:0;letter-spacing:-.02em;text-wrap:balance}
+.end p{margin:0;font-size:1rem;line-height:1.6}
+.wa{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:8px}
+.wa .num{font:800 1.6rem var(--display);user-select:all;font-variant-numeric:tabular-nums}
+.btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{background:var(--ink);color:var(--price);border:0;border-radius:12px;padding:11px 16px;font:600 .9rem var(--body);text-decoration:none;cursor:pointer}
+.btn.alt{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:9;
+  background:var(--paper);color:var(--ink);padding:10px 16px;border-radius:12px;font-size:.85rem;font-weight:600}
+@media (prefers-reduced-motion:reduce){.burst svg{animation:none;opacity:0}.card.on .media,.card.on .gal img{animation:none}}
+
+.act.wa,.act.dir{text-decoration:none}
+.act.dir i{background:#4285f4;border-radius:50%;width:46px;height:46px}
+.act.dir svg{width:24px;height:24px;stroke:#fff;filter:none}
+.act.wa i{background:#25d366;border-radius:50%;width:46px;height:46px}
+.act.wa svg{width:24px;height:24px;stroke:#fff;filter:none}
+.sheet{position:absolute;inset:0;z-index:15;background:#000a;display:flex;align-items:flex-end}
+.sbox{width:100%;background:#102a21;border-radius:18px 18px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom,0px));display:grid;gap:10px}
+.sbox b{font:800 1.05rem var(--display)}
+.sbtn{display:block;text-align:center;text-decoration:none;border:0;border-radius:12px;padding:13px;background:var(--c);color:#fff;font:700 .95rem var(--body);cursor:pointer}
+.sclose{background:none;border:0;color:#ffffffb3;padding:8px;font:600 .85rem var(--body);cursor:pointer}
+.gear{position:absolute;z-index:6;right:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px));background:var(--price);color:var(--ink);border:0;border-radius:99px;padding:10px 16px;font:800 .85rem var(--body);box-shadow:0 4px 14px #0008;cursor:pointer}
+.panel{position:absolute;inset:0;z-index:20;background:#06150f;color:var(--paper);display:flex;flex-direction:column}
+.ph{display:flex;align-items:center;gap:8px;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 10px;border-bottom:1px solid #ffffff22}
+.ph h3{margin:0;flex:1;font:800 1.05rem var(--display)}
+.pbtn{border:0;border-radius:10px;padding:9px 14px;font:700 .85rem var(--body);cursor:pointer;background:#ffffff1f;color:var(--paper)}
+.pbtn.go{background:var(--price);color:var(--ink)}
+.ptabs{display:flex;gap:8px;padding:10px 14px 0}
+.ptabs button{flex:1;border:0;border-radius:10px 10px 0 0;padding:9px;font:700 .85rem var(--body);background:#ffffff14;color:var(--paper);cursor:pointer}
+.ptabs button[aria-pressed="true"]{background:#ffffff2e}
+.pbody{flex:1;overflow-y:auto;padding:12px 14px 40px}
+.pbody input[type=search],.pbody input[type=text],.pbody textarea,.pbody select{width:100%;box-sizing:border-box;background:#ffffff14;color:var(--paper);border:1px solid #ffffff33;border-radius:10px;padding:10px;font:400 .95rem var(--body)}
+.pbody textarea{min-height:64px;resize:vertical}
+.pbody label{display:block;font-size:.78rem;color:var(--mute);margin:10px 0 4px}
+.pbody details{background:#ffffff0d;border-radius:12px;margin-top:8px;padding:2px 12px}
+.pbody summary{padding:12px 0;cursor:pointer;font-weight:600;font-size:.92rem}
+.pbody summary em{font-style:normal;color:var(--price);margin-inline-start:6px}
+.pbody .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pbody .chk{display:flex;align-items:center;gap:8px;margin:12px 0 8px;font-size:.9rem;color:var(--paper)}
+.twrap{overflow:auto;max-height:calc(100% - 90px);border:1px solid #ffffff22;border-radius:10px}
+.ptable{border-collapse:collapse;min-width:1100px;width:100%;font-size:.85rem}
+.ptable th{position:sticky;top:0;z-index:2;background:#16372b;text-align:left;padding:8px;font-weight:700;white-space:nowrap}
+.ptable td{padding:6px;border-top:1px solid #ffffff1a;vertical-align:top}
+.ptable td:first-child,.ptable th:first-child{position:sticky;left:0;z-index:1;background:#0c2118;width:64px}
+.ptable th:first-child{z-index:3;background:#16372b}
+.ptable img{width:52px;height:52px;object-fit:cover;border-radius:8px;display:block}
+.ptable small{display:block;color:var(--mute);font-size:.65rem;margin-top:2px}
+.ptable td:nth-child(2),.ptable td:nth-child(3){min-width:170px}
+.ptable td:nth-child(5),.ptable td:nth-child(6){min-width:220px}
+.ptable td:nth-child(7){min-width:150px}
+.ptable .num{width:80px}
+.ptable tr.hid{opacity:.55}
+.ptable textarea{min-height:56px}
+.ptable input[type=checkbox]{width:20px;height:20px}
+.pnote{font-size:.8rem;color:var(--mute);margin:8px 0}
+</style>
+
+<div class="app">
+  <header class="top">
+    <nav class="chips" id="chips" aria-label="Filter"></nav>
+  </header>
+  <main class="feed" id="feed"></main>
+  <div class="toast" id="toast" hidden></div>
+</div>
+
+<script type="application/json" id="data">{"store": {"big": "0.729", "wa": "+968 7912 3698", "addr_en": "Next to Spotless Dry Cleaning, just off Al Ghaf St · Hay Al Bayda', Bousher Heights, Muscat", "addr_ar": "بجوار مغسلة سبوتلس، قرب شارع الغاف · حي البيضاء، مرتفعات بوشر", "hours_en": "Open daily 10 AM – 12 AM · Friday from 1 PM", "hours_ar": "مفتوح يوميًا ١٠ صباحًا – ١٢ منتصف الليل · الجمعة من ١ ظهرًا", "deliv_en": "Free delivery 10 OMR+ · Cash on delivery", "deliv_ar": "توصيل مجاني ١٠ ر.ع فأكثر · الدفع عند الاستلام", "guar_en": "", "guar_ar": "", "site": "https://mtayyabr.github.io/catalogue/reels/"}, "items": [{"id": "L13", "src": "lamp-cream.jpg", "cat": "Lamps", "en": "Cream Shaded Lamp", "ar": "مصباح بغطاء كريمي", "spec": "40 cm tall | ارتفاع ٤٠ سم", "hook": "Warm, soft light for the living room or bedside.", "ai": "AI styled image"}, {"id": "L15", "src": "lamp-blue-black.jpg", "cat": "Lamps", "en": "Blue Black Shaded Lamp", "ar": "مصباح بغطاء أسود وقاعدة زرقاء", "spec": "40 cm tall | ارتفاع ٤٠ سم", "hook": "Glossy black shade on a marbled blue base.", "ai": "AI styled image"}, {"id": "L17", "src": "lamp-desk-blue.jpg", "cat": "Lamps", "en": "Blue Metal Desk Lamp", "ar": "مصباح مكتب معدني أزرق", "spec": "Flexible neck | رقبة مرنة", "hook": "Bendable LED bar for study and late-night work.", "ai": "AI styled image"}, {"id": "K01", "src": "microwave-cover.jpg", "cat": "Kitchen", "en": "Collapsible Microwave Cover", "ar": "غطاء مايكروويف قابل للطي", "spec": "Folds flat · Vented lid | يطوى • فتحات تهوية", "hook": "No more splatter inside the microwave. Folds flat to store.", "ai": ""}, {"id": "K02", "src": "meat-grinder-v2.jpg", "cat": "Kitchen", "en": "Manual Meat Grinder", "ar": "مفرمة لحم يدوية", "spec": "Meat · Garlic · Chilli · Nuts | لحم • ثوم • فلفل • مكسرات", "hook": "Fresh mince at home. Suction base holds firm, no electricity needed.", "ai": ""}, {"id": "K03", "bg": "#eeeced", "gallery": ["utensils-1.jpg", "utensils-2.jpg"], "cat": "Kitchen", "en": "Utensil Set with Stand", "ar": "طقم أدوات مطبخ مع حامل", "spec": "Full set + stand: Ladle · Skimmer · Spoon · Slotted spoon | الطقم كامل مع الحامل", "hook": "Sleek black set that stands neatly on the counter. Hang-and-store design saves space.", "ai": ""}, {"id": "K04", "bg": "#cccaca", "src": "blue-glass.jpg", "cat": "Kitchen", "en": "Blue Glass Tumbler", "ar": "كوب زجاجي أزرق", "spec": "Price per piece | السعر للقطعة الواحدة", "hook": "Deep cobalt glass for juice, water and laban. Buy a full set for guests.", "ai": "", "price": "0.100"}, {"id": "K05", "gallery": ["salad-bowl.jpg", "salad-bowl-2.jpg"], "cat": "Kitchen", "en": "Salad Cutter Bowl", "ar": "وعاء تقطيع السلطة", "spec": "Wash · Drain · Slice | غسل • تصفية • تقطيع", "hook": "Wash, drain and slice in one bowl. Fresh salad in 60 seconds.", "ai": ""}, {"id": "M01", "bg": "#b6adab", "gallery": ["mouse-hero.jpg", "mouse-red.jpg", "mouse-white.jpg", "mouse-purple.jpg", "mouse-black.jpg"], "cat": "Tech", "en": "G6 Wireless Mouse", "ar": "فارة لاسلكية G6", "spec": "4 colours: Red · White · Purple · Black | ٤ ألوان: أحمر • أبيض • بنفسجي • أسود", "hook": "Wireless mouse with scroll wheel and side buttons. Swipe to see every colour.", "ai": ""}, {"id": "M02", "bg": "#f1efec", "gallery": ["kb-hero.jpg", "kb-white.jpg", "keyboard.jpg"], "cat": "Tech", "en": "F5 Keyboard", "ar": "لوحة مفاتيح F5", "spec": "Full-size · Number pad · PS/2 plug | حجم كامل • لوحة أرقام • موصل PS/2", "hook": "Wired full-size keyboard with number pad for home, school and office.", "ai": ""}, {"id": "S01", "bg": "#d3cdc7", "gallery": ["shoes-hero.jpg", "shoe-35.jpg", "shoe-36.jpg", "shoe-38.jpg"], "cat": "Shoes", "en": "White Canvas Shoes", "ar": "أحذية قماشية بيضاء", "spec": "Sizes 35 · 36 · 38 | المقاسات ٣٥ • ٣٦ • ٣٨", "hook": "Classic white lace-ups with rubber toe cap. Message us your size on WhatsApp.", "ai": ""}, {"id": "H01", "bg": "#ffffff", "gallery": ["oven-1.jpg", "oven-2.jpg"], "cat": "Home", "en": "Oven Brite Oven Cleaning Kit", "ar": "طقم تنظيف الفرن أوفن برايت", "spec": "Kit: Bag · Bottle · Gloves | الطقم: كيس • زجاجة • قفازات", "hook": "Cleans inside the oven and transforms racks and grills. Fume free.", "ai": ""}, {"id": "H02", "bg": "#ffffff", "gallery": ["clock-1.jpg", "clock-2.jpg"], "cat": "Home", "en": "Pink Polka-Dot Wall Clock", "ar": "ساعة حائط وردية منقطة", "spec": "Analogue hands | عقارب", "hook": "A bright pink clock to cheer up a girl's room or any wall.", "ai": ""}, {"id": "W01", "ai": "AI styled image", "bg": "#f8f5ee", "src": "cl-safety.jpg", "cat": "Clothes", "en": "Orange Safety Vest", "ar": "سترة سلامة برتقالية", "spec": "One size · Reflective strips · Zip front | مقاس واحد • شرائط عاكسة • سحاب أمامي", "hook": "High-visibility vest for site work and roadside."}, {"id": "W02", "ai": "AI styled image", "bg": "#f8f5ee", "src": "cl-leggings.jpg", "cat": "Clothes", "en": "Women's Leggings with Side Panels", "ar": "ليقنز نسائي بجوانب ملوّنة", "spec": "Black with white side panels | أسود مع جوانب بيضاء", "hook": "Comfortable leggings for the gym or everyday."}, {"id": "W03", "ai": "AI styled image", "bg": "#f8f5ee", "src": "cl-briefs.jpg", "cat": "Clothes", "en": "Men's Briefs, Red or Zebra Print", "ar": "سروال داخلي رجالي، أحمر أو نقشة الحمار الوحشي", "spec": "Sizes 2XL · 3XL | المقاسات ٢XL • ٣XL", "hook": "Two colours: red and zebra print."}, {"id": "W04", "ai": "AI styled image", "bg": "#f8f5ee", "src": "cl-mesh.jpg", "cat": "Clothes", "en": "Women's Black Mesh Crop Top", "ar": "توب نسائي قصير شبك أسود", "spec": "Sheer mesh sleeves | أكمام شبك شفافة", "hook": "Layer it over a top or dress."}, {"id": "W05", "ai": "AI styled image", "bg": "#f8f5ee", "src": "cl-vest.jpg", "cat": "Clothes", "en": "Women's Quilted Vest, Teal", "ar": "سترة نسائية مبطّنة بدون أكمام، أزرق مخضر", "spec": "Sizes 3XL · 4XL | المقاسات ٣XL • ٤XL", "hook": "Sleeveless quilted vest with zip front and pockets."}, {"id": "W06", "ai": "AI styled image", "bg": "#f8f5ee", "src": "cl-tshirt.jpg", "cat": "Clothes", "en": "Men's Black T-Shirt, 5.11", "ar": "تيشيرت رجالي أسود 5.11", "spec": "Black · 5.11 chest logo | أسود • شعار 5.11 على الصدر", "hook": "Plain black tee with a small 5.11 logo on the chest."}, {"id": "S02", "ai": "AI styled image", "bg": "#f8f5ee", "src": "cl-sneakers.jpg", "cat": "Shoes", "en": "Women's Slip-On Sneakers", "ar": "حذاء رياضي نسائي سهل اللبس", "spec": "Slip-on · Mesh upper | بدون ربط • جزء علوي شبكي", "hook": "Easy slip-on pair in white and silver."}, {"id": "S03", "ai": "AI styled image", "bg": "#f8f5ee", "src": "cl-flip.jpg", "cat": "Shoes", "en": "Blue Flip-Flops", "ar": "شبشب أزرق", "spec": "Size 31/32 · Blue | المقاس ٣١/٣٢ • أزرق", "hook": "Light flip-flops for the beach or around the house."}, {"id": "H08", "bg": "#e8dedd", "src": "bin.jpg", "cat": "Home", "en": "Collapsible Bin with Lid", "ar": "سلة قابلة للطي بغطاء", "spec": "Collapses flat · Red lid | تُطوى لتصبح مسطحة • غطاء أحمر", "hook": "Folds down small when not in use.", "ai": ""}, {"id": "P01", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-giraffe-pink.jpg", "cat": "Kids", "en": "Pink Giraffe Hopper Toy", "ar": "لعبة قفز زرافة وردية", "spec": "Playtime toy · Pink | لعبة • وردي", "hook": "A bouncy giraffe for little ones."}, {"id": "P02", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-giraffe-orange.jpg", "cat": "Kids", "en": "Orange Giraffe Hopper Toy", "ar": "لعبة قفز زرافة برتقالية", "spec": "Playtime toy · Orange | لعبة • برتقالي", "hook": "A bouncy giraffe in bright orange."}, {"id": "P03", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-skate.jpg", "cat": "Kids", "en": "Skateboard", "ar": "لوح تزلج", "spec": "Black deck · I SKATE print | سطح أسود • طباعة I SKATE", "hook": "A classic skateboard for the park or the street."}, {"id": "P04", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-helmet.jpg", "cat": "Kids", "en": "Yellow Kids Helmet", "ar": "خوذة أطفال صفراء", "spec": "Yellow · Cartoon print | أصفر • رسومات كرتونية", "hook": "A bright helmet for bikes and scooters."}, {"id": "T04", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-backpack.jpg", "cat": "Travel", "en": "Everyday Backpack, Grey", "ar": "حقيبة ظهر يومية رمادية", "spec": "Grey · Zip pockets | رمادية • جيوب بسحاب", "hook": "A simple backpack for school and daily use."}, {"id": "H09", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-cube-beige.jpg", "cat": "Home", "en": "Foldable Storage Cube, Beige", "ar": "مكعب تخزين قابل للطي بيج", "spec": "Storage + seat · Beige | تخزين ومقعد • بيج", "hook": "Store things inside and use it as a seat."}, {"id": "H10", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-cube-grey.jpg", "cat": "Home", "en": "Foldable Storage Cube, Grey", "ar": "مكعب تخزين قابل للطي رمادي", "spec": "Storage + seat · Grey | تخزين ومقعد • رمادي", "hook": "Same cube in grey, with a lift-off lid."}, {"id": "L30", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-bunny.jpg", "cat": "Lamps", "en": "Bunny Desk Lamp", "ar": "مصباح مكتب أرنب", "spec": "Cute bunny shape | شكل أرنب لطيف", "hook": "A soft light for a child's desk."}, {"id": "L31", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-green.jpg", "cat": "Lamps", "en": "Green Desk Lamp", "ar": "مصباح مكتب أخضر", "spec": "Flexible neck · Green | رقبة مرنة • أخضر", "hook": "Bright green lamp for study."}, {"id": "L32", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-pink.jpg", "cat": "Lamps", "en": "Pink Desk Lamp", "ar": "مصباح مكتب وردي", "spec": "Flexible neck · Pink | رقبة مرنة • وردي", "hook": "A bold pink lamp for a girl's desk."}, {"id": "L33", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-study.jpg", "cat": "Lamps", "en": "Study Desk Lamp", "ar": "مصباح مكتب للدراسة", "spec": "Slim LED panel | لوح LED نحيف", "hook": "A wide, even light for reading and homework."}, {"id": "L34", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-blackgold.jpg", "cat": "Lamps", "en": "Black & Gold Table Lamp", "ar": "مصباح طاولة أسود وذهبي", "spec": "Black & gold look | مظهر أسود وذهبي", "hook": "A classic table lamp for the living room."}, {"id": "L35", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-geometric.jpg", "cat": "Lamps", "en": "Geometric Table Lamp", "ar": "مصباح طاولة هندسي", "spec": "Geometric style | تصميم هندسي", "hook": "A modern shape for shelves and side tables."}, {"id": "L36", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-sculpted.jpg", "cat": "Lamps", "en": "Sculpted Table Lamp", "ar": "مصباح طاولة منحوت", "spec": "Sculpted style | تصميم منحوت", "hook": "A decorative lamp with a sculpted base."}, {"id": "L37", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-silver.jpg", "cat": "Lamps", "en": "Silver Desk Lamp", "ar": "مصباح مكتب فضي", "spec": "Slim LED bar · Silver | شريط LED نحيف • فضي", "hook": "Slim modern lamp for the work desk."}, {"id": "L38", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-portable.jpg", "cat": "Lamps", "en": "Portable Light", "ar": "مصباح محمول", "spec": "Portable · Candle style | محمول • شكل شمعة", "hook": "A small light you can move around."}, {"id": "H11", "ai": "AI styled image", "bg": "#f1ece4", "src": "rl-broom.jpg", "cat": "Home", "en": "Broom & Dustpan Set", "ar": "طقم مكنسة وجاروف", "spec": "Broom + dustpan · Green | مكنسة وجاروف • أخضر", "hook": "A simple sweep-up set for the home."}, {"id": "B01", "bg": "#cfc3c0", "src": "mat.jpg", "cat": "Baby", "en": "Portable Baby Changing Mat", "ar": "مفرش تغيير حفاضات محمول", "spec": "Folds small · Zip pocket · Mesh pockets · Buckle strap | يُطوى • جيب بسحاب • جيوب شبكية • حزام بإبزيم", "hook": "Unfold anywhere to change baby. Folds into a neat pouch for the bag.", "ai": ""}, {"id": "D01", "bg": "#f3f1ee", "gallery": ["bag-hero.jpg", "bag-1.jpg"], "cat": "Stationery", "en": "A4 Document Bag", "ar": "حقيبة مستندات A4", "spec": "37 × 30 cm · Zip pockets | ٣٧ × ٣٠ سم • جيوب بسحاب", "hook": "Keeps papers, folders and notebooks neat for school and office. Bag only.", "ai": ""}, {"id": "T02", "ai": "AI styled image", "bg": "#e9e0d6", "src": "organiser.jpg", "cat": "Travel", "en": "Hanging Travel Organiser", "ar": "منظم سفر معلق", "spec": "Hook hanger · Mesh pockets | شماعة تعليق • جيوب شبكية", "hook": "Hang it on any hook and keep toiletries and small items in reach."}, {"id": "B02", "ai": "AI styled image", "bg": "#f8f5ee", "src": "baby-rinse.jpg", "cat": "Baby", "en": "Kids Shampoo Rinse Cup", "ar": "كوب شطف شامبو للأطفال", "spec": "Bath-time rinse cup | كوب لوقت الاستحمام", "hook": "Rinse little heads at bath time without water in the eyes."}, {"id": "B03", "ai": "AI styled image", "bg": "#f8f5ee", "src": "baby-chart.jpg", "cat": "Baby", "en": "Kids Height Growth Chart Sticker", "ar": "ملصق جداري لقياس طول الطفل", "spec": "Wall sticker · Pink floral | ملصق جداري • زهور وردية", "hook": "Mark your child's height on the wall as they grow."}, {"id": "B04", "ai": "AI styled image", "bg": "#f8f5ee", "src": "baby-warm.jpg", "cat": "Baby", "en": "Self-Warming Baby Bottle", "ar": "رضّاعة أطفال ذاتية التدفئة", "spec": "Self-warming design | تصميم ذاتي التدفئة", "hook": "Handy for outings and night feeds."}, {"id": "B05", "ai": "AI styled image", "bg": "#f8f5ee", "src": "baby-pump.jpg", "cat": "Baby", "en": "Breast Pump Set with Case", "ar": "طقم شفّاط حليب الأم مع علبة", "spec": "Set with carry case | طقم مع علبة حفظ", "hook": "Pump set that stores neatly in its own case."}, {"id": "B06", "ai": "AI styled image", "bg": "#f8f5ee", "src": "baby-bottle.jpg", "cat": "Baby", "en": "Anti-Colic Baby Bottle, 210 ml", "ar": "رضّاعة مضادة للمغص، 210 مل", "spec": "210 ml · Wide neck · Anti-colic | ٢١٠ مل • عنق واسع • مضادة للمغص", "hook": "Wide-neck bottle for easy filling and cleaning."}, {"id": "B07", "ai": "AI styled image", "bg": "#f8f5ee", "src": "baby-sippy.jpg", "cat": "Baby", "en": "Toddler Sippy Cup", "ar": "كوب شرب للأطفال بفوهة", "spec": "Spout lid · Yellow | غطاء بفوهة • أصفر", "hook": "A first cup for little hands."}, {"id": "B08", "ai": "AI styled image", "bg": "#f8f5ee", "src": "baby-socks.jpg", "cat": "Baby", "en": "Kids Cat Ankle Socks", "ar": "جوارب أطفال بوجه قطة", "spec": "Cute cat faces · Soft ankle socks | وجوه قطط • جوارب قصيرة ناعمة", "hook": "Six cute designs. Message us for colours."}, {"id": "B09", "ai": "AI styled image", "bg": "#f8f5ee", "src": "baby-bowl.jpg", "cat": "Baby", "en": "Baby Suction Bowl with Lid & Spoon", "ar": "وعاء أطفال بشفاط مع غطاء وملعقة", "spec": "Lid · Spoon included | غطاء • ملعقة مرفقة", "hook": "Suction base helps keep the bowl in place at meal time."}, {"id": "H03", "ai": "AI styled image", "bg": "#f8f5ee", "src": "home-tissue1.jpg", "cat": "Home", "en": "Metal Tissue Box, City Print", "ar": "علبة مناديل معدنية بنقشة المدينة", "spec": "Metal · City print | معدن • نقشة مدينة", "hook": "Vintage city print for the living room."}, {"id": "H04", "ai": "AI styled image", "bg": "#f8f5ee", "src": "home-tissue2.jpg", "cat": "Home", "en": "Farm Animals Tissue Box", "ar": "علبة مناديل حيوانات المزرعة", "spec": "Cartoon farm print | نقشة حيوانات المزرعة", "hook": "A fun print for kids' rooms."}, {"id": "K06", "ai": "AI styled image", "bg": "#f8f5ee", "src": "home-jar.jpg", "cat": "Kitchen", "en": "Glass Storage Jar with Lid", "ar": "مرطبان زجاجي بغطاء", "spec": "Glass · With lid | زجاج • مع غطاء", "hook": "For sugar, spices, sweets and dry goods."}, {"id": "H05", "ai": "AI styled image", "bg": "#f8f5ee", "src": "home-toilet.jpg", "cat": "Home", "en": "Silicone Toilet Brush & Holder", "ar": "فرشاة مرحاض سيليكون مع حامل", "spec": "Silicone brush · Slim holder | فرشاة سيليكون • حامل نحيف", "hook": "Slim holder that sits neatly by the toilet."}, {"id": "K07", "ai": "AI styled image", "bg": "#f8f5ee", "src": "home-opener.jpg", "cat": "Kitchen", "en": "Wall-Mounted Bottle Opener", "ar": "فتّاحة زجاجات مثبتة على الحائط", "spec": "Wall mount · Cap catcher | تثبيت على الحائط • حاوية للأغطية", "hook": "Opens bottles and catches the caps."}, {"id": "K08", "ai": "AI styled image", "bg": "#f8f5ee", "src": "home-candy.jpg", "cat": "Kitchen", "en": "Glass Candy Bowl with Lid", "ar": "وعاء حلوى زجاجي بغطاء", "spec": "Glass · With lid | زجاج • مع غطاء", "hook": "Serve sweets and dates to guests."}, {"id": "K09", "ai": "AI styled image", "bg": "#f8f5ee", "src": "home-placemat.jpg", "cat": "Kitchen", "en": "Silicone Placemats, Set of 6", "ar": "مفارش طاولة سيليكون، طقم 6 قطع", "spec": "Set of 6 · 41 × 33.5 cm · Dark green or dark blue only | ٦ قطع • ٤١ × ٣٣٫٥ سم • أخضر داكن أو أزرق داكن فقط", "hook": "Protect the table. Wipe clean after meals."}, {"id": "H06", "ai": "AI styled image", "bg": "#f8f5ee", "src": "home-slippers.jpg", "cat": "Home", "en": "Floor-Cleaning Slippers", "ar": "شباشب لتنظيف الأرضيات", "spec": "Mop-style soles | نعال بشكل ممسحة", "hook": "Wear them and wipe the floor as you walk."}, {"id": "H07", "ai": "AI styled image", "bg": "#f8f5ee", "src": "home-sprinkler.jpg", "cat": "Home", "en": "Tulip Garden Sprinkler", "ar": "رشاش حديقة على شكل توليب", "spec": "Tulip shape · Hose connector | شكل توليب • وصلة خرطوم", "hook": "Water the garden in a fine spray."}, {"id": "L20", "ai": "AI styled image", "bg": "#f8f5ee", "src": "el-flamingo.jpg", "cat": "Lamps", "en": "Pink Flamingo String Lights", "ar": "سلسلة أضواء فلامنغو وردية", "spec": "Pink flamingo shapes | أشكال فلامنغو وردية", "hook": "Decorate a room, balcony or party."}, {"id": "L21", "ai": "AI styled image", "bg": "#f8f5ee", "src": "el-hang.jpg", "cat": "Lamps", "en": "LED Pull-Cord Hanging Lamp", "ar": "مصباح معلّق LED بحبل سحب", "spec": "Pull cord · Hanging bulb | حبل سحب • مصباح معلّق", "hook": "Hang it anywhere you need a little light."}, {"id": "L22", "ai": "AI styled image", "bg": "#f8f5ee", "src": "el-snail.jpg", "cat": "Lamps", "en": "Snail Night Lamp, Rechargeable", "ar": "مصباح ليلي على شكل حلزون، قابل للشحن", "spec": "Rechargeable | قابل للشحن", "hook": "A friendly night light for kids' rooms."}, {"id": "L23", "bg": "#e9ebf3", "src": "el-bulb38.jpg", "cat": "Lamps", "en": "LED Bulb 38W, E27, Set of 2", "ar": "لمبة 38 واط LED، طقم قطعتين", "spec": "38W · E27 · Set of 2 | ٣٨ واط • E27 • طقم قطعتين", "hook": "Two bright bulbs in one set.", "ai": ""}, {"id": "L24", "bg": "#e9ebf3", "src": "el-bulb30.jpg", "cat": "Lamps", "en": "LED Bulb 30W, E27, Set of 2", "ar": "لمبة LED 30 واط، E27، طقم قطعتين", "spec": "30W · E27 · Set of 2 | ٣٠ واط • E27 • طقم قطعتين", "hook": "Two bulbs in one set.", "ai": ""}, {"id": "M03", "ai": "AI styled image", "bg": "#f8f5ee", "src": "el-heater.jpg", "cat": "Tech", "en": "Mini Electric Heater", "ar": "دفّاية كهربائية صغيرة", "spec": "Compact · Do not cover | صغيرة • لا تغطِّها", "hook": "Small heater for a desk or a small room."}, {"id": "M04", "bg": "#e8eef7", "src": "el-cable.jpg", "cat": "Tech", "en": "USB-A to Type-C Charging Cable, 1 m, White", "ar": "كابل شحن USB إلى Type-C، 1 متر، أبيض", "spec": "1 m · White | ١ متر • أبيض", "hook": "Charge and sync your Type-C devices.", "ai": ""}, {"id": "C01", "ai": "AI styled image", "bg": "#f8f5ee", "src": "el-holder.jpg", "cat": "Car", "en": "Car Phone Holder, Air-Vent Mount", "ar": "حامل جوال للسيارة على فتحة التكييف", "spec": "Air-vent clip · Blue | مشبك فتحة التكييف • أزرق", "hook": "Clips onto the car air vent."}, {"id": "C02", "ai": "AI styled image", "bg": "#f8f5ee", "src": "el-ashtray.jpg", "cat": "Car", "en": "Car Ashtray with Lid, Black", "ar": "منفضة سجائر للسيارة بغطاء، أسود", "spec": "Flip lid · Black | غطاء قلاب • أسود", "hook": "Keeps ash covered in the car."}, {"id": "T01", "gallery": ["pillow-1.jpg", "pillow-2.jpg", "pillow-3.jpg", "pillow-4.jpg", "pillow-5.jpg"], "cat": "Travel", "en": "Inflatable Travel Pillow", "ar": "وسادة سفر قابلة للنفخ", "spec": "1 pillow · 47 × 30 cm · Soft velvet | وسادة واحدة • ٤٧ × ٣٠ سم • ملمس مخملي", "hook": "Blow it up in seconds for the car, camping or a road trip to Salalah. Folds into your bag.", "ai": ""}, {"id": "T03", "ai": "AI styled image", "bg": "#f8f5ee", "src": "pillow-u.jpg", "cat": "Travel", "en": "U-Shaped Inflatable Neck Pillow, Pink", "ar": "وسادة رقبة قابلة للنفخ على شكل U، وردي", "spec": "Inflatable · U-shape | قابلة للنفخ • شكل U", "hook": "Neck support for flights and long drives."}, {"id": "J01", "ai": "AI styled image", "bg": "#f8f5ee", "src": "jw-bracelet.jpg", "cat": "Jewellery", "en": "Golden Sparkle Bracelet", "ar": "سوار ذهبي لامع", "spec": "Golden mesh sparkle | شبك ذهبي لامع", "hook": "A light, shimmering bangle for everyday.", "promo": {"price": "0.250", "until": "2026-11-03"}}, {"id": "J02", "ai": "AI styled image", "bg": "#f8f5ee", "src": "jw-necklace.jpg", "cat": "Jewellery", "en": "Golden Sparkle Necklace", "ar": "عقد ذهبي لامع", "spec": "Golden mesh sparkle | شبك ذهبي لامع", "hook": "Matches the sparkle bracelet.", "promo": {"price": "0.250", "until": "2026-11-03"}}, {"id": "J03", "ai": "AI styled image", "bg": "#f8f5ee", "src": "jw-cuff.jpg", "cat": "Jewellery", "en": "Pink Gem Cuff Bracelet", "ar": "سوار مفتوح بأحجار وردية", "spec": "Open cuff · Pink stones | سوار مفتوح • أحجار وردية", "hook": "A slim open cuff with two pink stones.", "promo": {"price": "0.250", "until": "2026-11-03"}}, {"id": "J04", "ai": "AI styled image", "bg": "#f8f5ee", "src": "jw-studs.jpg", "cat": "Jewellery", "en": "Champagne Crystal Earrings", "ar": "أقراط كريستال بلون الشمبانيا", "spec": "Crystal stud style | تصميم كريستال", "hook": "Sparkling studs for parties and weddings.", "promo": {"price": "0.250", "until": "2026-11-03"}}, {"id": "J05", "ai": "AI styled image", "bg": "#f8f5ee", "src": "jw-choker.jpg", "cat": "Jewellery", "en": "Pink & Ivory Choker Set", "ar": "طقم قلادات قصيرة وردي وعاجي", "spec": "Layered choker set · Flower charm | طقم قلادات متعدد الطبقات • زهرة", "hook": "Three layered chokers in one set.", "promo": {"price": "0.250", "until": "2026-11-03"}}, {"id": "J06", "ai": "AI styled image", "bg": "#f8f5ee", "src": "jw-meshbr.jpg", "cat": "Jewellery", "en": "Pink & Gold Mesh Bracelet", "ar": "سوار شبكي وردي وذهبي", "spec": "Mesh chains · Clasp | سلاسل شبكية • قفل", "hook": "Pink and gold strands in one bracelet.", "promo": {"price": "0.250", "until": "2026-11-03"}}, {"id": "J07", "ai": "AI styled image", "bg": "#f8f5ee", "src": "jw-chainbr.jpg", "cat": "Jewellery", "en": "Purple & Yellow Chain Bracelet", "ar": "سوار سلاسل بنفسجي وأصفر", "spec": "Layered chains · Clasp | سلاسل متعددة • قفل", "hook": "Colourful chains twisted together.", "promo": {"price": "0.250", "until": "2026-11-03"}}, {"id": "J08", "ai": "AI styled image", "bg": "#f8f5ee", "src": "jw-amber.jpg", "cat": "Jewellery", "en": "Amber Filigree Chandelier Earrings", "ar": "أقراط ثريا مخرّمة بلون الكهرمان", "spec": "Statement drop earrings | أقراط طويلة لافتة", "hook": "Bold vintage-style earrings for occasions.", "promo": {"price": "0.250", "until": "2026-11-03"}}, {"id": "J09", "ai": "AI styled image", "bg": "#f8f5ee", "src": "jw-heart.jpg", "cat": "Jewellery", "en": "Gold Heart Tassel Earrings", "ar": "أقراط قلب ذهبية بشراشيب", "spec": "Heart · Tassel drop | قلب • شراشيب", "hook": "Long tassel earrings that catch the light.", "promo": {"price": "0.250", "until": "2026-11-03"}}, {"id": "J10", "ai": "AI styled image", "bg": "#f8f5ee", "src": "jw-peach.jpg", "cat": "Jewellery", "en": "Peach Necklace Set", "ar": "طقم عقد بلون الخوخ", "spec": "Necklace + earrings | عقد + أقراط", "hook": "Chunky beads with matching earrings.", "promo": {"price": "0.250", "until": "2026-11-03"}}, {"id": "J11", "ai": "AI styled image", "bg": "#f8f5ee", "src": "jw-resin.jpg", "cat": "Jewellery", "en": "Resin Link Necklace", "ar": "عقد بحلقات من الريزن", "spec": "Resin links · Cord | حلقات ريزن • حبل", "hook": "A statement necklace for plain outfits.", "promo": {"price": "0.250", "until": "2026-11-03"}}, {"id": "J12", "ai": "AI styled image", "bg": "#f8f5ee", "src": "jw-burgundy.jpg", "cat": "Jewellery", "en": "Burgundy Layered Necklace", "ar": "عقد عنابي متعدد الطبقات", "spec": "Two layers · Bead & charm | طبقتان • خرز وتعليقات", "hook": "Burgundy beads with gold-tone charms.", "promo": {"price": "0.250", "until": "2026-11-03"}}, {"id": "J13", "ai": "AI styled image", "bg": "#f8f5ee", "src": "jw-polo.jpg", "cat": "Jewellery", "en": "U.S. Polo Assn. Eyeglass Frames", "ar": "إطارات نظارات طبية U.S. Polo Assn.", "spec": "Black & mint temples · Rectangular frame | عصي بلون النعناع • إطار مستطيل", "hook": "Prescription frames. Lenses fitted separately."}, {"id": "D02", "ai": "AI styled image", "bg": "#f8f5ee", "src": "st-files.jpg", "cat": "Stationery", "en": "4-Compartment File Holder", "ar": "حامل ملفات بأربع خانات", "spec": "4 compartments · Ventilated sides | ٤ خانات • جوانب مخرّمة", "hook": "Keeps files and magazines upright on the desk."}, {"id": "D03", "ai": "AI styled image", "bg": "#f8f5ee", "src": "st-clips.jpg", "cat": "Stationery", "en": "Square Magnetic Clips, 1.8-inch (2 Pack)", "ar": "مشابك مغناطيسية مربعة 1.8 إنش (عبوة 2)", "spec": "Pack of 2 · Magnetic | عبوة من قطعتين • مغناطيسية", "hook": "Hold notes and photos on the fridge."}, {"id": "D04", "ai": "AI styled image", "bg": "#f8f5ee", "src": "st-sharp1.jpg", "cat": "Stationery", "en": "Space Travel Pencil Sharpener", "ar": "مبراة أقلام سبيس ترافل", "spec": "Hand-crank · Gift box | يدوية بذراع • علبة هدية", "hook": "A fun crank sharpener for the school desk."}, {"id": "D05", "ai": "AI styled image", "bg": "#f8f5ee", "src": "st-sharp2.jpg", "cat": "Stationery", "en": "Mr. Dream Pencil Sharpener", "ar": "مبراة أقلام مستر دريم", "spec": "Hand-crank · Window box | يدوية بذراع • علبة بنافذة", "hook": "Cute crank sharpener in a gift box."}, {"id": "D06", "ai": "AI styled image", "bg": "#f8f5ee", "src": "st-mat.jpg", "cat": "Stationery", "en": "Desk Mat, Brown Leather-Look", "ar": "لبّاد مكتب بمظهر الجلد، بني", "spec": "Leather-look surface · Brown | سطح بمظهر الجلد • بني", "hook": "Protects the desk and gives the mouse a smooth surface."}]}</script>
+<script id="code">const DATA=JSON.parse(document.getElementById("data").textContent);
+const STORE=DATA.store;
+let WA,WA_LINK,ITEMS;
+function applyData(){WA=STORE.wa;WA_LINK="https://api.whatsapp.com/send?phone="+WA.replace(/\D/g,"");ITEMS=DATA.items.filter(p=>!p.hidden)}
+applyData();
+const waLink=p=>"https://api.whatsapp.com/send?phone="+WA.replace(/\D/g,"")+"&text="+encodeURIComponent("Hello Dollar Store Oman, I am interested in: "+p.en+" ("+priceOf(p)+" OMR)");
+const promoOn=p=>!!(p.promo&&p.promo.price&&Date.now()<=new Date((p.promo.until||"2000-01-01")+"T23:59:59+04:00").getTime());
+const priceOf=p=>promoOn(p)?p.promo.price:(p.price||"0.729");
+const priceText=p=>priceOf(p)+" OMR";
+const MAPS_DEFAULT="https://www.google.com/maps/search/?api=1&query=Dollar+Store+Oman&query_place_id=ChIJ6ZQdbwD_kT4RKe9YZrQCSCg";
+const mapsLink=()=>((STORE.maps||"").trim()||MAPS_DEFAULT);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const CATS=[["All","الكل"],["Lamps","مصابيح"],["Kitchen","مطبخ"],["Home","منزل"],["Stationery","قرطاسية"],["Baby","أطفال"],["Clothes","ملابس"],["Jewellery","مجوهرات"],["Shoes","أحذية"],["Tech","تقنية"],["Car","سيارة"],["Travel","سفر"],["Kids","ألعاب"]];
+const ICON={
+ heart:'<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9-9a4.8 4.8 0 0 1 9-3 4.8 4.8 0 0 1 9 3c-2 4.6-9 9-9 9z"/></svg>',
+ save:'<svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>',
+ share:'<svg viewBox="0 0 24 24"><path d="M4 12v7h16v-7M12 3v12M7 8l5-5 5 5"/></svg>',
+ chat:'<svg viewBox="0 0 24 24"><path d="M4 20l1.5-4A8 8 0 1 1 9 19.3z"/></svg>',
+ pin:'<svg viewBox="0 0 24 24"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>',
+ phone:'<svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>'
+};
+let state={cat:"All",liked:{},saved:{},muted:true};
+try{const s=JSON.parse(localStorage.getItem("dso-reels")||"null");if(s){state.liked=s.liked||{};state.saved=s.saved||{};}}catch(e){}
+const persist=()=>{try{localStorage.setItem("dso-reels",JSON.stringify({liked:state.liked,saved:state.saved}))}catch(e){}};
+const feed=document.getElementById("feed"),chips=document.getElementById("chips");
+const k=n=>n>=1000?(n/1000).toFixed(1)+"K":String(n);
+const find=id=>ITEMS.find(x=>x.id===id);
+function toast(t){const el=document.getElementById("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,1900)}
+async function copy(txt,msg){try{await navigator.clipboard.writeText(txt);toast(msg)}catch(e){toast("Copy blocked here. Long-press to copy")}}
+
+function renderChips(){chips.innerHTML=CATS.map(([en,ar])=>`<button class="chip" id="chip-${en}" aria-pressed="${state.cat===en}" data-cat="${en}">${en} · ${ar}</button>`).join("")}
+function card(p){
+  const liked=!!state.liked[p.id],saved=!!state.saved[p.id];
+  const imgs=p.gallery||[p.src];
+  const stage=p.gallery
+    ?`<div class="gal">${imgs.map((g,i)=>`<img src="${g}" alt="${esc(p.en)}, photo ${i+1}">`).join("")}</div><div class="dots">${imgs.map((_,i)=>`<i class="${i?"":"on"}"></i>`).join("")}</div>`
+    :`<img class="media" src="${p.src}" alt="${esc(p.en)}">`;
+  const pre=p.only?"ONLY · فقط":p.unit?"PER PIECE · للقطعة":"FROM · ابتداءً من";
+  const ai=p.ai||"";
+  return `<section class="card" data-id="${p.id}" aria-label="${esc(p.en)}">
+    <div class="bgblur" style="background-image:url('${imgs[0]}')"></div>
+    ${stage}
+    <div class="rail">
+      <div class="avatar"><img src="logo.png" alt="Dollar Store Oman"></div>
+      <button class="act like" aria-pressed="${liked}" data-like="${p.id}"><i>${ICON.heart}</i><span>${liked?"Liked":"Like"}</span></button>
+      <button class="act save" aria-pressed="${saved}" data-save="${p.id}"><i>${ICON.save}</i><span>${saved?"Saved":"Save"}</span></button>
+      <a class="act wa" href="${waLink(p)}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp about ${esc(p.en)}"><i>${ICON.phone}</i><span>WhatsApp</span></a>
+      <a class="act dir" href="${esc(mapsLink())}" target="_blank" rel="noopener" aria-label="Get directions to the store"><i>${ICON.pin}</i><span>Directions</span></a>
+      <button class="act" data-share="${p.id}"><i>${ICON.share}</i><span>Share</span></button>
+    </div>
+    <div class="cap">
+      <div class="handle">@dollar.store.oman</div>
+      <div class="name">${esc(p.en)}</div>
+      <div class="ar" dir="rtl" lang="ar">${esc(p.ar)}</div>
+      <div class="price">${esc(priceOf(p))}<i class="omr" role="img" aria-label="OMR"></i>${promoOn(p)?`<s class="was">0.729</s><span class="until">until 3 Nov</span>`:""}</div>
+      <button class="more" data-more>More · المزيد</button>
+      <div class="details">${p.spec?`<div class="spec">${esc(p.spec)}</div>`:""}<div class="hook">${esc(p.hook)}</div></div>
+      ${ai?`<div class="aitag">${esc(ai)}</div>`:""}
+    </div>
+  </section>`;
+}
+function renderFeed(){
+  const list=ITEMS.filter(p=>state.cat==="All"||p.cat===state.cat);
+  feed.innerHTML=list.map(card).join("")+`<section class="card end">
+    <img class="logo" src="logo.png" alt="Dollar Store Oman">
+    <div class="big">${esc(STORE.big)}</div>
+    <h2>Direct imports. One simple price.</h2>
+    <p dir="rtl" lang="ar"><strong>استيراد مباشر • سعر بسيط</strong></p>
+    ${STORE.guar_en?`<p><strong>${esc(STORE.guar_en)}</strong></p>`:""}${STORE.guar_ar?`<p dir="rtl" lang="ar"><strong>${esc(STORE.guar_ar)}</strong></p>`:""}
+    <p>${esc(STORE.addr_en)}</p>
+    <p dir="rtl" lang="ar">${esc(STORE.addr_ar)}</p>
+    <p><strong>${esc(STORE.hours_en)}</strong><br>${esc(STORE.deliv_en)}</p>
+    <p dir="rtl" lang="ar">${esc(STORE.hours_ar)}<br>${esc(STORE.deliv_ar)}</p>
+    <div class="wa"><span>WhatsApp us · راسلونا على واتساب</span>
+      <span class="num">${esc(WA)}</span>
+      <div class="btns"><button class="btn" id="copywa">Copy WhatsApp number</button>
+      <a class="btn alt" href="${WA_LINK}" target="_blank" rel="noopener">Open in WhatsApp</a>
+      <a class="btn alt" href="${esc(mapsLink())}" target="_blank" rel="noopener">Get directions</a></div>
+      <small>If WhatsApp doesn't open, copy the number and message us.<br><span dir="rtl" lang="ar">إذا لم يفتح واتساب، انسخ الرقم وراسلنا.</span></small></div>
+  </section>`;
+  feed.scrollTop=0;observe();
+}
+chips.addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;state.cat=b.dataset.cat;renderChips();renderFeed()});
+
+let io,timer;
+function observe(){
+  io&&io.disconnect();
+  io=new IntersectionObserver(es=>es.forEach(en=>{const c=en.target;
+    if(en.isIntersecting&&en.intersectionRatio>.6){feed.querySelectorAll(".card.on").forEach(x=>{if(x!==c)x.classList.remove("on")});c.classList.add("on");autoplay(c)}
+    else c.classList.remove("on")}),{root:feed,threshold:[0,.6]});
+  feed.querySelectorAll(".card[data-id]").forEach(c=>io.observe(c));
+}
+function autoplay(c){clearInterval(timer);const g=c.querySelector(".gal");if(!g||matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+  timer=setInterval(()=>{const n=g.children.length,i=Math.round(g.scrollLeft/g.clientWidth);g.scrollTo({left:((i+1)%n)*g.clientWidth,behavior:"smooth"})},2600)}
+feed.addEventListener("pointerdown",e=>{if(e.target.closest(".gal"))clearInterval(timer)});
+feed.addEventListener("click",e=>{
+  const more=e.target.closest("[data-more]");
+  if(more){const cap=more.closest(".cap");cap.classList.toggle("open");more.textContent=cap.classList.contains("open")?"Less · أقل":"More · المزيد";return}
+  const like=e.target.closest("[data-like]"),save=e.target.closest("[data-save]"),share=e.target.closest("[data-share]"),snd=e.target.closest("[data-sound]");
+  if(e.target.id==="copywa"){copy(WA,"Number copied. Open WhatsApp and paste it");return}
+  if(like){toggleLike(like.dataset.like);return}
+  if(save){const id=save.dataset.save;state.saved[id]=!state.saved[id];persist();save.setAttribute("aria-pressed",!!state.saved[id]);save.querySelector("span").textContent=state.saved[id]?"Saved":"Save";toast(state.saved[id]?"Saved to your list":"Removed");return}
+  if(share){shareItem(find(share.dataset.share));return}
+  if(snd){state.muted=!state.muted;feed.querySelectorAll("video").forEach(v=>v.muted=state.muted);feed.querySelectorAll("[data-sound]").forEach(b=>b.textContent=state.muted?"Tap for sound":"Sound on");return}
+  const v=e.target.closest(".card.video")&&!e.target.closest(".act,.cap")?e.target.closest(".card").querySelector("video"):null;
+  if(v){v.paused?v.play().catch(()=>{}):v.pause()}
+});
+async function shareItem(p){
+  const url=(STORE.site||"").trim()||"https://claude.ai/artifact/XtyS1ZfvzdJ1ZwqCLrC9df";
+  const text=p.en+" | "+p.ar+"\n"+priceText(p)+" at Dollar Store Oman, Bousher, Muscat";
+  if(navigator.share){try{await navigator.share({title:p.en,text,url});return}catch(e){if(e&&e.name==="AbortError")return}}
+  openShareSheet(text,url);
+}
+function openShareSheet(text,url){
+  document.querySelector(".sheet")&&document.querySelector(".sheet").remove();
+  const full=text+"\n"+url,enc=encodeURIComponent;
+  const el=document.createElement("div");el.className="sheet";
+  el.innerHTML=`<div class="sbox"><b>Share · مشاركة</b>
+   <a class="sbtn" style="--c:#25d366" target="_blank" rel="noopener" href="https://api.whatsapp.com/send?text=${enc(full)}">WhatsApp</a>
+   <a class="sbtn" style="--c:#1877f2" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=${enc(url)}&quote=${enc(text)}">Facebook</a>
+   <button class="sbtn" style="--c:#d6249f" data-ig>Instagram</button>
+   <button class="sbtn" style="--c:#555" data-cp>Copy link</button>
+   <button class="sclose" data-sx>Close</button></div>`;
+  document.querySelector(".app").appendChild(el);
+  el.addEventListener("click",async e=>{
+    if(e.target===el||e.target.closest("[data-sx]")){el.remove();return}
+    if(e.target.closest("[data-cp]")){await copy(full,"Link copied");return}
+    if(e.target.closest("[data-ig]")){await copy(full,"Copied. Paste it in Instagram");window.open("https://www.instagram.com/","_blank","noopener")}
+  });
+}
+function toggleLike(id,force){
+  state.liked[id]=force??!state.liked[id];persist();
+  const b=feed.querySelector(`[data-like="${id}"]`);if(!b)return;
+  b.setAttribute("aria-pressed",!!state.liked[id]);b.querySelector("span").textContent=state.liked[id]?"Liked":"Like";
+}
+feed.addEventListener("dblclick",e=>{const c=e.target.closest(".card[data-id]");if(!c||e.target.closest(".act"))return;burst(c)});
+function burst(c){toggleLike(c.dataset.id,true);const d=document.createElement("div");d.className="burst";d.innerHTML=ICON.heart;c.appendChild(d);setTimeout(()=>d.remove(),750)}
+
+feed.addEventListener("scroll",e=>{const g=e.target;if(!g.classList||!g.classList.contains("gal"))return;
+  const i=Math.round(g.scrollLeft/g.clientWidth);g.parentElement.querySelectorAll(".dots i").forEach((d,j)=>d.classList.toggle("on",j===i))},true);
+
+
+/* ---- Owner control panel: shown only to people who can edit this page; saves by republishing the page ---- */
+const RESET=":root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}";
+const FONTS="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Readex+Pro:wght@400;600&display=swap";
+const SKEL='<div class="app">\n  <header class="top">\n    <nav class="chips" id="chips" aria-label="Filter"></nav>\n  </header>\n  <main class="feed" id="feed"></main>\n  <div class="toast" id="toast" hidden></div>\n</div>';
+function buildDoc(d){
+  const O="<scr"+"ipt",C="</scr"+"ipt>";
+  const css=document.getElementById("css").textContent,code=document.getElementById("code").textContent;
+  const json=JSON.stringify(d).replace(/</g,"\\u003c");
+  return '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>'+RESET+'</style></head><body>\n<title>Dollar Store Oman Reels</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="stylesheet" href="'+FONTS+'">\n<style id="css">'+css+'</style>\n'+SKEL+'\n'+O+' type="application/json" id="data">'+json+C+'\n'+O+' id="code">'+code+C+'\n\n</body></html>';
+}
+const AI_OPTS=["","AI styled image"];
+const STORE_FIELDS=[["big","Big price on last screen"],["wa","WhatsApp number"],["addr_en","Address (English)"],["addr_ar","Address (Arabic)"],["hours_en","Opening hours (English)"],["hours_ar","Opening hours (Arabic)"],["deliv_en","Delivery and payment (English)"],["deliv_ar","Delivery and payment (Arabic)"],["site","Catalogue link people will share"],["maps","Google Maps link for directions (empty = default)"],["guar_en","Guarantee line (English, leave empty to hide)"],["guar_ar","Guarantee line (Arabic, leave empty to hide)"]];
+async function initPanel(){
+  if(typeof claude==="undefined"||!claude.use)return;
+  let user=null,art=null;
+  try{user=await claude.use("user");art=await claude.use("artifact")}catch(e){return}
+  if(!user||!art||!user.canEdit())return;
+  const gear=document.createElement("button");gear.className="gear";gear.textContent="✎ Edit";gear.setAttribute("aria-label","Open control panel");
+  document.querySelector(".app").appendChild(gear);
+  gear.onclick=()=>openPanel(art);
+}
+function openPanel(art){
+  const draft=JSON.parse(JSON.stringify(DATA));let tab="items",q="";
+  const el=document.createElement("div");el.className="panel";
+  el.innerHTML=`<div class="ph"><h3>Control panel</h3><button class="pbtn" data-close>Close</button><button class="pbtn go" data-save>Save</button></div>
+   <div class="ptabs"><button data-tab="items" aria-pressed="true">Products</button><button data-tab="store" aria-pressed="false">Store info</button></div><div class="pbody"></div>`;
+  document.querySelector(".app").appendChild(el);
+  const body=el.querySelector(".pbody");
+  function modeOf(p){return p.only?"only":p.unit?"unit":"from"}
+  function render(){
+    el.querySelectorAll("[data-tab]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.tab===tab));
+    if(tab==="store"){
+      body.innerHTML=`<p class="pnote">These show on the last screen. Prices and text change for everyone after you tap Save.</p>`+STORE_FIELDS.map(([k,l])=>`<label>${l}<input type="text" data-s="${k}" value="${esc(draft.store[k])}"></label>`).join("");
+      return}
+    const ql=q.toLowerCase();
+    const rows=draft.items.map((p,i)=>({p,i})).filter(({p})=>!ql||(p.en+" "+p.ar+" "+p.id).toLowerCase().includes(ql));
+    const T=(i,k,v,x="")=>`<input type="text" ${x} data-i="${i}" data-k="${k}" value="${esc(v)}">`;
+    body.innerHTML=`<input type="search" placeholder="Search products" value="${esc(q)}" data-q><p class="pnote">Edit any cell, then tap Save. Swipe the table sideways to see more columns. Only you can see this.</p>
+     <div class="twrap"><table class="ptable"><thead><tr><th>Photo</th><th>English name</th><th>Arabic name</th><th>Price (OMR)</th><th>Description</th><th>Details (English | Arabic)</th><th>Photo label</th><th>Hide</th></tr></thead><tbody>`+
+     rows.map(({p,i})=>{const im=(p.gallery||[p.src])[0];return `<tr${p.hidden?' class="hid"':''}><td><img src="${esc(im)}" alt=""><small>${esc(p.id)}</small></td>
+      <td>${T(i,"en",p.en)}</td><td>${T(i,"ar",p.ar,'dir="rtl"')}</td>
+      <td>${T(i,"price",p.price||"0.729",'inputmode="decimal" class="num"')}</td>
+      <td><textarea data-i="${i}" data-k="hook">${esc(p.hook)}</textarea></td>
+      <td><textarea data-i="${i}" data-k="spec">${esc(p.spec)}</textarea></td>
+      <td><select data-i="${i}" data-k="ai">${AI_OPTS.map(o=>`<option value="${esc(o)}"${(p.ai||"")===o?" selected":""}>${o||"Real photo (no label)"}</option>`).join("")}</select></td>
+      <td><input type="checkbox" data-i="${i}" data-k="hidden"${p.hidden?" checked":""}></td></tr>`}).join("")+`</tbody></table></div>`;
+  }
+  el.addEventListener("click",async e=>{
+    if(e.target.closest("[data-close]")){el.remove();return}
+    const t=e.target.closest("[data-tab]");if(t){tab=t.dataset.tab;render();return}
+    if(e.target.closest("[data-save]")){
+      const btn=e.target.closest("[data-save]");btn.disabled=true;btn.textContent="Saving…";
+      try{await art.publish(buildDoc(draft))}
+      catch(err){btn.disabled=false;btn.textContent="Save";toast(err&&err.code==="conflict"?"Someone saved first. The page will reload":"Could not save: "+((err&&err.message)||"try again"))}
+    }
+  });
+  el.addEventListener("input",e=>{
+    const f=e.target;
+    if(f.dataset.q!==undefined){q=f.value;const pos=f.selectionStart;render();const n=body.querySelector("[data-q]");n.focus();n.setSelectionRange(pos,pos);return}
+    if(f.dataset.s){draft.store[f.dataset.s]=f.value;return}
+    if(f.dataset.i===undefined)return;
+    const p=draft.items[+f.dataset.i],k=f.dataset.k;
+    if(k==="mode"){delete p.only;delete p.unit;if(f.value==="only")p.only=true;if(f.value==="unit")p.unit=true}
+    else if(k==="hidden")p.hidden=f.checked||undefined;
+    else p[k]=f.value;
+  });
+  render();
+}
+/* WhatsApp: on phones, try the WhatsApp app directly; if nothing opens, fall back to the web link */
+document.addEventListener("click",e=>{
+  const a=e.target.closest&&e.target.closest('a[href^="https://api.whatsapp.com/send"]');
+  if(!a||!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent))return;
+  e.preventDefault();
+  const web=a.href,app=web.replace("https://api.whatsapp.com/send","whatsapp://send");
+  let left=false;const onHide=()=>{if(document.hidden)left=true};
+  document.addEventListener("visibilitychange",onHide);
+  const t=document.createElement("a");t.href=app;t.target="_blank";t.rel="noopener";t.style.display="none";document.body.appendChild(t);t.click();t.remove();
+  setTimeout(()=>{document.removeEventListener("visibilitychange",onHide);if(!left&&!document.hidden)window.open(web,"_blank","noopener")},1400);
+});
+renderChips();renderFeed();initPanel();
+</script>
