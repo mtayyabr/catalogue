@@ -17,8 +17,15 @@ html,body{height:100%;height:100dvh}
 body{background:var(--deep);color:var(--paper);font-family:var(--body);overflow:hidden}
 .app{position:relative;height:100%;height:100dvh;max-width:480px;margin:0 auto;background:var(--ink)}
 .top{position:absolute;top:0;left:0;right:0;z-index:5;padding:calc(8px + env(safe-area-inset-top,0px)) 0 22px;background:linear-gradient(#000000a6,transparent)}
-.chips{display:flex;gap:20px;overflow-x:auto;padding:6px max(16px,env(safe-area-inset-left,0px));scrollbar-width:none}
+.chips{position:relative;display:flex;gap:20px;overflow-x:auto;padding:6px max(16px,env(safe-area-inset-left,0px));scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
+.chips::after{content:"";flex:0 0 70vw}
+.adtag{position:absolute;top:calc(64px + env(safe-area-inset-top,0px));left:16px;background:#00000066;color:#fff;font:700 .7rem var(--body);padding:3px 9px;border-radius:99px;letter-spacing:.06em}
+.adgreen{background:#128c7e!important;color:#fff!important}.adgreen .btn{background:#fff;color:#075e54}.adgreen .num{font:800 1.5rem var(--display)}
+.adbar{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:60px 16px calc(24px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,#000000e6 60%);text-align:center}
+.adbar .adtag{position:static;display:inline-block;margin-bottom:6px}
+.adh{font:800 2.4rem var(--display);color:var(--price);display:flex;align-items:center;justify-content:center;gap:10px;white-space:nowrap}.adh .omr{background:var(--price);width:1.3em;height:.75em;margin:0}
+.adp{margin:2px 0 12px;font-weight:600}.adcoupon .btn{font-size:1rem;padding:13px 22px;background:var(--price);color:var(--ink)}
 .chip{flex:none;background:none;border:0;border-bottom:2px solid transparent;color:#ffffffb3;font:600 .95rem var(--body);padding:6px 0;cursor:pointer;text-shadow:0 1px 3px #0009}
 .chip[aria-pressed="true"]{color:#fff;border-bottom-color:#fff}
 :focus-visible{outline:2px solid var(--price);outline-offset:2px}
@@ -191,11 +198,11 @@ function card(p){
   const imgs=p.gallery||[p.src];
   const stage=p.gallery
     ?`<div class="gal">${imgs.map((g,i)=>`<img src="${g}" alt="${esc(p.en)}, photo ${i+1}">`).join("")}</div><div class="dots">${imgs.map((_,i)=>`<i class="${i?"":"on"}"></i>`).join("")}</div>`
-    :`<img class="media" src="${p.src}" alt="${esc(p.en)}">`;
+    :`<img class="media" loading="lazy" src="${p.src}" alt="${esc(p.en)}">`;
   const pre=p.only?"ONLY · فقط":p.unit?"PER PIECE · للقطعة":"FROM · ابتداءً من";
   const ai=p.ai||"";
   return `<section class="card" data-id="${p.id}" aria-label="${esc(p.en)}">
-    <div class="bgblur" style="background-image:url('${imgs[0]}')"></div>
+    <div class="bgblur" data-bg="${imgs[0]}"></div>
     ${stage}
     <div class="rail">
       <a class="avwrap" href="https://www.instagram.com/dollar.store.oman/" target="_blank" rel="noopener" aria-label="Dollar Store Oman on Instagram"><span class="avatar"><img src="logo.png" alt="Dollar Store Oman"></span><b class="plus">+</b></a>
@@ -218,9 +225,9 @@ function card(p){
     </div>
   </section>`;
 }
-function renderFeed(){
-  const list=ITEMS.filter(p=>state.cat==="All"||(state.cat==="Clearance"?(p.cat!=="Coupons"&&+priceOf(p)<0.729):p.cat===state.cat));
-  feed.innerHTML=list.map(card).join("")+`<section class="card end">
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let adN=0,sinceAd=0,feedSeq=[],shown=new Set(),loading=false;
+function infoCard(){return `<section class="card end ad">
     <img class="logo" src="logo.png" alt="Dollar Store Oman">
     <div class="big">${esc(STORE.big)}</div>
     <h2>Direct imports. One simple price.</h2>
@@ -236,13 +243,42 @@ function renderFeed(){
       <a class="btn alt" href="${WA_LINK}" target="_blank" rel="noopener">Open in WhatsApp</a>
       <a class="btn alt" href="${esc(mapsLink())}" target="_blank" rel="noopener">Get directions</a></div>
       <small>If WhatsApp doesn't open, copy the number and message us.<br><span dir="rtl" lang="ar">إذا لم يفتح واتساب، انسخ الرقم وراسلنا.</span></small></div>
-  </section>`;
-  feed.scrollTop=0;observe();
+  </section>`}
+function adCard(){
+  const kinds=["store","coupon","order","delivery"];
+  let k=kinds[adN++%kinds.length];
+  const cp=ITEMS.find(x=>x.id==="CP1");
+  if(k==="coupon"&&!cp)k="order";
+  if(k==="store")return infoCard();
+  if(k==="coupon")return `<section class="card ad adcoupon"><div class="bgblur" data-bg="coupon-jewellery.jpg"></div><img class="media" src="coupon-jewellery.jpg" alt="Jewellery coupon"><div class="adbar"><span class="adtag">AD · إعلان</span><div class="adh">Jewellery 0.250<i class="omr" role="img" aria-label="OMR"></i></div><div class="adp">Until 3 November · حتى ٣ نوفمبر</div><button class="btn" data-goto="Jewellery">Shop jewellery · تسوق</button></div></section>`;
+  if(k==="order")return `<section class="card end ad adgreen"><span class="adtag">AD · إعلان</span><img class="logo" src="logo.png" alt="Dollar Store Oman"><h2>Order on WhatsApp</h2><p dir="rtl" lang="ar"><strong>اطلب عبر واتساب</strong></p><p>Send the product name. We reply fast.</p><div class="btns"><a class="btn" href="${WA_LINK}" target="_blank" rel="noopener">Open WhatsApp · واتساب</a></div><span class="num">${esc(WA)}</span></section>`;
+  return `<section class="card end ad"><span class="adtag">AD · إعلان</span><img class="logo" src="logo.png" alt="Dollar Store Oman"><h2>${esc(STORE.deliv_en)}</h2><p dir="rtl" lang="ar"><strong>${esc(STORE.deliv_ar)}</strong></p><p>${esc(STORE.hours_en)}</p><div class="btns"><a class="btn alt" href="${esc(mapsLink())}" target="_blank" rel="noopener">Get directions · الموقع</a></div></section>`;
 }
-chips.addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;state.cat=b.dataset.cat;renderChips();renderFeed()});
+function pickBatch(first){
+  if(first){const list=ITEMS.filter(p=>state.cat==="All"||(state.cat==="Clearance"?(p.cat!=="Coupons"&&+priceOf(p)<0.729):p.cat===state.cat));list.forEach(p=>shown.add(p.id));return list}
+  let pool=ITEMS.filter(p=>!shown.has(p.id));
+  if(pool.length<6){shown=new Set();pool=ITEMS.slice()}
+  const b=shuffle(pool).slice(0,12);b.forEach(p=>shown.add(p.id));return b;
+}
+function appendBatch(first){
+  const items=pickBatch(first);let out="";
+  items.forEach(p=>{out+=card(p);if(++sinceAd>=6){sinceAd=0;out+=adCard()}});
+  feed.insertAdjacentHTML("beforeend",out);observe();
+}
+function renderFeed(){
+  adN=0;sinceAd=0;shown=new Set();feed.innerHTML="";appendBatch(true);
+  if(!feed.querySelector(".card[data-id]"))appendBatch(false);
+  feed.scrollTop=0;
+}
+feed.addEventListener("scroll",()=>{if(loading)return;if(feed.scrollTop+feed.clientHeight*4>feed.scrollHeight){loading=true;appendBatch(false);setTimeout(()=>loading=false,250)}},{passive:true});
+chips.addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;state.cat=b.dataset.cat;
+  chips.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));
+  chips.scrollTo({left:Math.max(0,b.offsetLeft-16),behavior:"smooth"});renderFeed()});
 
 let io,timer;
+const bgIO=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){const b=en.target.querySelector(".bgblur[data-bg]");if(b){b.style.backgroundImage=`url('${b.dataset.bg}')`;b.removeAttribute("data-bg")}bgIO.unobserve(en.target)}}),{root:feed,rootMargin:"200% 0px"});
 function observe(){
+  feed.querySelectorAll(".card:not([data-bgo])").forEach(c=>{c.dataset.bgo=1;bgIO.observe(c)});
   io&&io.disconnect();
   io=new IntersectionObserver(es=>es.forEach(en=>{const c=en.target;
     if(en.isIntersecting&&en.intersectionRatio>.6){feed.querySelectorAll(".card.on").forEach(x=>{if(x!==c)x.classList.remove("on")});c.classList.add("on");autoplay(c)}
@@ -256,9 +292,10 @@ feed.addEventListener("click",e=>{
   const more=e.target.closest("[data-more]");
   if(more){const cap=more.closest(".cap");cap.classList.toggle("open");more.textContent=cap.classList.contains("open")?"Less · أقل":"More · المزيد";return}
   const like=e.target.closest("[data-like]"),save=e.target.closest("[data-save]"),share=e.target.closest("[data-share]"),snd=e.target.closest("[data-sound]");
+  const go=e.target.closest("[data-goto]");if(go){const c=document.getElementById("chip-"+go.dataset.goto);c&&c.click();return}
   if(e.target.id==="copywa"){copy(WA,"Number copied. Open WhatsApp and paste it");return}
   if(like){toggleLike(like.dataset.like);return}
-  if(save){const id=save.dataset.save;state.saved[id]=!state.saved[id];persist();save.setAttribute("aria-pressed",!!state.saved[id]);save.querySelector("span").textContent=state.saved[id]?"Saved":"Save";toast(state.saved[id]?"Saved to your list":"Removed");return}
+  if(save){const id=save.dataset.save;state.saved[id]=!state.saved[id];persist();feed.querySelectorAll(`[data-save="${id}"]`).forEach(s=>{s.setAttribute("aria-pressed",!!state.saved[id]);s.querySelector("span").textContent=state.saved[id]?"Saved":"Save"});toast(state.saved[id]?"Saved to your list":"Removed");return}
   if(share){shareItem(find(share.dataset.share));return}
   if(snd){state.muted=!state.muted;feed.querySelectorAll("video").forEach(v=>v.muted=state.muted);feed.querySelectorAll("[data-sound]").forEach(b=>b.textContent=state.muted?"Tap for sound":"Sound on");return}
   const v=e.target.closest(".card.video")&&!e.target.closest(".act,.cap")?e.target.closest(".card").querySelector("video"):null;
@@ -289,8 +326,7 @@ function openShareSheet(text,url){
 }
 function toggleLike(id,force){
   state.liked[id]=force??!state.liked[id];persist();
-  const b=feed.querySelector(`[data-like="${id}"]`);if(!b)return;
-  b.setAttribute("aria-pressed",!!state.liked[id]);b.querySelector("span").textContent=state.liked[id]?"Liked":"Like";
+  feed.querySelectorAll(`[data-like="${id}"]`).forEach(b=>{b.setAttribute("aria-pressed",!!state.liked[id]);b.querySelector("span").textContent=state.liked[id]?"Liked":"Like"});
 }
 feed.addEventListener("dblclick",e=>{const c=e.target.closest(".card[data-id]");if(!c||e.target.closest(".act"))return;burst(c)});
 function burst(c){toggleLike(c.dataset.id,true);const d=document.createElement("div");d.className="burst";d.innerHTML=ICON.heart;c.appendChild(d);setTimeout(()=>d.remove(),750)}
