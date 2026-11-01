@@ -69,6 +69,14 @@ body{background:var(--deep);color:var(--paper);font-family:var(--body);overflow:
 .act[aria-pressed="true"].like svg{fill:var(--hot);stroke:var(--hot)}
 .act[aria-pressed="true"].save svg{fill:var(--price);stroke:var(--price)}
 
+.act .brand{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;box-shadow:0 1px 4px #0008}
+.act .brand svg{width:26px;height:26px;fill:#fff;stroke:none;filter:none}
+.act .brand.wa{background:#25d366}.act .brand.gm{background:#fff}.act .brand.gm svg{width:28px;height:28px}
+.act .brand.sh{background:#ffffff26;backdrop-filter:blur(6px)}.act .brand.sh svg{fill:none;stroke:#fff;stroke-width:2}
+.discw{position:relative;cursor:pointer;margin-top:4px}.discw .disc{margin-top:0;animation-duration:var(--spin,5s)}
+.discw.playing .disc{box-shadow:0 0 0 2px #fff,0 0 14px #25d366}
+.lvl{position:absolute;left:50%;transform:translateX(-50%);bottom:-5px;font:800 .55rem var(--body);color:#fff;background:#fe2c55;border-radius:99px;padding:1px 5px;display:none}
+.discw.playing .lvl{display:block}
 .cap{position:absolute;left:0;right:0;bottom:0;z-index:2;
   padding:50px max(76px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
   background:linear-gradient(transparent,#000000d9 65%)}
@@ -205,13 +213,10 @@ function card(p){
     <div class="bgblur" data-bg="${imgs[0]}"></div>
     ${stage}
     <div class="rail">
-      <a class="avwrap" href="https://www.instagram.com/dollar.store.oman/" target="_blank" rel="noopener" aria-label="Dollar Store Oman on Instagram"><span class="avatar"><img src="logo.png" alt="Dollar Store Oman"></span><b class="plus">+</b></a>
-      <button class="act like" aria-pressed="${liked}" data-like="${p.id}"><i>${ICON.heart}</i><span>${liked?"Liked":"Like"}</span></button>
-      <button class="act save" aria-pressed="${saved}" data-save="${p.id}"><i>${ICON.save}</i><span>${saved?"Saved":"Save"}</span></button>
-      <a class="act wa" href="${waLink(p)}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp about ${esc(p.en)}"><i>${ICON.phone}</i><span>WhatsApp</span></a>
-      <a class="act dir" href="${esc(mapsLink())}" target="_blank" rel="noopener" aria-label="Get directions to the store"><i>${ICON.pin}</i><span>Directions</span></a>
-      <button class="act" data-share="${p.id}"><i>${ICON.share}</i><span>Share</span></button>
-      <div class="disc" aria-hidden="true"><img src="logo.png" alt=""></div>
+      <a class="act wa" href="${waLink(p)}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp about ${esc(p.en)}"><i class="brand wa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></i><span>WhatsApp</span></a>
+      <a class="act dir" href="${esc(mapsLink())}" target="_blank" rel="noopener" aria-label="Get directions on Google Maps"><i class="brand gm"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#FBBC04" d="M19.527 4.799c1.212 2.608.937 5.678-.405 8.173-1.101 2.047-2.744 3.74-4.098 5.614-.619.858-1.244 1.75-1.669 2.727-.141.325-.263.658-.383.992-.121.333-.224.673-.34 1.008-.109.314-.236.684-.627.687h-.007c-.466-.001-.579-.53-.695-.887-.284-.874-.581-1.713-1.019-2.525-.51-.944-1.145-1.817-1.79-2.671L19.527 4.799z"/><path fill="#34A853" d="M8.545 7.705l-3.959 4.707c.724 1.54 1.821 2.863 2.871 4.18.247.31.494.622.737.936l4.984-5.925-.029.01c-1.741.601-3.691-.291-4.392-1.987a3.377 3.377 0 0 1-.209-.716c-.063-.437-.077-.761-.004-1.198l.001-.007z"/><path fill="#1A73E8" d="M5.492 3.149l-.003.004c-1.947 2.466-2.281 5.88-1.117 8.77l4.785-5.689-.058-.05-3.607-3.035z"/><path fill="#4285F4" d="M14.661.436l-3.838 4.563a.295.295 0 0 1 .027-.01c1.6-.551 3.403.15 4.22 1.626.176.319.323.683.377 1.045.068.446.085.773.012 1.22l-.003.016 3.836-4.561A8.382 8.382 0 0 0 14.67.439l-.009-.003z"/><path fill="#EA4335" d="M9.466 5.868L14.162.285l-.047-.012A8.31 8.31 0 0 0 11.986 0a8.439 8.439 0 0 0-6.169 2.766l-.016.018 3.665 3.084z"/></svg></i><span>Maps</span></a>
+      <button class="act" data-share="${p.id}" aria-label="Share"><i class="brand sh">${ICON.share}</i><span>Share</span></button>
+      <div class="discw${MUS.lv?" playing":""}" data-disc role="button" tabindex="0" aria-label="Change music level"><div class="disc" aria-hidden="true"><img src="logo.png" alt=""></div><b class="lvl">${MUS.lv||""}</b></div>
     </div>
     <div class="cap">
       <div class="handle">@dollar.store.oman</div>
@@ -292,6 +297,7 @@ feed.addEventListener("click",e=>{
   const more=e.target.closest("[data-more]");
   if(more){const cap=more.closest(".cap");cap.classList.toggle("open");more.textContent=cap.classList.contains("open")?"Less · أقل":"More · المزيد";return}
   const like=e.target.closest("[data-like]"),save=e.target.closest("[data-save]"),share=e.target.closest("[data-share]"),snd=e.target.closest("[data-sound]");
+  if(e.target.closest("[data-disc]")){cycleMusic();return}
   const go=e.target.closest("[data-goto]");if(go){const c=document.getElementById("chip-"+go.dataset.goto);c&&c.click();return}
   if(e.target.id==="copywa"){copy(WA,"Number copied. Open WhatsApp and paste it");return}
   if(like){toggleLike(like.dataset.like);return}
@@ -301,6 +307,39 @@ feed.addEventListener("click",e=>{
   const v=e.target.closest(".card.video")&&!e.target.closest(".act,.cap")?e.target.closest(".card").querySelector("video"):null;
   if(v){v.paused?v.play().catch(()=>{}):v.pause()}
 });
+
+/* ---- Original synthesised music (no copyrighted audio). Click the disc: off -> level 1..5 -> off ---- */
+const MUS={lv:0,ctx:null,step:0,next:0,tid:null,bpm:[84,98,112,126,140],spin:[5,3.6,2.6,1.9,1.3]};
+function musTone(t,f,d,type,vol){const c=MUS.ctx,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=f;
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.02)}
+function musNoise(t,d,vol){const c=MUS.ctx,n=Math.floor(c.sampleRate*d),b=c.createBuffer(1,n,c.sampleRate),a=b.getChannelData(0);
+  for(let i=0;i<n;i++)a[i]=(Math.random()*2-1)*(1-i/n);const s=c.createBufferSource(),g=c.createGain(),f=c.createBiquadFilter();
+  f.type="highpass";f.frequency.value=6000;g.gain.value=vol;s.buffer=b;s.connect(f);f.connect(g);g.connect(c.destination);s.start(t)}
+const BASS=[110,110,130.8,98],LEAD=[440,0,523.3,0,587.3,523.3,0,440,659.3,0,587.3,0,523.3,440,0,392];
+function musStep(t,s){const L=MUS.lv,beat=s%4===0,bar=Math.floor(s/16)%4;
+  if(beat){musTone(t,120,.18,"sine",.5);musTone(t,60,.18,"sine",.5)}
+  if(s%8===0||(L>=3&&s%8===6))musTone(t,BASS[bar],.22,"triangle",.28);
+  if(L>=2&&s%4===2)musNoise(t,.05,.35);
+  if(L>=3&&s%2===1&&L<5)musNoise(t,.03,.18);
+  if(L>=5)musNoise(t,.03,.22);
+  if(L>=4){const f=LEAD[s%16];if(f)musTone(t,f*(bar%2?1.5:1),.16,"square",.07)}
+  if(L>=2&&s%16===0)musTone(t,BASS[bar]*4,.5,"sine",.06)}
+function musTick(){const c=MUS.ctx;if(!c||!MUS.lv)return;
+  while(MUS.next<c.currentTime+.15){musStep(MUS.next,MUS.step++);MUS.next+=60/MUS.bpm[MUS.lv-1]/4}}
+function setDisc(){document.documentElement.style.setProperty("--spin",(MUS.lv?MUS.spin[MUS.lv-1]:5)+"s");
+  feed.querySelectorAll(".discw").forEach(d=>{d.classList.toggle("playing",!!MUS.lv);const l=d.querySelector(".lvl");if(l)l.textContent=MUS.lv})}
+function cycleMusic(){
+  try{
+    if(!MUS.ctx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC){toast("Sound is not supported on this phone");return}MUS.ctx=new AC()}
+    MUS.ctx.resume&&MUS.ctx.resume();
+    MUS.lv=(MUS.lv+1)%6;
+    if(MUS.lv){if(MUS.lv===1){MUS.step=0;MUS.next=MUS.ctx.currentTime+.05;clearInterval(MUS.tid);MUS.tid=setInterval(musTick,50)}
+      toast("Music level "+MUS.lv+" of 5 · "+MUS.bpm[MUS.lv-1]+" BPM")}
+    else{clearInterval(MUS.tid);toast("Music off")}
+    setDisc();
+  }catch(e){toast("Could not start sound")}
+}
+document.addEventListener("visibilitychange",()=>{if(document.hidden&&MUS.lv&&MUS.ctx)MUS.ctx.suspend();else if(MUS.lv&&MUS.ctx)MUS.ctx.resume()});
 async function shareItem(p){
   const url=(STORE.site||"").trim()||"https://claude.ai/artifact/XtyS1ZfvzdJ1ZwqCLrC9df";
   const text=p.en+" | "+p.ar+"\n"+priceText(p)+" at Dollar Store Oman, Bousher, Muscat";
