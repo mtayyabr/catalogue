@@ -33,11 +33,11 @@ body{background:var(--deep);color:var(--paper);font-family:var(--body);overflow:
 .feed{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none}
 .feed::-webkit-scrollbar{display:none}
 .card{position:relative;height:100%;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden;background:#000}
-.bgblur{position:absolute;inset:-30px;background-size:cover;background-position:center;filter:blur(28px) brightness(.72) saturate(1.2);transform:scale(1.1)}
-.media{position:absolute;left:0;right:0;top:calc(54px + env(safe-area-inset-top,0px));bottom:178px;width:100%;height:auto;object-fit:contain;object-position:center}
-.gal{position:absolute;left:0;right:0;top:calc(54px + env(safe-area-inset-top,0px));bottom:178px;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.bgblur{position:absolute;inset:-30px;background-size:cover;background-position:center;filter:blur(28px) brightness(.85) saturate(1.2);transform:scale(1.1)}
+.media{position:absolute;left:0;right:0;top:0;bottom:0;width:100%;height:100%;object-fit:contain;object-position:center 42%}
+.gal{position:absolute;left:0;right:0;top:0;bottom:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
 .gal::-webkit-scrollbar{display:none}
-.gal img{flex:none;width:100%;height:100%;object-fit:contain;object-position:center;scroll-snap-align:center}
+.gal img{flex:none;width:100%;height:100%;object-fit:contain;object-position:center 42%;scroll-snap-align:center}
 .card.on .media,.card.on .gal img{animation:kb 9s ease-out forwards}
 @keyframes kb{from{transform:scale(1)}to{transform:scale(1.07)}}
 .dots{position:absolute;z-index:3;top:calc(48px + env(safe-area-inset-top,0px));left:16px;right:16px;display:flex;gap:4px}
