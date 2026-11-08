@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dollar Store Oman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<style>
+/* Layout: Linktree-style single column — avatar, name, bio, full-width pill buttons, icon row */
+:root {
+  --bg: #e9f1ee;
+  --bg2: #fdf4d6;
+  --card: #ffffff;
+  --ink: #12302b;
+  --muted: #4f6a64;
+  --accent: #f2b705;
+  --accent-ink: #12302b;
+  --line: #d3e0dc;
+  --wa: #1b8f5a;
+  --display: "Readex Pro", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --body: "IBM Plex Sans Arabic", "Readex Pro", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1c19; --bg2: #1d1a0c; --card: #172b27; --ink: #e8f1ee; --muted: #9db5af;
+    --accent: #f5c431; --accent-ink: #12302b; --line: #2a443f; --wa: #23a368; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1c19; --bg2: #1d1a0c; --card: #172b27; --ink: #e8f1ee; --muted: #9db5af;
+  --accent: #f5c431; --accent-ink: #12302b; --line: #2a443f; --wa: #23a368; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body { margin: 0;
+  background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 55%);
+  background-color: var(--bg);
+  color: var(--ink); font-family: var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 36px 40px;
+}
+.wrap { max-width: 460px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.avatar {
+  width: 96px; height: 96px; border-radius: 50%; background: var(--accent); color: var(--accent-ink);
+  display: grid; place-items: center; font-family: var(--display); font-weight: 700;
+  box-shadow: 0 0 0 4px var(--card), 0 6px 18px rgba(18,48,43,.18);
+  line-height: 1; text-align: center;
+}
+.avatar b { font-size: 1.5rem; display: block; font-variant-numeric: tabular-nums; }
+.avatar small { font-size: .7rem; font-weight: 600; display: block; margin-top: 3px; }
+h1 { font-family: var(--display); font-weight: 700; font-size: 1.35rem; margin: 6px 0 0; text-align: center; }
+.handle { margin: 0; color: var(--muted); font-size: .95rem; direction: ltr; }
+.bio { margin: 0; text-align: center; color: var(--ink); line-height: 1.7; font-size: .95rem; max-width: 36ch; }
+.links { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+.link {
+  display: grid; grid-template-columns: 40px 1fr 40px; align-items: center;
+  min-height: 62px; padding: 10px 14px; border-radius: 999px;
+  background: var(--card); color: var(--ink); text-decoration: none;
+  border: 1px solid var(--line); box-shadow: 0 2px 0 var(--line);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.link:hover { transform: translateY(-2px); box-shadow: 0 4px 0 var(--line); }
+.link:active { transform: translateY(0); box-shadow: 0 1px 0 var(--line); }
+.link:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.link.primary { background: var(--wa); color: #fff; border-color: var(--wa); box-shadow: 0 2px 0 rgba(0,0,0,.18); }
+.ico { width: 32px; height: 32px; display: grid; place-items: center; }
+.ico svg { width: 24px; height: 24px; fill: currentColor; }
+.txt { text-align: center; line-height: 1.35; min-width: 0; }
+.en { display: block; font-family: var(--display); font-weight: 600; font-size: 1rem; }
+.ar { display: block; font-size: .92rem; font-weight: 500; opacity: .85; direction: rtl; }
+.socials { display: flex; gap: 18px; margin-top: 14px; }
+.socials a { color: var(--ink); width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; }
+.socials a:focus-visible { outline: 3px solid var(--accent); }
+.socials svg { width: 26px; height: 26px; fill: currentColor; }
+.foot { text-align: center; color: var(--muted); font-size: .85rem; line-height: 1.7; margin-top: 6px; }
+.copy { margin-top: 8px; font: 600 .85rem var(--display); color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; cursor: pointer; }
+.copy:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.num { font-variant-numeric: tabular-nums; user-select: all; direction: ltr; unicode-bidi: isolate; }
+@media (prefers-reduced-motion: reduce) { .link { transition: none; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="avatar" aria-hidden="true"><div><b>0.729</b><small>OMR</small></div></div>
+  <h1>Dollar Store Oman · دولار ستور عُمان</h1>
+  <p class="handle">@dollar.store.oman</p>
+  <p class="bio">Every item one price, OMR 0.729 🛍️<br>كل المنتجات بسعر 0.729 ر.ع<br>📍 Bousher, Muscat · بوشر، مسقط</p>
+
+  <nav class="links" id="links" aria-label="Store links"></nav>
+
+  <div class="socials" id="socials"></div>
+
+  <p class="foot">WhatsApp · واتساب: <span class="num" id="wanum">+968 7912 3698</span><br><button type="button" id="copy" class="copy">Copy number · نسخ الرقم</button></p>
+</div>
+
+<script>
+var ICONS = {
+  wa: '<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1-.7-.3-1.5-.7-2.2-1.4-.6-.5-1-1.2-1.2-1.6-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 2.2.9 2.6.7 3.1.7.5 0 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>',
+  reels: '<svg viewBox="0 0 24 24"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm0 2v3h3.6l-2-3H5zm4 0 2 3h3l-2-3h-3zm5 0 2 3h3V5h-5zM5 10v9h14v-9H5zm5 1.5 5 3-5 3v-6z"/></svg>',
+  map: '<svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>',
+  shop: '<svg viewBox="0 0 24 24"><path d="M7 7V6a5 5 0 0 1 10 0v1h3l-1 14H5L4 7h3zm2 0h6V6a3 3 0 0 0-6 0v1z"/></svg>',
+  ig: '<svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM17.5 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>'
+};
+
+// Empty url = button hidden. Add the Shopify link when ready.
+var LINKS = [
+  { icon: "wa",    en: "Chat on WhatsApp",   ar: "راسلنا على واتساب",  url: "https://wa.me/96879123698", primary: true },
+  { icon: "reels", en: "Reels catalogue",    ar: "كتالوج الريلز",       url: "https://mtayyabr.github.io/catalogue/reels/" },
+  { icon: "map",   en: "Directions to store", ar: "الاتجاهات إلى المحل", url: "https://maps.google.com/?cid=2902572933674757929" },
+  { icon: "shop",  en: "Shop online",        ar: "تسوق أونلاين",         url: "" }
+];
+var SOCIALS = [
+  { icon: "ig", label: "Instagram", url: "https://www.instagram.com/dollar.store.oman/" },
+  { icon: "wa", label: "WhatsApp",  url: "https://wa.me/96879123698" }
+];
+
+var nav = document.getElementById("links");
+LINKS.forEach(function (l) {
+  if (!l.url) return;
+  var a = document.createElement("a");
+  a.href = l.url; a.target = "_blank"; a.rel = "noopener";
+  a.className = "link" + (l.primary ? " primary" : "");
+  a.innerHTML = '<span class="ico">' + ICONS[l.icon] + '</span><span class="txt"><span class="en"></span><span class="ar"></span></span><span></span>';
+  a.querySelector(".en").textContent = l.en;
+  a.querySelector(".ar").textContent = l.ar;
+  nav.appendChild(a);
+});
+document.getElementById("copy").addEventListener("click", function () {
+  var btn = this, num = "+96879123698";
+  function done(t) { btn.textContent = t; setTimeout(function () { btn.textContent = "Copy number · نسخ الرقم"; }, 2000); }
+  function select() { var r = document.createRange(); r.selectNodeContents(document.getElementById("wanum")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); done("Selected · تم التحديد"); }
+  try { navigator.clipboard.writeText(num).then(function () { done("Copied · تم النسخ"); }, select); } catch (e) { select(); }
+});
+var soc = document.getElementById("socials");
+SOCIALS.forEach(function (s) {
+  var a = document.createElement("a");
+  a.href = s.url; a.target = "_blank"; a.rel = "noopener";
+  a.setAttribute("aria-label", s.label);
+  a.innerHTML = ICONS[s.icon];
+  soc.appendChild(a);
+});
+</script>
+</body>
+</html>
