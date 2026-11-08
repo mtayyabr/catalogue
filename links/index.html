@@ -80,6 +80,27 @@ h1 { font-family: var(--display); font-weight: 700; font-size: 1.35rem; margin: 
 .copy:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .num { font-variant-numeric: tabular-nums; user-select: all; direction: ltr; unicode-bidi: isolate; }
 @media (prefers-reduced-motion: reduce) { .link { transition: none; } }
+
+.xcard { width: 100%; display: block; background: var(--card); color: var(--ink); text-decoration: none; border: 1px solid var(--line);
+  border-radius: 22px; overflow: hidden; box-shadow: 0 3px 0 var(--line), 0 8px 22px rgba(18,48,43,.10); }
+a.xcard:hover { transform: translateY(-2px); } a.xcard { transition: transform .15s ease; }
+.xcard:focus-visible, .xbtn:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.thumbs { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--line); }
+.thumbs img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.pricetag { position: absolute; right: 10px; top: 10px; background: var(--accent); color: var(--accent-ink); font-family: var(--display);
+  font-weight: 700; font-size: 1.05rem; line-height: 1; padding: 9px 11px; border-radius: 999px; box-shadow: 0 3px 10px rgba(0,0,0,.25); }
+.pricetag small { font-size: .62rem; margin-left: 3px; }
+.xbody { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; }
+.xtitle { font-family: var(--display); font-weight: 700; font-size: 1.08rem; }
+.xtitle.ar { margin-top: -6px; }
+.xsub { color: var(--muted); font-size: .88rem; line-height: 1.5; }
+.xbtn { margin-top: 6px; display: block; text-align: center; padding: 13px 16px; border-radius: 999px; font-weight: 700; text-decoration: none;
+  background: var(--accent); color: var(--accent-ink); font-family: var(--display); }
+.xbtn.alt { background: transparent; color: var(--ink); border: 2px solid var(--line); margin-top: 2px; }
+.mapwrap { position: relative; height: 230px; background: var(--line); }
+.mapwrap::before { content: "📍 Map loading… · جارٍ تحميل الخريطة"; position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: .9rem; }
+.mapwrap iframe { position: relative; }
+.mapwrap iframe { width: 100%; height: 100%; border: 0; display: block; }
 </style>
 </head>
 <body>
@@ -91,6 +112,33 @@ h1 { font-family: var(--display); font-weight: 700; font-size: 1.35rem; margin: 
   <p class="bio">Every item one price, OMR 0.729 🛍️<br>كل المنتجات بسعر 0.729 ر.ع<br>📍 Bousher, Muscat · بوشر، مسقط</p>
 
   <nav class="links" id="links" aria-label="Store links"></nav>
+
+  <a class="xcard catcard" href="../reels/" aria-label="Open the catalogue – every item 0.729 OMR">
+    <div class="thumbs" aria-hidden="true">
+      <img src="../reels/sc-202-L.jpg" alt="" loading="lazy"><img src="../reels/sc-207-L.jpg" alt="" loading="lazy"><img src="../reels/sc-243-L.jpg" alt="" loading="lazy">
+      <img src="../reels/sc-203-L.jpg" alt="" loading="lazy"><img src="../reels/sc-114-L.jpg" alt="" loading="lazy"><img src="../reels/sc-074-L.jpg" alt="" loading="lazy">
+      <span class="pricetag">0.729<small>OMR</small></span>
+    </div>
+    <div class="xbody">
+      <div class="xtitle">🛍️ Browse the catalogue</div><div class="xtitle ar" dir="rtl" lang="ar">تصفح الكتالوج</div>
+      <div class="xsub">300+ items, every one 0.729 OMR</div><div class="xsub" dir="rtl" lang="ar">أكثر من ٣٠٠ منتج، كل منتج بـ ٠٫٧٢٩ ر.ع</div>
+      <span class="xbtn">Open catalogue · افتح الكتالوج →</span>
+    </div>
+  </a>
+
+  <section class="xcard mapcard" aria-label="Find Dollar Store Oman">
+    <div class="mapwrap">
+      <iframe title="Map showing Dollar Store Oman in Bousher Heights, Muscat" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+        src="https://maps.google.com/maps?q=Dollar%20Store%20Oman%2C%20Bousher%20Heights%2C%20Muscat&amp;ll=23.5625538,58.4196623&amp;z=15&amp;hl=en&amp;output=embed"></iframe>
+    </div>
+    <div class="xbody">
+      <div class="xtitle">📍 Dollar Store Bousher</div><div class="xtitle ar" dir="rtl" lang="ar">دولار ستور بوشر</div>
+      <div class="xsub">Al Ghaf St · Hay Al Bayda', Bousher Heights · Open daily 10 AM – 12 AM, Fri from 1 PM</div>
+      <div class="xsub" dir="rtl" lang="ar">شارع الغاف · حي البيضاء، مرتفعات بوشر · يوميًا ١٠ص – ١٢م، الجمعة من ١ ظهرًا</div>
+      <a class="xbtn go" href="https://www.google.com/maps/dir/?api=1&amp;destination=Dollar+Store+Oman&amp;destination_place_id=ChIJ6ZQdbwD_kT4RKe9YZrQCSCg&amp;travelmode=driving" target="_blank" rel="noopener">🧭 Get directions · الاتجاهات</a>
+      <a class="xbtn alt" href="https://www.google.com/maps/dir/?api=1&amp;origin=23.55685,58.41048&amp;destination=Dollar+Store+Oman&amp;destination_place_id=ChIJ6ZQdbwD_kT4RKe9YZrQCSCg&amp;travelmode=driving" target="_blank" rel="noopener">🚗 Route from Al Qabayel · من القبائل</a>
+    </div>
+  </section>
 
   <div class="socials" id="socials"></div>
 
@@ -109,8 +157,6 @@ var ICONS = {
 // Empty url = button hidden. Add the Shopify link when ready.
 var LINKS = [
   { icon: "wa",    en: "Chat on WhatsApp",   ar: "راسلنا على واتساب",  url: "https://api.whatsapp.com/send?phone=96879123698", primary: true },
-  { icon: "reels", en: "Reels catalogue",    ar: "كتالوج الريلز",       url: "https://mtayyabr.github.io/catalogue/reels/" },
-  { icon: "map",   en: "Directions to store", ar: "الاتجاهات إلى المحل", url: "https://maps.google.com/?cid=2902572933674757929" },
   { icon: "shop",  en: "Shop online",        ar: "تسوق أونلاين",         url: "" }
 ];
 var SOCIALS = [
