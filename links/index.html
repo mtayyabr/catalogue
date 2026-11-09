@@ -118,14 +118,7 @@ a.xcard:hover { transform: translateY(-2px); } a.xcard { transition: transform .
 .mapwrap::before { content: "📍 Map loading… · جارٍ تحميل الخريطة"; position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: .9rem; }
 .mapwrap iframe { position: relative; }
 .mapwrap iframe { width: 100%; height: 100%; border: 0; display: block; }
-.mapcard { position: relative; cursor: pointer; }
-.mapcard .cardlink { color: inherit; text-decoration: none; }
-.mapcard .cardlink::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
-.mapcard .xbtn { position: relative; z-index: 2; }
-.mapwrap.snap { height: auto; }
-.mapwrap.snap::before { content: none; }
-.mapwrap.snap img { display: block; width: 100%; height: auto; }
-.tapchip { display: block; text-align: center; background: #12302b; color: #fff; font-weight: 700; font-size: .85rem; padding: 9px 12px; }
+.maptap { position: absolute; inset: 0; z-index: 2; }
 </style>
 </head>
 <body>
@@ -152,17 +145,17 @@ a.xcard:hover { transform: translateY(-2px); } a.xcard { transition: transform .
   </a>
 
   <section class="xcard mapcard" aria-label="Find Dollar Store Oman">
-    <div class="mapwrap snap">
-      <img src="route-map.jpg?v=1" width="900" height="562" loading="lazy" alt="Map: Dollar Store Oman in Bousher, 2 min from Al Maha Roundabout and 3 min from Al Qabayel">
-      <span class="tapchip">👆 Tap for directions · اضغط للاتجاهات</span>
+    <div class="mapwrap">
+      <iframe title="Map showing Dollar Store Oman in Bousher Heights, Muscat" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+        src="https://maps.google.com/maps?q=Dollar%20Store%20Oman%2C%20Bousher%20Heights%2C%20Muscat&amp;ll=23.5625538,58.4196623&amp;z=15&amp;hl=en&amp;output=embed"></iframe>
+      <a class="maptap" href="https://www.google.com/maps/dir/?api=1&amp;destination=Dollar+Store+Oman&amp;destination_place_id=ChIJ6ZQdbwD_kT4RKe9YZrQCSCg&amp;travelmode=driving" target="_blank" rel="noopener" aria-label="Open directions to Dollar Store Oman in Google Maps"></a>
     </div>
     <div class="xbody">
-      <a class="xtitle cardlink" href="https://www.google.com/maps/dir/?api=1&amp;destination=Dollar+Store+Oman&amp;destination_place_id=ChIJ6ZQdbwD_kT4RKe9YZrQCSCg&amp;travelmode=driving" target="_blank" rel="noopener" aria-label="Get directions to Dollar Store Bousher in Google Maps">📍 Dollar Store Bousher</a><div class="xtitle ar" dir="rtl" lang="ar">دولار ستور بوشر</div>
+      <div class="xtitle">📍 Dollar Store Bousher</div><div class="xtitle ar" dir="rtl" lang="ar">دولار ستور بوشر</div>
       <div class="xsub">Al Ghaf St · Hay Al Bayda', Bousher Heights · Open daily 10 AM – 12 AM, Fri from 1 PM</div>
       <div class="xsub" dir="rtl" lang="ar">شارع الغاف · حي البيضاء، مرتفعات بوشر · يوميًا ١٠ص – ١٢م، الجمعة من ١ ظهرًا</div>
       <a class="xbtn go" href="https://www.google.com/maps/dir/?api=1&amp;destination=Dollar+Store+Oman&amp;destination_place_id=ChIJ6ZQdbwD_kT4RKe9YZrQCSCg&amp;travelmode=driving" target="_blank" rel="noopener">🧭 Get directions · الاتجاهات</a>
-      <a class="xbtn alt" href="https://www.google.com/maps/dir/?api=1&amp;origin=23.56587,58.41327&amp;destination=Dollar+Store+Oman&amp;destination_place_id=ChIJ6ZQdbwD_kT4RKe9YZrQCSCg&amp;travelmode=driving" target="_blank" rel="noopener">🟢 Route from Al Maha · من دوار المها</a>
-      <a class="xbtn alt" href="https://www.google.com/maps/dir/?api=1&amp;origin=23.55685,58.41048&amp;destination=Dollar+Store+Oman&amp;destination_place_id=ChIJ6ZQdbwD_kT4RKe9YZrQCSCg&amp;travelmode=driving" target="_blank" rel="noopener">🔵 Route from Al Qabayel · من القبائل</a>
+      <a class="xbtn alt" href="https://www.google.com/maps/dir/?api=1&amp;origin=23.55685,58.41048&amp;destination=Dollar+Store+Oman&amp;destination_place_id=ChIJ6ZQdbwD_kT4RKe9YZrQCSCg&amp;travelmode=driving" target="_blank" rel="noopener">🚗 Route from Al Qabayel · من القبائل</a>
     </div>
   </section>
 
